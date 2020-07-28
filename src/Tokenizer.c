@@ -16,6 +16,7 @@ token *getToken(Tokenizer *tokenizer){
   int i = 0;
   char  *str = tokenizer->str;
   char  *tokenstr;
+  tokenstr = malloc(sizeof(char));
   while(!(isspace(*str))){
     str++;
     i++;
@@ -23,7 +24,7 @@ token *getToken(Tokenizer *tokenizer){
   tokenizer->index = i;
   for(int j = 0; j<i; j++)
     str--;
-  //strncpy(tokenstr, str,i);
+  strncpy(tokenstr, str,i);
   newToken = createToken(tokenstr);
   return  newToken;
   

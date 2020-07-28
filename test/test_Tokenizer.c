@@ -21,3 +21,11 @@ void test_Tokenizer_test_str(void)
     Tokenizer *tokenizer = createTokenizer(str);
     TEST_ASSERT_EQUAL_STRING(tokenizer->str, "ABC DEF 123");
 }
+
+void test_Tokenizer_check_first_token(void)
+{
+    char  *str = "ABC DEF 123";
+    Tokenizer *tokenizer = createTokenizer(str);
+    TEST_ASSERT_EQUAL_STRING(tokenizer->str, "ABC DEF 123");
+    TEST_ASSERT_EQUAL_STRING(tokenizer->token[0]->str, "ABC");
+}
