@@ -22,10 +22,20 @@ void test_Tokenizer_test_str(void)
     TEST_ASSERT_EQUAL_STRING(tokenizer->str, "ABC DEF 123");
 }
 
-void test_Tokenizer_check_first_token(void)
+void test_Tokenizer_check_first_token_ABC(void)
 {
     char  *str = "ABC DEF 123";
     Tokenizer *tokenizer = createTokenizer(str);
     TEST_ASSERT_EQUAL_STRING(tokenizer->str, "ABC DEF 123");
     TEST_ASSERT_EQUAL_STRING(tokenizer->token[0]->str, "ABC");
+    TEST_ASSERT_EQUAL(tokenizer->index, 3);
+}
+
+void test_Tokenizer_check_first_token_MOVWF(void)
+{
+    char  *str = "MOVWF 123";
+    Tokenizer *tokenizer = createTokenizer(str);
+    TEST_ASSERT_EQUAL_STRING(tokenizer->str, "MOVWF 123");
+    TEST_ASSERT_EQUAL_STRING(tokenizer->token[0]->str, "MOVWF");
+    TEST_ASSERT_EQUAL(tokenizer->index, 5);
 }
