@@ -1,7 +1,10 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-
-
+#include <stdint.h>
+#include <malloc.h>
+#include <stdio.h>
+#include <string.h>
+#include  "Errors.h"
 
 typedef enum
 {
@@ -26,7 +29,6 @@ typedef struct
 
 typedef struct
 {
-	tokenType	type;
 	char	*originalstr;
 	char	*str;
 	int		startColumn;
@@ -36,7 +38,6 @@ typedef struct
 
 typedef struct
 {
-	tokenType	type;
 	char	*originalstr;
 	char	*str;
 	int		startColumn;
@@ -46,7 +47,6 @@ typedef struct
 
 typedef struct
 {
-	tokenType	type;
 	char	*originalstr;
 	char	*str;
 	int		startColumn;
@@ -55,7 +55,6 @@ typedef struct
 
 typedef struct
 {
-	tokenType	type;
 	char	*originalstr;
 	char	*str;
 	int		startColumn;
@@ -65,6 +64,6 @@ typedef struct
 }tokenOperator;
 	
 tokenInt *createIntToken(int , char *, int , int );
-tokenType checkTokenType(char *);
+tokenType checkTokenType(token  *newToken);
 
 #endif // TOKEN_H

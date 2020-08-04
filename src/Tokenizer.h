@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct Tokenizer Tokenizer;
 struct Tokenizer {
@@ -17,5 +18,10 @@ struct Tokenizer {
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 token *getToken(Tokenizer *tokenizer);
-token *createToken(char *tokenstr);
+void  freeToken(token *Token);
+token *createToken(Tokenizer *tokenizer);
+char  *skipWhiteSpaces(char *str);
+char *checkIdentifier(char  *str);
+char  *checkInteger(token *Token);
+char  *checkFloat(char  *str);
 #endif // TOKENIZER_H

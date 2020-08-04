@@ -7,13 +7,14 @@ tokenInt *createIntToken(int value, char *originalstr, int startColumn, int leng
 {
 	tokenInt *intToken;
 	intToken=malloc(sizeof(tokenInt));
-	intToken->type=INTEGER_TYPE;
+	//intToken->type=INTEGER_TYPE;
 	intToken->originalstr=originalstr;
 	intToken->startColumn=startColumn;
 	intToken->length=length;
 	intToken->value=value;
 	return	intToken;
 }
+
 
 // Separate a string based on ' ' or operators into smaller chunk 
 // Check the type of token (ASCII?)
