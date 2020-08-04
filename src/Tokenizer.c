@@ -11,6 +11,10 @@ Tokenizer *createTokenizer(char *str){
   return  tokenizer;
 }
 
+void  freeTokenizer(Tokenizer *tokenizer){
+  free(tokenizer);
+}
+
 token *getToken(Tokenizer *tokenizer){
   token *newToken;
   int i = 0;

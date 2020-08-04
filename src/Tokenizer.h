@@ -15,6 +15,7 @@ struct Tokenizer {
 };
 
 Tokenizer *createTokenizer(char *str);
+void  freeTokenizer(Tokenizer *tokenizer);
 token *getToken(Tokenizer *tokenizer);
 token *createToken(char *tokenstr);
 #endif // TOKENIZER_H
