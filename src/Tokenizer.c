@@ -56,7 +56,7 @@ tokenType checkTokenType(token  *newToken){
   }
   else  //if(isdigit(*str)){
     {
-    //newToken->str = checkInteger(newToken);
+    newToken->str = checkInteger(newToken);
   }
 }
 
@@ -72,43 +72,51 @@ char *checkIdentifier(char  *str){
   return  tokenstr;
 }
 
-/*
+
 char  *checkInteger(token *Token){
-  int i;
+  int i = 0;
   char  *str = Token->originalstr;
   char  *resultstr;
-  while(str[i]!=NULL){
+  while(str[i]!=NULL && str[i]!=' '){
     if(isalpha(str[i]))
       throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid integer: %s", *str);
     if(str[i]=='.'){
-      while(i!=0){
-        str++;
-        i--;
-      }
       resultstr = checkFloat(str);
       Token->type = FLOAT_TYPE;
       return  resultstr;
     }
-  }
-}
-*/
-
-/*
-char  *checkFloat(char  *str){
-  int i;
-  char  *resultstr;
-  resultstr = malloc(sizeof(char));
-  while(str[i]!=NULL &&str[i]!=' '){
-    if(str[i]=='.')
-      throwException(ERROR_INVALID_FLOAT,NULL, 0, "Multiple decimal points detected: %s", *str);
-    if(!isdigit(str[i])){
-      if(str[i]!='e')
-        throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid float: %s", *str);
-    }
     i++;
   }
- strncpy(resultstr, str, i);
+}
+
+
+
+char  *checkFloat(char  *str){
+  int j = 0;
+  char  *resultstr;
+  resultstr = malloc(sizeof(char));
+
+  while(str[j] != '.'){
+    j++;
+  }
+  j++;
+  while(str[j]!=NULL &&str[j]!=' '){
+    if(str[j]=='.')
+      throwException(ERROR_INVALID_FLOAT,NULL, 0, "Multiple decimal points detected: %s", *str);
+    if(!isdigit(str[j])){
+      if(str[j]!='e'){
+        throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid float: %s", *str);
+      }
+    }
+    if(str[j] == 'e'){
+      if(str[j+1] == '+' ||str[j+1] == '-'){
+        if(str[j+2] == '+' || str[j+2] == '-')
+          throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid float (exponential): %s", *str);
+      }
+    }
+    j++;
+  }
+ strncpy(resultstr, str, j);
  return resultstr;
   
 }
-*/

@@ -11,6 +11,8 @@ void tearDown(void)
 {
 }
 
+CEXCEPTION_T ex;
+
 void test_skip_white_spaces_Hello(void)
 {
   char  *str = skipWhiteSpaces("     Hello");
@@ -77,5 +79,32 @@ void test_Tokenizer_check_first_token_MOVWF(void)
   TEST_ASSERT_EQUAL_STRING(tokenizer->str, "MOVWF 123");
   TEST_ASSERT_EQUAL_STRING(tokenizer->token[0]->str, "MOVWF");
   TEST_ASSERT_EQUAL(tokenizer->index, 5);
+  freeTokenizer(tokenizer);
+}
+
+void test_Tokenizer_check_first_token_1point2345(void)
+{
+
+  char  *str = "1.2345";
+  Tokenizer *tokenizer = createTokenizer(str);
+  tokenizer->token[0] = getToken(tokenizer);
+  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "1.2345");
+  TEST_ASSERT_EQUAL_STRING(tokenizer->token[0]->str, "1.2345");
+  TEST_ASSERT_EQUAL(tokenizer->index, 6);
+  freeTokenizer(tokenizer);
+}
+
+void test_Tokenizer_check_first_token_123MOVWF(void)
+{
+  char  *str = "123MOVWF";
+  Tokenizer *tokenizer = createTokenizer(str);
+  Try{
+  tokenizer->token[0] = getToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+		dumpException(ex);
+		TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+		freeException(ex);
+	}
   freeTokenizer(tokenizer);
 }
