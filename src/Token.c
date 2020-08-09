@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h> 
 
-
+/*
 tokenInt *createIntToken(int value, char *originalstr, int startColumn, int length)
 {
 	tokenInt *intToken;
@@ -14,7 +14,7 @@ tokenInt *createIntToken(int value, char *originalstr, int startColumn, int leng
 	intToken->value=value;
 	return	intToken;
 }
-
+*/
 
 // Separate a string based on ' ' or operators into smaller chunk 
 // Check the type of token (ASCII?)

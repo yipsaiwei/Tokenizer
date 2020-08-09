@@ -16,11 +16,11 @@ typedef enum
 	STRING_TYPE,
 	UNKNOWN_TYPE,
 	INVALID_TYPE
-}tokenType;
+}TOKENTYPE;
 
 typedef struct
 {
-	tokenType	type;
+	TOKENTYPE	type;
 	char	*originalstr;
 	char	*str;
 	int		startColumn;
@@ -63,7 +63,7 @@ typedef struct
 	token	*token[2];
 }tokenOperator;
 	
-tokenInt *createIntToken(int , char *, int , int );
-tokenType checkTokenType(token  *newToken);
+//tokenInt *createIntToken(int , char *, int , int );
+TOKENTYPE checkTokenType(token  *newToken);
 
 #endif // TOKEN_H
