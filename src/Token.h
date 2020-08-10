@@ -1,5 +1,6 @@
 #ifndef TOKEN_H
 #define TOKEN_H
+//#include  "Tokenizer.h"
 #include <stdint.h>
 #include <malloc.h>
 #include <stdio.h>
@@ -63,7 +64,7 @@ typedef struct
 	token	*token[2];
 }tokenOperator;
 	
-//tokenInt *createIntToken(int , char *, int , int );
+tokenInt *createIntToken(char *str);
 TOKENTYPE checkTokenType(token  *newToken);
 
 #endif // TOKEN_H

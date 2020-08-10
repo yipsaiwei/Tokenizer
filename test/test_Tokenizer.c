@@ -33,11 +33,19 @@ void  test_getDecimalValue_given_1a35(){
     }
   }
 
+void  test_getOctalValue_given_0o35(){
+  char  *str = "0o35";
+  int octVal = getOctalValue(str);
+  TEST_ASSERT_EQUAL(octVal, 29);
+}
+
+
 void  test_getOctalValue_given_035(){
   char  *str = "035";
   int octVal = getOctalValue(str);
-  TEST_ASSERT_EQUAL(octVal, 035);
+  TEST_ASSERT_EQUAL(octVal, 29);
 }
+
 
 void  test_getHexValue_given_0x55(){
   char  *str = "0x55";
@@ -47,7 +55,7 @@ void  test_getHexValue_given_0x55(){
 
 void  test_getOctalValue_given_0a5(){
   Try{
-    char  *str = "0a5";
+    char  *str = "0oa5";
     int octVal = getOctalValue(str);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
     }Catch(ex){
@@ -59,7 +67,7 @@ void  test_getOctalValue_given_0a5(){
   
 void  test_getOctalValue_given_085(){
   Try{
-    char  *str = "085";
+    char  *str = "0o85";
     int octVal = getOctalValue(str);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
     }Catch(ex){
@@ -175,26 +183,107 @@ void  test_getFloatValue_given_1point456eplus_plus3(){
     }
 }
 
-void  test_getBinValue_given_b110(){
-   char  *str = "b110";
+void  test_getBinValue_given_0b110(){
+   char  *str = "0b110";
   int binVal = getBinValue(str);
   TEST_ASSERT_EQUAL(binVal, 6);
   }
 
-void  test_getBinValue_given_b1111(){
-   char  *str = "b1111";
+void  test_getBinValue_given_0b1111(){
+   char  *str = "0b1111";
   int binVal = getBinValue(str);
   TEST_ASSERT_EQUAL(binVal, 15);
   }
   
-void  test_getBinValue_given_b1131(){
+void  test_getBinValue_given_0b1131(){
   Try{
-  char  *str = "b1131";
+  char  *str = "0b1131";
   double binVal = getBinValue(str);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
       dumpException(ex);
       TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+      freeException(ex);
+    }
+}
+
+
+
+void  test_getNumberToken_given_0x77(){
+   char  *str = "0x77";
+  int value = getNumberToken(str);
+  TEST_ASSERT_EQUAL(value, 0x77);
+  }
+  
+void  test_getNumberToken_given_0b1011(){
+   char  *str = "0b1011";
+  int value = getNumberToken(str);
+  TEST_ASSERT_EQUAL(value, 11);
+  }  
+  
+void  test_getNumberToken_given_0o12(){
+   char  *str = "0o12";
+  int value = getNumberToken(str);
+  TEST_ASSERT_EQUAL(value, 012);
+  } 
+  
+void  test_getNumberType_given_87(){
+   char  *str = "87";
+  TOKENTYPE type = getNumberType(str);
+  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
+  } 
+  
+  
+void  test_getNumberType_given_0o12(){
+   char  *str = "0o12";
+  TOKENTYPE type = getNumberType(str);
+  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
+  } 
+  
+void  test_getNumberType_given_3point512(){
+   char  *str = "3.512";
+  TOKENTYPE type = getNumberType(str);
+  TEST_ASSERT_EQUAL(type, FLOAT_TYPE);
+  } 
+  
+void  test_getNumberType_given_0x34(){
+   char  *str = "0x34";
+  TOKENTYPE type = getNumberType(str);
+  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
+  } 
+  
+void  test_getIdentifier_given_hello(){
+   char  *str = "hello";
+   char *ptr = getIdentifier(str);
+  TEST_ASSERT_EQUAL_STRING(ptr, "hello");
+  } 
+  
+void  test_getOperator_given_plus(){
+   char  *str = "+";
+   char *ptr = getOperator(str);
+  TEST_ASSERT_EQUAL_STRING(ptr, "+");
+  } 
+  
+void  test_getString_given_Hello_how_are_you(){
+   char  *str = "\"Hello how are you\  \" ";
+   char *ptr = getString(str);
+  TEST_ASSERT_EQUAL_STRING(ptr, "Hello how are you\  ");
+  } 
+  
+void  test_getString_given_Hello_comma_abcdeQf(){
+   char  *str = "\"Hello, abcde?f\" ";
+   char *ptr = getString(str);
+  TEST_ASSERT_EQUAL_STRING(ptr, "Hello, abcde?f");
+  } 
+  
+void  test_getBinValue_given_Hello_how_are_you_without_symbol(){
+  char  *str = "\"Hello how are you  \ ";
+  Try{
+  char *ptr = getString(str);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+      dumpException(ex);
+      TEST_ASSERT_EQUAL(ERROR_INVALID_STRING, ex->errorCode);
       freeException(ex);
     }
 }

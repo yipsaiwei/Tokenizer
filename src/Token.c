@@ -2,19 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h> 
 
-/*
-tokenInt *createIntToken(int value, char *originalstr, int startColumn, int length)
-{
-	tokenInt *intToken;
-	intToken=malloc(sizeof(tokenInt));
-	//intToken->type=INTEGER_TYPE;
-	intToken->originalstr=originalstr;
-	intToken->startColumn=startColumn;
-	intToken->length=length;
-	intToken->value=value;
-	return	intToken;
+tokenInt *createIntToken(char *str){
+  tokenInt *newToken = malloc(sizeof(tokenInt));
+  newToken->originalstr = str;
+  return newToken;
 }
-*/
 
 // Separate a string based on ' ' or operators into smaller chunk 
 // Check the type of token (ASCII?)

@@ -17,18 +17,26 @@ struct Tokenizer {
   uint32_t length;
   token *token[10];
 };
-/*
+
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 token *getToken(Tokenizer *tokenizer);
 token *getNextToken(Tokenizer *tokenizer);
 void  freeToken(token *Token);
 token *createToken(Tokenizer *tokenizer);
+int  getNumberToken(char  *str);
+TOKENTYPE getIntegerOrFloatType(char  *str);
+TOKENTYPE getNumberType(char  *str);
+char *getIdentifier(char  *str);
+char *getOperator(char  *str);
+char *getString(char  *str);
+/*
 char  *skipWhiteSpaces(char *str, int *i);
 char *checkIdentifier(char  *str);
 char  *checkInteger(token *Token);
 char  *checkFloat(char  *str);
 */
+
 int getOctalValue(char  *str);
 int getHexValue(char  *str);
 double getFloatValue(char  *str);
