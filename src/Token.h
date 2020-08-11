@@ -1,11 +1,14 @@
 #ifndef TOKEN_H
 #define TOKEN_H
+
 //#include  "Tokenizer.h"
 #include <stdint.h>
 #include <malloc.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include  "Errors.h"
+
 
 typedef enum
 {
@@ -64,7 +67,6 @@ typedef struct
 	token	*token[2];
 }tokenOperator;
 	
-tokenInt *createIntToken(char *str);
-TOKENTYPE checkTokenType(token  *newToken);
+tokenInt *createIntToken(char *str, char  *originalstr);
 
 #endif // TOKEN_H

@@ -18,11 +18,4 @@ void test_Token_Expect_unk()
 	printf("string: %s",testToken->originalstr);
 	TEST_ASSERT_EQUAL(523, testToken->value);
 }
-
-void test_CHECK_TOKEN_TYPE_EXPECT_unk()
-{
-  token *testToken;
-  testToken->type = checkTokenType("ABCDEF123");
-	TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, testToken->type);
-}
 */

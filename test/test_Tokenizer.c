@@ -2,6 +2,7 @@
 #include "Exception.h"
 #include "CException.h"
 #include "Tokenizer.h"
+#include "Token.h"
 #include <malloc.h> 
 #include <stdarg.h>
 
@@ -14,6 +15,25 @@ void tearDown(void)
 }
 
 CEXCEPTION_T ex;
+
+void  test_createTokenizer_given_number(){
+  Tokenizer *tokenizer = createTokenizer("19373");
+  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "19373");
+  TEST_ASSERT_EQUAL(tokenizer->length, 5);
+  freeTokenizer(tokenizer);
+}
+
+void  test_getToken_given_number(){
+  Tokenizer *tokenizer = createTokenizer("19373");
+  token *Token = getToken(tokenizer);
+  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "19373");
+  TEST_ASSERT_EQUAL_STRING(Token->originalstr, "19373");
+  TEST_ASSERT_EQUAL(Token->startColumn, 0);
+  TEST_ASSERT_EQUAL(tokenizer->length, 5);
+  freeTokenizer(tokenizer);
+  freeToken(Token);
+}
+
 
 void  test_getDecimalValue_given_035(){
   char  *str = "351";
@@ -287,6 +307,83 @@ void  test_getBinValue_given_Hello_how_are_you_without_symbol(){
       freeException(ex);
     }
 }
+
+void  test_checkTokenType_abc123(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("abc123");
+  Token = createToken(tokenizer);
+   TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, IDENTIFIER_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
+
+void  test_checkTokenType_0x2345(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("0x2345");
+  Token = createToken(tokenizer);
+   TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
+  
+void  test_checkTokenType_12point87(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("12.87");
+  Token = createToken(tokenizer);
+  TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, FLOAT_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
+  
+void  test_checkTokenType_0b1011(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("0b1011");
+  Token = createToken(tokenizer);
+  TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
+  
+void  test_checkTokenType_0o354(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("0o354");
+  Token = createToken(tokenizer);
+  TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
+  
+void  test_checkTokenType_This_is_calendar(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("\"This is calendar\"");
+  Token = createToken(tokenizer);
+  TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, STRING_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
+  
+void  test_checkTokenType_plus(){
+  Tokenizer *tokenizer = NULL;
+  token *Token = NULL;
+  tokenizer = createTokenizer("+");
+  Token = createToken(tokenizer);
+  TOKENTYPE type = checkTokenType(Token);
+  TEST_ASSERT_EQUAL(type, OPERATOR_TYPE);
+  freeToken(Token);
+  freeTokenizer(tokenizer);
+  }
 /*
 void test_skip_white_spaces_Hello(void)
 {

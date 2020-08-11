@@ -1,12 +1,16 @@
 #include "Token.h"
-#include <stdlib.h>
-#include <stdio.h> 
+#include "Exception.h"
+#include "CException.h"
+//#include  "Tokenizer.h"
 
-tokenInt *createIntToken(char *str){
+/*
+tokenInt *createIntToken(char *str, char  *originalstr){
   tokenInt *newToken = malloc(sizeof(tokenInt));
-  newToken->originalstr = str;
+  newToken->originalstr = originalstr;
+  newToken->value = getNumberToken(str);
   return newToken;
 }
+*/
 
 // Separate a string based on ' ' or operators into smaller chunk 
 // Check the type of token (ASCII?)

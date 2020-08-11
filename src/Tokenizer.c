@@ -2,13 +2,13 @@
 #include "Exception.h"
 #include "CException.h"
 
+
 Tokenizer *createTokenizer(char *str){
   Tokenizer *tokenizer;
   tokenizer = malloc(sizeof(Tokenizer));
   tokenizer->index = 0;
   tokenizer->length = strlen(str);
   tokenizer->str = str;
-  // Will detect type of token here
   return  tokenizer;
 }
 
@@ -19,7 +19,7 @@ void  freeTokenizer(Tokenizer *tokenizer){
 token *getToken(Tokenizer *tokenizer){
   token *newToken = createToken(tokenizer);
   //newToken->type = checkTokenType(newToken);
-  newToken->length = strlen(newToken->str);
+  //newToken->length = strlen(newToken->str);
   tokenizer->index += newToken->length;
   return  newToken;
 }
@@ -89,7 +89,24 @@ char  *moveStrToTokenizerIndex(Tokenizer  *tokenizer){
   return  str;
 }
 */
-
+TOKENTYPE checkTokenType(token  *Token){
+  char  *str = Token->originalstr;
+  int i = 0;
+  while(i != Token->startColumn){
+    str++;
+    i++;
+  }
+  if(isdigit(*str))
+    return  getNumberType(str);
+  else if (isalpha(*str) || *str == '_')
+    return IDENTIFIER_TYPE;
+  else if (*str == '\"')
+    return  STRING_TYPE;
+  else if (*str == NULL)
+    return  NULL_TYPE;
+  else  
+    return  OPERATOR_TYPE;
+}
 
 int  getNumberToken(char  *str){
   int value;
@@ -270,6 +287,7 @@ char *getOperator(char  *str){
 return  resultstr;  
 }
 
+
 char  *getString(char *str){
   char  *resultstr = malloc(32*sizeof(char));
   int i = 1;
@@ -279,7 +297,7 @@ char  *getString(char *str){
     i++;
   }
   if(str[i] != '\"')
-    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string: %s", str);
+    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing symbol): %s", str);
   //i--;
   strncpy(resultstr, str, i);
   resultstr[i] = NULL;

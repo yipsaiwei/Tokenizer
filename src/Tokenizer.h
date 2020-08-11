@@ -30,6 +30,7 @@ TOKENTYPE getNumberType(char  *str);
 char *getIdentifier(char  *str);
 char *getOperator(char  *str);
 char *getString(char  *str);
+TOKENTYPE checkTokenType(token  *newToken);
 /*
 char  *skipWhiteSpaces(char *str, int *i);
 char *checkIdentifier(char  *str);
