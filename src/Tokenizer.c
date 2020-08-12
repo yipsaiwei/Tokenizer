@@ -32,6 +32,7 @@ Token  *getToken(Tokenizer *tokenizer){
 
 }
 
+/*
 Token  *getNextToken(Tokenizer *tokenizer){
   Token *newToken = createToken(tokenizer);
   //newToken->type = checkTokenType(newToken);
@@ -39,7 +40,7 @@ Token  *getNextToken(Tokenizer *tokenizer){
   tokenizer->index = newToken->length + newToken->startColumn;
   return  newToken;
 }
-
+*/
  
 Token  *createToken(Tokenizer  *tokenizer){
   Token *newToken = malloc(sizeof(Token));
