@@ -9,38 +9,32 @@
 #include <ctype.h>
 #include  "Errors.h"
 
-
 typedef struct Tokenizer Tokenizer;
 struct Tokenizer {
   char *str;
   int index;
   uint32_t length;
-  token *token[10];
+  Token *token[10];
 };
 
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
-token *getToken(Tokenizer *tokenizer);
-token *getNextToken(Tokenizer *tokenizer);
-void  freeToken(token *Token);
-token *createToken(Tokenizer *tokenizer);
-int  getNumberToken(char  *str);
-TOKENTYPE getIntegerOrFloatType(char  *str);
+Token *getToken(Tokenizer *tokenizer);
+Token *getNextToken(Tokenizer *tokenizer);
+void  freeToken(Token *token);
+Token *createToken(Tokenizer *tokenizer);
+Token *getIntegerOrFloatToken(Tokenizer *tokenizer);
 TOKENTYPE getNumberType(char  *str);
-char *getIdentifier(char  *str);
-char *getOperator(char  *str);
-char *getString(char  *str);
-TOKENTYPE checkTokenType(token  *newToken);
-/*
-char  *skipWhiteSpaces(char *str, int *i);
-char *checkIdentifier(char  *str);
-char  *checkInteger(token *Token);
-char  *checkFloat(char  *str);
-*/
-
-int getOctalValue(char  *str);
-int getHexValue(char  *str);
-double getFloatValue(char  *str);
-int getBinValue(char  *str);
-int getDecimalValue(char  *str);
+char *tokenizerSkipSpaces(Tokenizer *tokenizer);
+TokenInteger *getOctalToken(Tokenizer  *tokenizer);
+TokenInteger *getHexToken(Tokenizer *tokenizer);
+TokenFloat *getFloatToken(Tokenizer  *tokenizer);
+TokenInteger *getBinToken(Tokenizer  *tokenizer);
+TokenInteger *getDecimalToken(Tokenizer  *tokenizer);
+Token  *getNumberToken(Tokenizer *tokenizer);
+TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer);
+TokenOperator *getOperatorToken(Tokenizer *tokenizer);
+TokenString  *getStringToken(Tokenizer  *tokenizer);
+char  *returnStringAtTokenizerIndex(Tokenizer *tokenizer);
+char  *duplicateString(char *str, int length);
 #endif // TOKENIZER_H

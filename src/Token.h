@@ -1,14 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-
 //#include  "Tokenizer.h"
-#include <stdint.h>
-#include <malloc.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include  "Errors.h"
-
 
 typedef enum
 {
@@ -24,12 +17,12 @@ typedef enum
 
 typedef struct
 {
-	TOKENTYPE	type;
 	char	*originalstr;
 	char	*str;
 	int		startColumn;
 	int		length;
-}token;
+  TOKENTYPE	type;
+}Token;
 
 typedef struct
 {
@@ -38,7 +31,8 @@ typedef struct
 	int		startColumn;
 	int		length;
 	int		value;
-}tokenInt;
+  TOKENTYPE	type;
+}TokenInteger;
 
 typedef struct
 {
@@ -46,8 +40,9 @@ typedef struct
 	char	*str;
 	int		startColumn;
 	int		length;
-	float		value;
-}tokenFloat;
+	double		value;
+  TOKENTYPE	type;
+}TokenFloat;
 
 typedef struct
 {
@@ -55,7 +50,8 @@ typedef struct
 	char	*str;
 	int		startColumn;
 	int		length;
-}tokenIdentifier, tokenString;
+  TOKENTYPE	type;
+}TokenIdentifier, TokenString;
 
 typedef struct
 {
@@ -64,9 +60,14 @@ typedef struct
 	int		startColumn;
 	int		length;
 	int		value;
-	token	*token[2];
-}tokenOperator;
+  TOKENTYPE	type;
+	Token	*token[2];
+}TokenOperator;
 	
-tokenInt *createIntToken(char *str, char  *originalstr);
+TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type);
+TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char  *str, TOKENTYPE type);
+TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
+TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
+TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 
 #endif // TOKEN_H
