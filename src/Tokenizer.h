@@ -16,7 +16,6 @@ struct Tokenizer {
   uint32_t length;
   Token *token[10];
 };
-
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
