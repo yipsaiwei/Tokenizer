@@ -21,7 +21,8 @@ void  freeTokenizer(Tokenizer *tokenizer){
 
 
 Token  *getToken(Tokenizer *tokenizer){
-  char  *str = tokenizerSkipSpaces(tokenizer);
+  tokenizerSkipSpaces(tokenizer);
+  char  *str = returnStringAtTokenizerIndex(tokenizer);
   if  (isdigit(str[0]))
     return  getNumberToken(tokenizer);
   else  if(isalpha(str[0]) || str[0] == '_')
@@ -34,15 +35,6 @@ Token  *getToken(Tokenizer *tokenizer){
 
 }
 
-/*
-Token  *getNextToken(Tokenizer *tokenizer){
-  Token *newToken = createToken(tokenizer);
-  //newToken->type = checkTokenType(newToken);
-  newToken->length = strlen(newToken->str);
-  tokenizer->index = newToken->length + newToken->startColumn;
-  return  newToken;
-}
-*/
  
 Token  *createToken(Tokenizer  *tokenizer){
   Token *newToken = malloc(sizeof(Token));
@@ -59,15 +51,7 @@ void  freeToken(Token *token){
     free(token);
 }
 
-/*
-char  *skipWhiteSpaces(char *str, int *i){
-  while(isspace(*str)){
-    str++;
-    *i += 1;
-  }
-  return  str;
-}
-*/
+
 char  *duplicateString(char *str, int length){
   char  *resultstr = malloc((length+1)*sizeof(char));
   strncpy(resultstr, str, length);
@@ -84,8 +68,9 @@ char *tokenizerSkipSpaces(Tokenizer *tokenizer){
   return  str;
 }
 
-char  *returnStringAtTokenizerIndex(Tokenizer *tokenizer){
-  char  *str = tokenizer->str;
+//Return string starting at tokenizer->index
+char  *returnStringAtTokenizerIndex(Tokenizer *tokenizer){  
+  char  *str = tokenizer->str;     
   int i = 0;
   while (i != tokenizer->index){
     str++;
@@ -233,7 +218,6 @@ TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer){
     tokenizer->index++;
   }
   char  *resultstr = duplicateString(str, i);
-  //resultstr[i] = NULL;
 return  createIdentifierToken(resultstr, startColumn, tokenizer->str, IDENTIFIER_TYPE);  
 }
 
@@ -255,18 +239,22 @@ TokenString  *getStringToken(Tokenizer  *tokenizer){
   tokenizerSkipSpaces(tokenizer);
   char  *str = returnStringAtTokenizerIndex(tokenizer);
   int startColumn = tokenizer->index;
-  int i = 2;
-  tokenizer->index += 2;
+  int i = 0;
+  if(str[i] == '\"'){
+    i ++;
+    tokenizer->index ++;
+  }
+  else
+    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s", str);
   while(str[i] != '\"' && str[i] != NULL){
     i++;
     tokenizer->index++;
   }
   if(str[i] != '\"')
     throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s", str);
-  i += 2;
-  tokenizer->index += 2;
+  i ++;
+  tokenizer->index ++;
   char  *resultstr = duplicateString(str, i);
-  resultstr[i] = NULL;
   return  createStringToken(resultstr, startColumn, str, STRING_TYPE);
 }
 
