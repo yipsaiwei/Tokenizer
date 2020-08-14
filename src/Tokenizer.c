@@ -61,7 +61,8 @@ char  *duplicateString(char *str, int length){
 
 char *tokenizerSkipSpaces(Tokenizer *tokenizer){
   char  *str = tokenizer->str;
-  while(isspace((tokenizer->str)[tokenizer->index] )){     
+  while(isspace((tokenizer->str)[tokenizer->index] )){  
+  //if((tokenizer->str)[tokenizer->index] == '\t')
     (tokenizer->index) ++;
     str++;
   }
@@ -123,7 +124,7 @@ TokenInteger  *getDecimalToken(Tokenizer  *tokenizer){
   int size;
   convertedValue = strtol(str, &ptr, 10);
   if(*ptr != ' ' && !ispunct(*ptr) && *ptr != NULL)
-    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid decimal value: %s", str);
+    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid decimal value: %s\n", str);
   resultstr = duplicateString(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
@@ -143,7 +144,7 @@ TokenInteger  *getOctalToken(Tokenizer  *tokenizer){
     strnum = str;
   convertedValue = strtol(strnum, &ptr, 8);
   if(*ptr != ' ' && !ispunct(*ptr) && *ptr != NULL)
-    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid octal value: %s", str);
+    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid octal value: %s\n", str);
   resultstr = duplicateString(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
@@ -160,7 +161,7 @@ TokenInteger  *getHexToken(Tokenizer  *tokenizer){
   strnum = str + 2; //convert hexadecimal value without 0x
   convertedValue = strtol(strnum, &ptr, 16);
   if(*ptr != ' '&& !ispunct(*ptr) && *ptr != NULL)
-    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid hexadecimal value: %s", str);
+    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid hexadecimal value: %s\n", str);
   resultstr = duplicateString(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
@@ -177,17 +178,30 @@ TokenFloat  *getFloatToken(Tokenizer  *tokenizer){
   int size;
   convertedValue = strtod(str, &ptr);
   if(isalpha(ptr[i])){
-    if( ptr[i] == 'e' && ispunct(ptr[i+1]) && ispunct(ptr[i+2]))
-      throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value: %s", str);
+    if(ptr[i] == 'e'){
+      if(!isdigit(ptr[i+1]) && ptr[i+1] != '+' && ptr[i+1] != '-')
+        throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value: %s\n", str);
+      if(!isdigit(ptr[i+2]))
+        throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value: %s\n", str);
+      for(int j = i+3; ptr[j] != ' ' && !ispunct(ptr[j]); j++){
+        if(isalpha(ptr[j]))
+          throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value(Detected invalid alphabet): %s\n", str);
+        if(ptr[j] == '.')
+          throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point (multiple dots detected): %s\n", str);
+      }
+    }
+    else{
+      throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value(Detected invalid alphabet): %s\n", str);
+    }
   }
   if(*ptr == '.')
-    throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point (multiple dots detected): %s", str);
+    throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point (multiple dots detected): %s\n", str);
   if(*ptr != ' '&& *ptr != NULL && *ptr != 'e' && !ispunct(*ptr)){
-    throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value: %s", str);
+    throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value: %s\n", str);
   }
   resultstr = duplicateString(str, ptr-str);
   tokenizer->index += (ptr-str);
-return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
+return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, FLOAT_TYPE);  
 }
 
 
@@ -201,7 +215,7 @@ TokenInteger *getBinToken(Tokenizer  *tokenizer){
   strnum = str + 2;
   convertedValue = strtol(strnum, &ptr, 2);
   if(*ptr != '1' && *ptr != '0' && *ptr != NULL && *ptr != ' ' && !ispunct(*ptr))
-    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid binary value: %s", str);
+    throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid binary value: %s\n", str);
   char  *resultstr = duplicateString(str, ptr-str);
   tokenizer->index += (ptr - str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);
@@ -245,13 +259,13 @@ TokenString  *getStringToken(Tokenizer  *tokenizer){
     tokenizer->index ++;
   }
   else
-    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s", str);
+    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s\n", str);
   while(str[i] != '\"' && str[i] != NULL){
     i++;
     tokenizer->index++;
   }
   if(str[i] != '\"')
-    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s", str);
+    throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s\n", str);
   i ++;
   tokenizer->index ++;
   char  *resultstr = duplicateString(str, i);

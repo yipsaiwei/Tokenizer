@@ -25,7 +25,8 @@ void freeException(Exception *e){
 	free(e);
 }
 void dumpException(Exception *e){
-	printf("%s (error=0x%x)\n", e->msg, e->errorCode);
+	//printf("%s (error=0x%x)\n", e->msg, e->errorCode);
+  printf("%s \n", e->msg);
 }
 
 void throwException(int errorCode, void *data, int freeDataOnFreeingException, char *message,...){

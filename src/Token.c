@@ -11,6 +11,7 @@ TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *s
   newToken->value = value;
   newToken->startColumn = index;
   newToken->type = type;
+  newToken->length = strlen(str);
   return newToken;
 }
 
