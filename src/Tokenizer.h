@@ -20,7 +20,7 @@ Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
 Token *getNextToken(Tokenizer *tokenizer);
-void  freeToken(Token *token);
+void  freeToken(void *token);
 Token *createToken(Tokenizer *tokenizer);
 Token *getIntegerOrFloatToken(Tokenizer *tokenizer);
 TOKENTYPE getNumberType(char  *str);
@@ -34,6 +34,6 @@ Token  *getNumberToken(Tokenizer *tokenizer);
 TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer);
 TokenOperator *getOperatorToken(Tokenizer *tokenizer);
 TokenString  *getStringToken(Tokenizer  *tokenizer);
-char  *returnStringAtTokenizerIndex(Tokenizer *tokenizer);
 char  *duplicateString(char *str, int length);
+char  *displayErrorPointer(Tokenizer  *tokenizer);
 #endif // TOKENIZER_H

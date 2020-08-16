@@ -16,41 +16,56 @@ void tearDown(void)
 
 CEXCEPTION_T ex;
 
+void  test_tokenizerSkipSpaces_given_efnkfsl646(){
+  Tokenizer *tokenizer = createTokenizer("efnkfsl646"); 
+  char  *str = tokenizerSkipSpaces(tokenizer);
+  TEST_ASSERT_EQUAL_STRING("efnkfsl646", str);
+  TEST_ASSERT_EQUAL(0, tokenizer->index);
+}
 
 void  test_tokenizerSkipSpaces_given____abc123(){
   Tokenizer *tokenizer = createTokenizer("  abc123"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(str, "abc123");
-  TEST_ASSERT_EQUAL(tokenizer->index, 2);
+  TEST_ASSERT_EQUAL_STRING("abc123", str);
+  TEST_ASSERT_EQUAL(2, tokenizer->index);
 }
 
 //Further check this function
 void  test_tokenizerSkipSpaces_given_backslash_t(){
   Tokenizer *tokenizer = createTokenizer("\thellllllo"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(str, "hellllllo");
-  printf("\tHello\t");
-  TEST_ASSERT_EQUAL(tokenizer->index, 1);
+  TEST_ASSERT_EQUAL_STRING("hellllllo", str);
+  TEST_ASSERT_EQUAL(1, tokenizer->index);
 }
+
+/*
+void  test_returnStringAtTokenizerIndex_given_tokenizerIndex_of_5(){
+  Tokenizer *tokenizer = createTokenizer("xyz hello");
+  tokenizer->index = 4;
+  char  *str = returnStringAtTokenizerIndex(tokenizer);
+  TEST_ASSERT_EQUAL_STRING("hello", str);
+}
+*/
+
 
 void  test_tokenizerSkipSpaces_given____asterisk(){
   Tokenizer *tokenizer = createTokenizer("     *"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 5);
-  TEST_ASSERT_EQUAL_STRING(str, "*");
+  TEST_ASSERT_EQUAL(5, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("*", str);
 }
 
 void  test_tokenizerSkipSpaces_given______0x4573_expect_same(){
   Tokenizer *tokenizer = createTokenizer("     0x4573"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 5);
-  TEST_ASSERT_EQUAL_STRING(str, "0x4573");
+  TEST_ASSERT_EQUAL(5, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("0x4573", str);
 }
 
 void  test_createTokenizer_given_number_expect_same(){
   Tokenizer *tokenizer = createTokenizer("19373");
-  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "19373");
-  TEST_ASSERT_EQUAL(tokenizer->length, 5);
+  TEST_ASSERT_EQUAL_STRING("19373", tokenizer->str);
+  TEST_ASSERT_EQUAL(5, tokenizer->length);
   freeTokenizer(tokenizer);
 }
 
@@ -60,10 +75,10 @@ void  test_getDecimalToken_given_351_expect_same(){
   tokenizer = createTokenizer("351"); 
   TokenInteger *token = NULL;
   token = getDecimalToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 3);
-  TEST_ASSERT_EQUAL(token->length, 3);
-  TEST_ASSERT_EQUAL(token->value, 351);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(3, tokenizer->index);
+  TEST_ASSERT_EQUAL(3, token->length);
+  TEST_ASSERT_EQUAL(351, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -90,22 +105,40 @@ void  test_getOctalToken_given_035_expect_octal_35(){
   tokenizer = createTokenizer("035"); 
   TokenInteger *token = NULL;
   token = getOctalToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 3);
-  TEST_ASSERT_EQUAL(token->value, 035);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(3, tokenizer->index);
+  TEST_ASSERT_EQUAL(035, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
 
-void  test_getOctalToken_given_0o35_expect_octal_35(){
+void  test_getOctalToken_given_01239_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("01239"); 
+  TokenInteger *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getOctalToken_given_0o35_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("0o35"); 
   TokenInteger *token = NULL;
+  Try{
   token = getOctalToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 4);
-  TEST_ASSERT_EQUAL(token->value, 035);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
-  freeToken(token);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
   freeTokenizer(tokenizer);
 }
 
@@ -160,9 +193,9 @@ void  test_getHexToken_given_0x55_expect_same(){
   tokenizer = createTokenizer("0x55"); 
   TokenInteger *token = NULL;
   token = getHexToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 4);
-  TEST_ASSERT_EQUAL(token->value, 0x55);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(4, tokenizer->index);
+  TEST_ASSERT_EQUAL(0x55, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -204,9 +237,9 @@ void  test_getHexToken_given_0xface_expect_same(){
   tokenizer = createTokenizer("0xface"); 
   TokenInteger *token = NULL;
   token = getHexToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL(token->value, 0xface);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL(0xface, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -232,9 +265,9 @@ void  test_getFloatToken_given_1point456_expect_same(){
   tokenizer = createTokenizer("1.456"); 
   TokenFloat *token = NULL;
   token = getFloatToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 5);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 1.456);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(5, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(1.456, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -275,9 +308,9 @@ void  test_getFloatToken_given_3point836e2_expect_same(){
   tokenizer = createTokenizer("3.836e2"); 
   TokenFloat *token = NULL;
   token = getFloatToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 3.836e2);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(3.836e2,token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -287,9 +320,9 @@ void  test_getFloatToken_given_53point12eplus2_expect_same(){
   tokenizer = createTokenizer("53.12e+2"); 
   TokenFloat *token = NULL;
   token = getFloatToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 8);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 53.12e2);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(8, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(53.12e2, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -299,9 +332,9 @@ void  test_getFloatToken_given_18356point123eminus4_expect_same(){
   tokenizer = createTokenizer("18356.123e-4"); 
   TokenFloat *token = NULL;
   token = getFloatToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 12);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 18356.123e-4);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(12, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(18356.123e-4, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -311,9 +344,9 @@ void  test_getFloatToken_given_186point13minus4_expect_same(){
   tokenizer = createTokenizer("186.13-4"); 
   TokenFloat *token = NULL;
   token = getFloatToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 186.13);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(186.13, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -323,9 +356,9 @@ void  test_getFloatToken_given_1point034eplus3plus12_expect_same(){
   tokenizer = createTokenizer("1.034e+3+12"); 
   TokenFloat *token = NULL;
   token = getFloatToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 8);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 1.034e+3);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(8, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(1.034e+3, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -396,9 +429,9 @@ void  test_getBinToken_given_0b110_expect_decimal_6(){
   tokenizer = createTokenizer("0b110"); 
   TokenInteger *token = NULL;
   token = getBinToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 5);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 6);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(5, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(6, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -408,9 +441,9 @@ void  test_getBinToken_given_0b1111_expect_decimal_15(){
   tokenizer = createTokenizer("0b1111"); 
   TokenInteger *token = NULL;
   token = getBinToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 15);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(15, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -420,9 +453,9 @@ void  test_getIdentifierToken_given____hihihi123_expect_same(){
   tokenizer = createTokenizer("___hihihi123"); 
   TokenIdentifier *token = NULL;
   token = getIdentifierToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 12);
-  TEST_ASSERT_EQUAL_STRING(token->str, "___hihihi123");
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(12, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("___hihihi123", token->str);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -432,9 +465,9 @@ void  test_getIdentifierToken_given_totalIsplus123_expect_same(){
   tokenizer = createTokenizer("totalIs+123"); 
   TokenIdentifier *token = NULL;
   token = getIdentifierToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_STRING(token->str, "totalIs");
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("totalIs", token->str);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -444,9 +477,9 @@ void  test_getIdentifierToken_given_spacex3acerE15_expect_same(){
   tokenizer = createTokenizer("   acerE15 "); 
   TokenIdentifier *token = NULL;
   token = getIdentifierToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 10);
-  TEST_ASSERT_EQUAL_STRING(token->str, "acerE15");
-  TEST_ASSERT_EQUAL(token->startColumn, 3);
+  TEST_ASSERT_EQUAL(10, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("acerE15", token->str);
+  TEST_ASSERT_EQUAL(3, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -471,9 +504,9 @@ void  test_getNumberToken_given_375_expect_getDecimalToken_called(){
   tokenizer = createTokenizer("375"); 
   TokenInteger *token = NULL;
   token = (TokenInteger *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 3);
-  TEST_ASSERT_EQUAL(token->value, 375);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(3, tokenizer->index);
+  TEST_ASSERT_EQUAL(375, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -484,9 +517,9 @@ void  test_getNumberToken_given_87point9234_expect_getFloatToken_called(){
   tokenizer = createTokenizer("87.9234"); 
   TokenFloat *token = NULL;
   token = (TokenFloat *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 87.9234);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(87.9234, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -496,9 +529,9 @@ void  test_getNumberToken_given_0x9521_expect_getHexToken_called(){
   tokenizer = createTokenizer("0x9521"); 
   TokenInteger *token = NULL;
   token = (TokenInteger *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL_HEX(token->value, 0x9521);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_HEX(0x9521, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -508,9 +541,9 @@ void  test_getNumberToken_given_0b1010_expect_getHexToken_called(){
   tokenizer = createTokenizer("0b1010"); 
   TokenInteger *token = NULL;
   token = (TokenInteger *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL(token->value, 10);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL(10, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -520,9 +553,9 @@ void  test_getNumberToken_given_0345_expect_getOctToken_called(){
   tokenizer = createTokenizer("0345"); 
   TokenInteger *token = NULL;
   token = (TokenInteger *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 4);
-  TEST_ASSERT_EQUAL(token->value, 0345);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(4, tokenizer->index);
+  TEST_ASSERT_EQUAL(0345, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -592,9 +625,9 @@ void  test_getIdentifierToken_given_hello_123_expect_without_123(){
   tokenizer = createTokenizer("hello 123"); 
   TokenIdentifier *token = NULL;
   token = getIdentifierToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 5);
-  TEST_ASSERT_EQUAL_STRING(token->str, "hello");
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(5, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("hello", token->str);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -604,9 +637,9 @@ void  test_getIdentifierToken_given_movwf123plus_expect_without_plus(){
   tokenizer = createTokenizer("movwf123+"); 
   TokenIdentifier *token = NULL;
   token = getIdentifierToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 8);
-  TEST_ASSERT_EQUAL_STRING(token->str, "movwf123");
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(8, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("movwf123", token->str);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -616,10 +649,10 @@ void  test_getOperatorToken_given_plus(){
   tokenizer = createTokenizer("+"); 
   TokenOperator *token = NULL;
   token = getOperatorToken(tokenizer);
-  TEST_ASSERT_EQUAL(token->type, OPERATOR_TYPE);
-  TEST_ASSERT_EQUAL(tokenizer->index, 1);
-  TEST_ASSERT_EQUAL_STRING(token->str, "+");
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(OPERATOR_TYPE, token->type);
+  TEST_ASSERT_EQUAL(1, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("+", token->str);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
   } 
@@ -630,9 +663,9 @@ void  test_getToken_given_hello123_expect_getIdentifierToken_called(){
   TokenIdentifier *token = NULL;
   token = (TokenIdentifier  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, token->type);
-  TEST_ASSERT_EQUAL(tokenizer->index, 8);
-  TEST_ASSERT_EQUAL_STRING(token->str, "hello123");
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(8, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("hello123", token->str);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -643,10 +676,10 @@ void  test_getToken_given_197e2_expect_getFloatToken_called(){
   TokenFloat *token = NULL;
   token = (TokenFloat  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_FLOAT(token->value, 197e2);
-  TEST_ASSERT_EQUAL_STRING(token->str, "197e2");
-  TEST_ASSERT_EQUAL(token->startColumn, 2);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(197e2, token->value);
+  TEST_ASSERT_EQUAL_STRING("197e2", token->str);
+  TEST_ASSERT_EQUAL(2, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -656,9 +689,9 @@ void  test_getToken_given_6135_expect_getDecimalToken_called(){
   tokenizer = createTokenizer("  6135 "); 
   TokenInteger *token = NULL;
   token = (TokenInteger *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL(token->value, 6135);
-  TEST_ASSERT_EQUAL(token->startColumn, 2);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL(6135, token->value);
+  TEST_ASSERT_EQUAL(2, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -713,10 +746,10 @@ void  test_getToken_given_0b10111_expect_getBinToken_called(){
   tokenizer = createTokenizer("0b10111"); 
   TokenInteger *token = NULL;
   token = (TokenInteger  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL(token->type, INTEGER_TYPE);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL(token->value, 23);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
+  TEST_ASSERT_EQUAL(INTEGER_TYPE, token->type);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL(23, token->value);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -726,9 +759,9 @@ void  test_getToken_given_multiply_expect_getOperatorToken_called(){
   tokenizer = createTokenizer("     *"); 
   TokenOperator *token = NULL;
   token = (TokenOperator  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL_STRING(token->str, "*");
-  TEST_ASSERT_EQUAL(token->startColumn, 5);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("*", token->str);
+  TEST_ASSERT_EQUAL(5, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -738,16 +771,16 @@ void  test_getToken_given_spacex3wxyplus_expect_getIdentifierToken_getOperatorTo
   tokenizer = createTokenizer("   wxy+"); 
   TokenIdentifier *token0 = NULL;
   token0 = (TokenIdentifier  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  TEST_ASSERT_EQUAL_STRING(token0->str, "wxy");
-  TEST_ASSERT_EQUAL(token0->startColumn, 3);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("wxy", token0->str);
+  TEST_ASSERT_EQUAL(3, token0->startColumn);
   freeToken(token0);
   
   TokenOperator *token1 = NULL;
   token1 = (TokenOperator  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(token1->str, "+");
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL(token1->startColumn, 6);
+  TEST_ASSERT_EQUAL_STRING("+", token1->str);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL(6, token1->startColumn);
   freeToken(token1);
   freeTokenizer(tokenizer);
 }
@@ -757,30 +790,30 @@ void  test_getToken_given_spacex3wxyplus_expect_getHexToken_called(){
   tokenizer = createTokenizer(" 0x349f hello+312-4"); 
   TokenInteger *token0 = NULL;
   token0 = (TokenInteger  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_STRING(token0->str, "0x349f");
-  TEST_ASSERT_EQUAL(token0->startColumn, 1);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("0x349f", token0->str);
+  TEST_ASSERT_EQUAL(1, token0->startColumn);
   freeToken(token0);
   
   TokenIdentifier *token1 = NULL;
   token1 = (TokenIdentifier  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(token1->str, "hello");
-  TEST_ASSERT_EQUAL(tokenizer->index, 13);
-  TEST_ASSERT_EQUAL(token1->startColumn, 8);
+  TEST_ASSERT_EQUAL_STRING("hello", token1->str);
+  TEST_ASSERT_EQUAL(13, tokenizer->index);
+  TEST_ASSERT_EQUAL(8, token1->startColumn);
   freeToken(token1);
   
   TokenOperator *token3 = NULL;
   token3 = (TokenOperator  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(token3->str, "+");
-  TEST_ASSERT_EQUAL(tokenizer->index, 14);
-  TEST_ASSERT_EQUAL(token3->startColumn, 13);
+  TEST_ASSERT_EQUAL_STRING("+", token3->str);
+  TEST_ASSERT_EQUAL(14, tokenizer->index);
+  TEST_ASSERT_EQUAL(13, token3->startColumn);
   freeToken(token3);
   
   TokenInteger *token4 = NULL;
   token4 = (TokenInteger *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 17);
-  TEST_ASSERT_EQUAL(token4->value, 312);
-  TEST_ASSERT_EQUAL(token4->startColumn, 14);
+  TEST_ASSERT_EQUAL(17, tokenizer->index);
+  TEST_ASSERT_EQUAL(312, token4->value);
+  TEST_ASSERT_EQUAL(14, token4->startColumn);
   freeToken(token4);
   freeTokenizer(tokenizer);
 }
@@ -789,10 +822,10 @@ void  test_getStringToken_Hello_how_are_you_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("\"Hello how are you  \""); 
   TokenString *token = NULL;
-  token = getStringToken(tokenizer);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
-  TEST_ASSERT_EQUAL(tokenizer->index, 21);
-  TEST_ASSERT_EQUAL_STRING(token->str, "\"Hello how are you\  \"");
+  token = (TokenString  *)getStringToken(tokenizer);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
+  TEST_ASSERT_EQUAL(21, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("\"Hello how are you\  \"", token->str);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -801,10 +834,10 @@ void  test_getStringToken_hi_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("\"hi\""); 
   TokenString *token = NULL;
-  token = getStringToken(tokenizer);
-  TEST_ASSERT_EQUAL(token->startColumn, 0);
-  TEST_ASSERT_EQUAL(tokenizer->index, 4);
-  TEST_ASSERT_EQUAL_STRING(token->str, "\"hi\"");
+  token = (TokenString  *)getStringToken(tokenizer);
+  TEST_ASSERT_EQUAL(0, token->startColumn);
+  TEST_ASSERT_EQUAL(4, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("\"hi\"", token->str);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -813,10 +846,10 @@ void  test_getStringToken_This_is_a_string_to_test_this_function_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  \"This is a string to test this function.\"   "); 
   TokenString *token = NULL;
-  token = getStringToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 43);
-  TEST_ASSERT_EQUAL(token->startColumn, 2);
-  TEST_ASSERT_EQUAL_STRING(token->str, "\"This is a string to test this function.\"");
+  token = (TokenString  *)getStringToken(tokenizer);
+  TEST_ASSERT_EQUAL(43, tokenizer->index);
+  TEST_ASSERT_EQUAL(2, token->startColumn);
+  TEST_ASSERT_EQUAL_STRING("\"This is a string to test this function.\"", token->str);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -826,10 +859,10 @@ void  test_getStringToken_Hello_comma_abcdeQf_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  \"Hello, abcde?f\" "); 
   TokenString *token = NULL;
-  token = getStringToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 18);
-  TEST_ASSERT_EQUAL_STRING(token->str, "\"Hello, abcde?f\"");
-  TEST_ASSERT_EQUAL(token->startColumn, 2);
+  token = (TokenString  *)getStringToken(tokenizer);
+  TEST_ASSERT_EQUAL(18, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("\"Hello, abcde?f\"", token->str);
+  TEST_ASSERT_EQUAL(2, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -842,7 +875,7 @@ void  test_getStringToken_given_Hello_how_are_you_without_symbol_expect_exceptio
   tokenizer = createTokenizer("\"Hello how are you  \ "); 
   TokenString *token = NULL;
   Try{
-  token = getStringToken(tokenizer);
+  token = (TokenString  *)getStringToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
       dumpException(ex);
@@ -857,40 +890,40 @@ void  test_getToken_given_Peace_123plus67_expect_getHexToken_called(){
   tokenizer = createTokenizer("  Peace  123+67\"school\""); 
   TokenIdentifier *token0 = NULL;
   token0 = (TokenIdentifier  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_STRING(token0->str, "Peace");
-  TEST_ASSERT_EQUAL(token0->startColumn, 2);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("Peace", token0->str);
+  TEST_ASSERT_EQUAL(2, token0->startColumn);
   freeToken(token0);
   
   TokenInteger *token1 = NULL;
   token1 = (TokenInteger  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(token1->str, "123");
-  TEST_ASSERT_EQUAL(tokenizer->index, 12);
-  TEST_ASSERT_EQUAL(token1->value, 123);
-  TEST_ASSERT_EQUAL(token1->startColumn, 9);
+  TEST_ASSERT_EQUAL_STRING("123", token1->str);
+  TEST_ASSERT_EQUAL(12, tokenizer->index);
+  TEST_ASSERT_EQUAL(123, token1->value);
+  TEST_ASSERT_EQUAL(9, token1->startColumn);
   freeToken(token1);
   
   TokenOperator *token2 = NULL;
-  token2 = (TokenIdentifier  *)getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(token2->str, "+");
-  TEST_ASSERT_EQUAL(tokenizer->index, 13);
-  TEST_ASSERT_EQUAL(token2->startColumn, 12);
+  token2 = (TokenOperator  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL_STRING("+", token2->str);
+  TEST_ASSERT_EQUAL(13, tokenizer->index);
+  TEST_ASSERT_EQUAL(12, token2->startColumn);
   freeToken(token2);
   
   TokenInteger *token3 = NULL;
   token3 = (TokenInteger *)getNumberToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 15);
-  TEST_ASSERT_EQUAL_STRING(token3->str, "67");
-  TEST_ASSERT_EQUAL(token3->value, 67);
-  TEST_ASSERT_EQUAL(token3->startColumn, 13);
+  TEST_ASSERT_EQUAL(15, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("67", token3->str);
+  TEST_ASSERT_EQUAL(67, token3->value);
+  TEST_ASSERT_EQUAL(13, token3->startColumn);
   freeToken(token3);
   
 
   TokenString *token = NULL;
-  token = getStringToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 23);
-  TEST_ASSERT_EQUAL_STRING(token->str, "\"school\"");
-  TEST_ASSERT_EQUAL(token->startColumn, 15);
+  token = (TokenString  *)getStringToken(tokenizer);
+  TEST_ASSERT_EQUAL(23, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("\"school\"", token->str);
+  TEST_ASSERT_EQUAL(15, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
