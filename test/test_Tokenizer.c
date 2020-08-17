@@ -16,6 +16,27 @@ void tearDown(void)
 
 CEXCEPTION_T ex;
 
+void  test_createTokenizer_given_number_expect_same(){
+  Tokenizer *tokenizer = createTokenizer("19373");
+  TEST_ASSERT_EQUAL_STRING("19373", tokenizer->str);
+  TEST_ASSERT_EQUAL(5, tokenizer->length);
+  freeTokenizer(tokenizer);
+}
+
+void  test_createTokenizer_expect_same(){
+  Tokenizer *tokenizer = createTokenizer(" Hihihi1038w");
+  TEST_ASSERT_EQUAL_STRING(" Hihihi1038w", tokenizer->str);
+  TEST_ASSERT_EQUAL(12, tokenizer->length);
+  freeTokenizer(tokenizer);
+}
+
+void  test_createTokenizer_2_expect_same(){
+  Tokenizer *tokenizer = createTokenizer("39472 +1972 ajbdd qq");
+  TEST_ASSERT_EQUAL_STRING("39472 +1972 ajbdd qq", tokenizer->str);
+  TEST_ASSERT_EQUAL(20, tokenizer->length);
+  freeTokenizer(tokenizer);
+}
+
 void  test_tokenizerSkipSpaces_given_efnkfsl646(){
   Tokenizer *tokenizer = createTokenizer("efnkfsl646"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -38,14 +59,6 @@ void  test_tokenizerSkipSpaces_given_backslash_t(){
   TEST_ASSERT_EQUAL(1, tokenizer->index);
 }
 
-/*
-void  test_returnStringAtTokenizerIndex_given_tokenizerIndex_of_5(){
-  Tokenizer *tokenizer = createTokenizer("xyz hello");
-  tokenizer->index = 4;
-  char  *str = returnStringAtTokenizerIndex(tokenizer);
-  TEST_ASSERT_EQUAL_STRING("hello", str);
-}
-*/
 
 
 void  test_tokenizerSkipSpaces_given____asterisk(){
@@ -62,13 +75,19 @@ void  test_tokenizerSkipSpaces_given______0x4573_expect_same(){
   TEST_ASSERT_EQUAL_STRING("0x4573", str);
 }
 
-void  test_createTokenizer_given_number_expect_same(){
-  Tokenizer *tokenizer = createTokenizer("19373");
-  TEST_ASSERT_EQUAL_STRING("19373", tokenizer->str);
-  TEST_ASSERT_EQUAL(5, tokenizer->length);
-  freeTokenizer(tokenizer);
+void  test_duplicateSubString_given_a_string_and_length(){
+  char  *str = "DuplicateThisString Hi 193452";
+  char  *resultstr;
+  resultstr = duplicateSubstring(str, 19);
+  TEST_ASSERT_EQUAL_STRING("DuplicateThisString", resultstr);
 }
 
+void  test_duplicateSubString_2_given_a_string_and_length(){
+  char  *str = "This is a test function to test string";
+  char  *resultstr;
+  resultstr = duplicateSubstring(str, 14);
+  TEST_ASSERT_EQUAL_STRING("This is a test", resultstr);
+}
 
 void  test_getDecimalToken_given_351_expect_same(){
   Tokenizer *tokenizer = NULL;
@@ -604,6 +623,44 @@ void  test_getNumberToken_given_0x3Y12_expect_getHexToken_called_exception_is_th
   }
   freeTokenizer(tokenizer);
 }
+
+void  test_getIntegerOrFloatToken_given_138point1874_expect_getFloatToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("   138.1874"); 
+  TokenFloat *token = NULL;
+  token = (TokenFloat *)getIntegerOrFloatToken(tokenizer);
+  TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
+  TEST_ASSERT_EQUAL_FLOAT(138.1874, token->value);
+  TEST_ASSERT_EQUAL(11, tokenizer->index);
+  freeToken(token);
+  freeTokenizer(tokenizer);
+}
+
+void  test_getIntegerOrFloatToken_given_87e2_expect_getFloatToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  87e2"); 
+  TokenFloat *token = NULL;
+  token = (TokenFloat *)getIntegerOrFloatToken(tokenizer);
+  TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
+  TEST_ASSERT_EQUAL_FLOAT(87e2, token->value);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  freeToken(token);
+  freeTokenizer(tokenizer);
+}
+
+void  test_getIntegerOrFloatToken_given_4532_expect_getIntegerToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 4532"); 
+  TokenInteger *token = NULL;
+  token = (TokenInteger *)getIntegerOrFloatToken(tokenizer);
+  TEST_ASSERT_EQUAL(INTEGER_TYPE, token->type);
+  TEST_ASSERT_EQUAL(4532, token->value);
+  TEST_ASSERT_EQUAL(5, tokenizer->index);
+  freeToken(token);
+  freeTokenizer(tokenizer);
+}
+
+
 
 void  test_getNumberToken_given_0o318_expect_getOctToken_called_exception_is_thrown(){
   Tokenizer *tokenizer = NULL;

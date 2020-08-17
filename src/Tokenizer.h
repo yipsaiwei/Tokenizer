@@ -34,6 +34,6 @@ Token  *getNumberToken(Tokenizer *tokenizer);
 TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer);
 TokenOperator *getOperatorToken(Tokenizer *tokenizer);
 TokenString  *getStringToken(Tokenizer  *tokenizer);
-char  *duplicateString(char *str, int length);
+char  *duplicateSubstring(char *str, int length);
 char  *displayErrorPointer(Tokenizer  *tokenizer);
 #endif // TOKENIZER_H

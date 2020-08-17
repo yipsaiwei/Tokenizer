@@ -51,7 +51,7 @@ void  freeToken(void *token){
 }
 
 
-char  *duplicateString(char *str, int length){
+char  *duplicateSubstring(char *str, int length){
   char  *resultstr = malloc((length+1)*sizeof(char));
   strncpy(resultstr, str, length);
   resultstr[length] = '\0';
@@ -111,7 +111,7 @@ TokenInteger  *getDecimalToken(Tokenizer  *tokenizer){
   if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0'){
     throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid decimal value: %s\n ", str);
   }
-  resultstr = duplicateString(str, ptr-str);
+  resultstr = duplicateSubstring(str, ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
 }
 
@@ -128,7 +128,7 @@ TokenInteger  *getOctalToken(Tokenizer  *tokenizer){
     throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid octal value: %s\n", str);
   if(*ptr > '7')
     throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid octal value: %s\n", str);
-  resultstr = duplicateString(str, ptr-str);
+  resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
 }
@@ -144,7 +144,7 @@ TokenInteger  *getHexToken(Tokenizer  *tokenizer){
   convertedValue = strtol(strnum, &ptr, 16);
   if(*ptr != ' '&& !ispunct(*ptr) && *ptr != '\0')
     throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid hexadecimal value: %s\n", str);
-  resultstr = duplicateString(str, ptr-str);
+  resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
 }
@@ -180,7 +180,7 @@ TokenFloat  *getFloatToken(Tokenizer  *tokenizer){
   if(*ptr != ' '&& *ptr != '\0' && *ptr != 'e' && !ispunct(*ptr)){
     throwException(ERROR_INVALID_FLOAT,NULL, 0, "Invalid floating point value: %s\n", str);
   }
-  resultstr = duplicateString(str, ptr-str);
+  resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, FLOAT_TYPE);  
 }
@@ -196,7 +196,7 @@ TokenInteger *getBinToken(Tokenizer  *tokenizer){
   convertedValue = strtol(strnum, &ptr, 2);
   if(*ptr != '1' && *ptr != '0' && *ptr != '\0' && *ptr != ' ' && !ispunct(*ptr))
     throwException(ERROR_INVALID_INTEGER,NULL, 0, "Invalid binary value: %s\n", str);
-  char  *resultstr = duplicateString(str, ptr-str);
+  char  *resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr - str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);
 }
@@ -210,7 +210,7 @@ TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer){
     i++;
     tokenizer->index++;
   }
-  char  *resultstr = duplicateString(str, i);
+  char  *resultstr = duplicateSubstring(str, i);
 return  createIdentifierToken(resultstr, startColumn, tokenizer->str, IDENTIFIER_TYPE);  
 }
 
@@ -220,7 +220,7 @@ TokenOperator *getOperatorToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   int startColumn = tokenizer->index;
   tokenizer->index++;
-  char  *resultstr = duplicateString(str, 1);
+  char  *resultstr = duplicateSubstring(str, 1);
   resultstr[1] = '\0';
   tokenizerSkipSpaces(tokenizer);
 return  createOperatorToken(resultstr, startColumn, tokenizer->str, OPERATOR_TYPE);  
@@ -245,7 +245,7 @@ TokenString  *getStringToken(Tokenizer  *tokenizer){
     throwException(ERROR_INVALID_STRING,NULL, 0, "Invalid string(missing or incomplete symbol \"): %s\n", str);
   i ++;
   tokenizer->index ++;
-  char  *resultstr = duplicateString(str, i);
+  char  *resultstr = duplicateSubstring(str, i);
   return  createStringToken(resultstr, startColumn, str, STRING_TYPE);
 }
 
