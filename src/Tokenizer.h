@@ -35,5 +35,5 @@ TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer);
 TokenOperator *getOperatorToken(Tokenizer *tokenizer);
 TokenString  *getStringToken(Tokenizer  *tokenizer);
 char  *duplicateSubstring(char *str, int length);
-char  *displayErrorPointer(Tokenizer  *tokenizer);
+char  *errorIndicator(int startColumn, char *str);
 #endif // TOKENIZER_H

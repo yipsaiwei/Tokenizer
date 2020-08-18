@@ -60,7 +60,6 @@ void  test_tokenizerSkipSpaces_given_backslash_t(){
 }
 
 
-
 void  test_tokenizerSkipSpaces_given____asterisk(){
   Tokenizer *tokenizer = createTokenizer("     *"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -712,7 +711,21 @@ void  test_getOperatorToken_given_plus(){
   TEST_ASSERT_EQUAL(0, token->startColumn);
   freeToken(token);
   freeTokenizer(tokenizer);
-  } 
+} 
+
+void  test_getOperatorToken_given_minus(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  - "); 
+  TokenOperator *token = NULL;
+  token = getOperatorToken(tokenizer);
+  TEST_ASSERT_EQUAL(OPERATOR_TYPE, token->type);
+  TEST_ASSERT_EQUAL(3, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("-", token->str);
+  TEST_ASSERT_EQUAL(2, token->startColumn);
+  freeToken(token);
+  freeTokenizer(tokenizer);
+} 
+
   
 void  test_getToken_given_hello123_expect_getIdentifierToken_called(){
   Tokenizer *tokenizer = NULL;
@@ -822,6 +835,19 @@ void  test_getToken_given_multiply_expect_getOperatorToken_called(){
   freeToken(token);
   freeTokenizer(tokenizer);
 }
+
+void  test_getToken_given__vifhj_expect_getIdentifierToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("    _vifhj+34"); 
+  TokenIdentifier *token = NULL;
+  token = (TokenIdentifier  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(10, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("_vifhj", token->str);
+  TEST_ASSERT_EQUAL(4, token->startColumn);
+  freeToken(token);
+  freeTokenizer(tokenizer);
+}
+
 
 void  test_getToken_given_spacex3wxyplus_expect_getIdentifierToken_getOperatorToken_called(){
   Tokenizer *tokenizer = NULL;
@@ -985,7 +1011,25 @@ void  test_getToken_given_Peace_123plus67_expect_getHexToken_called(){
   freeTokenizer(tokenizer);
 }
 
+void  test_errorIndicator_given_identifier(){
+  char  *linestr = errorIndicator(4, "    HELLO I AM ...");
+  TEST_ASSERT_EQUAL_STRING("    ^~~~~", linestr);
+}
 
+void  test_errorIndicator1_given_identifier(){
+  char  *linestr = errorIndicator(10, "    HELLO I AM ...");
+  TEST_ASSERT_EQUAL_STRING("          ^", linestr);
+}
+
+void  test_errorIndicator1_given_string(){
+  char  *linestr = errorIndicator(1, " \"THIS IS A STRING   ");
+  TEST_ASSERT_EQUAL_STRING(" ^~~~~~~~~~~~~~~~~~~~", linestr);
+}
+
+void  test_errorIndicator1_given_identifier_and_string(){
+  char  *linestr = errorIndicator(13, " HiHiHi1937  \"THIS IS A STRING   ");
+  TEST_ASSERT_EQUAL_STRING("             ^~~~~~~~~~~~~~~~~~~~", linestr);
+}
 /*
 void  test_checkTokenType_abc123(){
   Tokenizer *tokenizer = NULL;
