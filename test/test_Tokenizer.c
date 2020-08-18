@@ -102,7 +102,7 @@ void  test_getDecimalToken_given_351_expect_same(){
 }
 
 
-void  test_getOctalToken_given_1a35_expect_exception_to_be_thrown(){
+void  test_getDecimalToken_given_1a35_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("1a35"); 
   TokenInteger *token = NULL;
@@ -1011,6 +1011,37 @@ void  test_getToken_given_Peace_123plus67_expect_getHexToken_called(){
   freeTokenizer(tokenizer);
 }
 
+void  test_getToken_given_a_string_and_some_numbers_expect_getHexToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" \" A string  \"  12.3856e-2  12abc"); 
+  TokenString *token0 = NULL;
+  token0 = (TokenString  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(14, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("\" A string  \"", token0->str);
+  TEST_ASSERT_EQUAL(1, token0->startColumn);
+  freeToken(token0);
+  
+  TokenFloat *token1 = NULL;
+  token1 = (TokenFloat  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(26, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("12.3856e-2", token1->str);
+  TEST_ASSERT_EQUAL_FLOAT(12.3856e-2, token1->value);
+  TEST_ASSERT_EQUAL(16, token1->startColumn);
+  freeToken(token1);
+
+  Try{
+  TokenInteger  *token2 = NULL;
+  token2 = getDecimalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+
 void  test_errorIndicator_given_identifier(){
   char  *linestr = errorIndicator(4, "    HELLO I AM ...");
   TEST_ASSERT_EQUAL_STRING("    ^~~~~", linestr);
@@ -1021,7 +1052,7 @@ void  test_errorIndicator1_given_identifier(){
   TEST_ASSERT_EQUAL_STRING("          ^", linestr);
 }
 
-void  test_errorIndicator1_given_string(){
+void  test_errorIndicator_given_string(){
   char  *linestr = errorIndicator(1, " \"THIS IS A STRING   ");
   TEST_ASSERT_EQUAL_STRING(" ^~~~~~~~~~~~~~~~~~~~", linestr);
 }
@@ -1029,6 +1060,11 @@ void  test_errorIndicator1_given_string(){
 void  test_errorIndicator1_given_identifier_and_string(){
   char  *linestr = errorIndicator(13, " HiHiHi1937  \"THIS IS A STRING   ");
   TEST_ASSERT_EQUAL_STRING("             ^~~~~~~~~~~~~~~~~~~~", linestr);
+}
+
+void  test_errorIndicator_given_numbers(){
+  char  *linestr = errorIndicator(1, " 135h31");
+  TEST_ASSERT_EQUAL_STRING(" ^~~~~~", linestr);
 }
 /*
 void  test_checkTokenType_abc123(){
