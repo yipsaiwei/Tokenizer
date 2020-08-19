@@ -1,4 +1,5 @@
 #include "Exception.h"
+#include "CException.h"
 #include <stdio.h>       //library contains NULL
 #include <malloc.h>      //memory allocation
 #include <stdarg.h>

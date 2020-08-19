@@ -36,4 +36,5 @@ TokenOperator *getOperatorToken(Tokenizer *tokenizer);
 TokenString  *getStringToken(Tokenizer  *tokenizer);
 char  *duplicateSubstring(char *str, int length);
 char  *errorIndicator(int startColumn, char *str);
+void  callThrowException(char *message, char *substr, char *str, int startColumn, int errorTpye);
 #endif // TOKENIZER_H

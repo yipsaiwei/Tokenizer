@@ -101,14 +101,55 @@ void  test_getDecimalToken_given_351_expect_same(){
   freeTokenizer(tokenizer);
 }
 
+void  test_callThrowException_string(){
+  char  *str = "  Hello \" Hello World ";
+  char  *substr = "\" Hello World ";
+  int   startColumn = 8;
+  Try{
+    callThrowException("Test Exception#1", substr, str, startColumn, ERROR_INVALID_STRING);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_STRING, ex->errorCode);
+    freeException(ex);   
+  }    
+}
+
+void  test_callThrowException_decimal(){
+  char  *str = "   4852   1864ab  sdjnvwoefg  ";
+  char  *substr = "1864ab";
+  int   startColumn = 10;
+  Try{
+    callThrowException("Test Exception#2", substr, str, startColumn, ERROR_INVALID_INTEGER);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);   
+  }    
+}
+
+void  test_callThrowException_operator(){
+  char  *str = "  \"String here,,,,,\"  %  ";
+  char  *substr = "%";
+  int   startColumn = 22;
+  Try{
+    callThrowException("Test Exception#3", substr, str, startColumn, ERROR_INVALID_OPERATOR);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_OPERATOR_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_OPERATOR, ex->errorCode);
+    freeException(ex);   
+  }    
+}
 
 void  test_getDecimalToken_given_1a35_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("1a35"); 
   TokenInteger *token = NULL;
   Try{
-  token = getDecimalToken(tokenizer);
-  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+    token = getDecimalToken(tokenizer);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
@@ -908,7 +949,7 @@ void  test_getStringToken_Hello_how_are_you_expect_same(){
   token = (TokenString  *)getStringToken(tokenizer);
   TEST_ASSERT_EQUAL(0, token->startColumn);
   TEST_ASSERT_EQUAL(21, tokenizer->index);
-  TEST_ASSERT_EQUAL_STRING("\"Hello how are you\  \"", token->str);
+  TEST_ASSERT_EQUAL_STRING("\"Hello how are you  \"", token->str);
   freeToken(token);
   freeTokenizer(tokenizer);
 }
@@ -955,7 +996,7 @@ void  test_getStringToken_Hello_comma_abcdeQf_expect_same(){
 
 void  test_getStringToken_given_Hello_how_are_you_without_symbol_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("\"Hello how are you  \ "); 
+  tokenizer = createTokenizer("\"Hello how are you   "); 
   TokenString *token = NULL;
   Try{
   token = (TokenString  *)getStringToken(tokenizer);
@@ -1011,7 +1052,7 @@ void  test_getToken_given_Peace_123plus67_expect_getHexToken_called(){
   freeTokenizer(tokenizer);
 }
 
-void  test_getToken_given_a_string_and_some_numbers_expect_getHexToken_called(){
+void  test_getToken_given_a_string_and_some_numbers(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer(" \" A string  \"  12.3856e-2  12abc"); 
   TokenString *token0 = NULL;
@@ -1041,289 +1082,159 @@ void  test_getToken_given_a_string_and_some_numbers_expect_getHexToken_called(){
   freeTokenizer(tokenizer);
 }
 
+void  test_getToken_given_float_and_operator(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 56.395e-3+342 00x34"); 
+  TokenFloat *token0 = NULL;
+  token0 = (TokenFloat  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(10, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("56.395e-3", token0->str);
+  TEST_ASSERT_EQUAL_FLOAT(56.395e-3, token0->value);
+  TEST_ASSERT_EQUAL(1, token0->startColumn);
+  freeToken(token0);
+  
+  TokenOperator *token1 = NULL;
+  token1 = (TokenOperator *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(11, tokenizer->index);
+  TEST_ASSERT_EQUAL(10, token1->startColumn);
+  TEST_ASSERT_EQUAL_STRING("+", token1->str);
+  freeToken(token1);
+
+  TokenInteger *token2 = NULL;
+  token2 = (TokenInteger *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(14, tokenizer->index);
+  TEST_ASSERT_EQUAL(342, token2->value);
+  TEST_ASSERT_EQUAL_STRING("342", token2->str);
+  TEST_ASSERT_EQUAL(11, token2->startColumn);
+  freeToken(token2);
+  
+  Try{
+  TokenInteger  *token3 = NULL;
+  token3 = getDecimalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getToken_given_a_Identifier_and_number_and_operator(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" identi 0342af+3  28472fds"); 
+  TokenIdentifier *token0 = NULL;
+  token0 = (TokenIdentifier  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(7, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("identi", token0->str);
+  TEST_ASSERT_EQUAL(1, token0->startColumn);
+  freeToken(token0);
+  
+
+  Try{
+  TokenInteger  *token1 = NULL;
+  token1 = (TokenInteger  *)getToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getToken_given_identifier_and_hex_and_operator_and_float(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" movwf 0x23+ 1.341e+4"); 
+  TokenIdentifier *token0 = NULL;
+  token0 = (TokenIdentifier  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("movwf", token0->str);
+  TEST_ASSERT_EQUAL(1, token0->startColumn);
+  freeToken(token0);
+  
+  TokenInteger *token1 = NULL;
+  token1 = (TokenInteger *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(0x23, token1->value);
+  TEST_ASSERT_EQUAL(11, tokenizer->index);
+  TEST_ASSERT_EQUAL(7, token1->startColumn);
+  TEST_ASSERT_EQUAL_STRING("0x23", token1->str);
+  freeToken(token1);
+
+  TokenOperator *token2 = NULL;
+  token2 = (TokenOperator *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(12, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("+", token2->str);
+  TEST_ASSERT_EQUAL(11, token2->startColumn);
+  freeToken(token2);
+  
+  TokenFloat *token3 = NULL;
+  token3 = (TokenFloat *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(21, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(1.341e+4, token3->value);
+  TEST_ASSERT_EQUAL_STRING("1.341e+4", token3->str);
+  TEST_ASSERT_EQUAL(13, token3->startColumn);
+  freeToken(token3);
+  
+  freeTokenizer(tokenizer);
+}
+
+void  test_getToken_given_operator_and_number_and_string(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  + 12 \" String to test function       ");  
+  TokenOperator *token0 = NULL;
+  token0 = (TokenOperator  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(3, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("+", token0->str);
+  TEST_ASSERT_EQUAL(2, token0->startColumn);
+  freeToken(token0);
+  
+  TokenInteger *token1 = NULL;
+  token1 = (TokenInteger *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(12, token1->value);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL(4, token1->startColumn);
+  TEST_ASSERT_EQUAL_STRING("12", token1->str);
+  freeToken(token1);
+
+  Try{
+  TokenString  *token1 = NULL;
+  token1 = (TokenString  *) getToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_STRING, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
 
 void  test_errorIndicator_given_identifier(){
-  char  *linestr = errorIndicator(4, "    HELLO I AM ...");
+  char  *linestr = errorIndicator(4, "HELLO I AM ...");
   TEST_ASSERT_EQUAL_STRING("    ^~~~~", linestr);
 }
 
 void  test_errorIndicator1_given_identifier(){
-  char  *linestr = errorIndicator(10, "    HELLO I AM ...");
-  TEST_ASSERT_EQUAL_STRING("          ^", linestr);
+  char  *linestr = errorIndicator(10, "HELLO I AM ...");
+  TEST_ASSERT_EQUAL_STRING("          ^~~~~", linestr);
 }
 
 void  test_errorIndicator_given_string(){
-  char  *linestr = errorIndicator(1, " \"THIS IS A STRING   ");
+  char  *linestr = errorIndicator(1, "\"THIS IS A STRING   ");
   TEST_ASSERT_EQUAL_STRING(" ^~~~~~~~~~~~~~~~~~~~", linestr);
 }
 
 void  test_errorIndicator1_given_identifier_and_string(){
-  char  *linestr = errorIndicator(13, " HiHiHi1937  \"THIS IS A STRING   ");
-  TEST_ASSERT_EQUAL_STRING("             ^~~~~~~~~~~~~~~~~~~~", linestr);
+  char  *linestr = errorIndicator(13, "HiHiHi1937  \"THIS IS A STRING   ");
+  TEST_ASSERT_EQUAL_STRING("             ^~~~~~~~~~", linestr);
 }
 
 void  test_errorIndicator_given_numbers(){
-  char  *linestr = errorIndicator(1, " 135h31");
+  char  *linestr = errorIndicator(1, "135h31");
   TEST_ASSERT_EQUAL_STRING(" ^~~~~~", linestr);
 }
-/*
-void  test_checkTokenType_abc123(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("abc123");
-  Token = createToken(tokenizer);
-   TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, IDENTIFIER_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
 
-void  test_checkTokenType_0x2345(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("0x2345");
-  Token = createToken(tokenizer);
-   TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
-  
-void  test_checkTokenType_12point87(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("12.87");
-  Token = createToken(tokenizer);
-  TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, FLOAT_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
-  
-void  test_checkTokenType_0b1011(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("0b1011");
-  Token = createToken(tokenizer);
-  TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
-  
-void  test_checkTokenType_0o354(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("0o354");
-  Token = createToken(tokenizer);
-  TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, INTEGER_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
-  
-void  test_checkTokenType_This_is_calendar(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("\"This is calendar\"");
-  Token = createToken(tokenizer);
-  TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, STRING_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
-  
-void  test_checkTokenType_plus(){
-  Tokenizer *tokenizer = NULL;
-  token *Token = NULL;
-  tokenizer = createTokenizer("+");
-  Token = createToken(tokenizer);
-  TOKENTYPE type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(type, OPERATOR_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-  }
-  */
-/*
-void test_skip_white_spaces_Hello(void)
-{
-  int i = 0;
-  char  *str = skipWhiteSpaces("     Hello", &i);
-  TEST_ASSERT_EQUAL(*str, 'H');
-  TEST_ASSERT_EQUAL(i, 5);
+void  test_errorIndicator_given_operator(){
+  char  *linestr = errorIndicator(3, "+");
+  TEST_ASSERT_EQUAL_STRING("   ^", linestr);
 }
-
-void test_skip_white_spaces_empty(void)
-{
-  int i = 0;
-  char  *str = skipWhiteSpaces("         ", &i);
-  TEST_ASSERT_EQUAL(*str, 0);
-  TEST_ASSERT_EQUAL(i, 9);
-}
-
-void test_checkIdentifier_given_string_ABCplus3(void)
-{
-  char  *str = checkIdentifier("ABC+3");
-  int length;
-  for (length = 0; str[length]!=NULL; length++);
-  TEST_ASSERT_EQUAL(length, 3);
-  TEST_ASSERT_EQUAL_STRING(str, "ABC");
-}
-
-void test_checkTokenType_given_string_DEF_ABC(void)
-{
-  char  *str = "   DEF ABC";
-  token *Token = NULL;
-  Tokenizer *tokenizer = createTokenizer(str);
-  Token = createToken(tokenizer);
-  Token->originalstr = str;
-  Token->type = checkTokenType(Token);
-  TEST_ASSERT_EQUAL(Token->type, IDENTIFIER_TYPE);
-  TEST_ASSERT_EQUAL_STRING(Token->str, "DEF");
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-}
-
-void test_checkInteger_given_string_123_256(void)
-{
-  char  *str = "123 256";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = createToken(tokenizer);
-  Token->str = checkInteger(Token);
-  TEST_ASSERT_EQUAL(strlen(Token->str), 3);
-  TEST_ASSERT_EQUAL_STRING(Token->str, "123");
-}
-
-void test_checkIdentifier_given_string_A37_percentage_54_Space_DEF(void)
-{
-  char  *str = checkIdentifier("A37%54 DEF");
-  TEST_ASSERT_EQUAL_STRING(str, "A37");
-}
-
-
-void test_Tokenizer_test_str(void)
-{
-  char  *str = "ABC DEF 123";
-  Tokenizer *tokenizer = createTokenizer(str);
-  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "ABC DEF 123");
-}
-
-void test_Tokenizer_check_first_token_ABC(void)
-{
-  token *Token = NULL;
-  char  *str = "ABC DEF 123";
-  Tokenizer *tokenizer = createTokenizer(str);
-  Token = getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "ABC DEF 123");
-  TEST_ASSERT_EQUAL_STRING(Token->str, "ABC");
-  TEST_ASSERT_EQUAL(tokenizer->index, 3);
-  TEST_ASSERT_EQUAL(Token->length, 3);
-  TEST_ASSERT_EQUAL(Token->type, IDENTIFIER_TYPE);
-  freeToken(Token);
-    
-  Token = getNextToken(tokenizer);
-  TEST_ASSERT_EQUAL(Token->length, 3);
-  TEST_ASSERT_EQUAL(Token->startColumn, 4);
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  TEST_ASSERT_EQUAL_STRING(Token->str, "DEF");
-  TEST_ASSERT_EQUAL(Token->type, IDENTIFIER_TYPE);
-  freeToken(Token);
-  freeTokenizer(tokenizer);
-    
-}
-
-void test_Tokenizer_check_first_token_MOVWF(void)
-{
-
-  char  *str = "MOVWF 123";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = NULL;
-  Token = getToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 5);
-  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "MOVWF 123");
-  TEST_ASSERT_EQUAL_STRING(Token->str, "MOVWF");
-  TEST_ASSERT_EQUAL(Token->type, IDENTIFIER_TYPE);
-  freeToken(Token);
-  
-  Token = getNextToken(tokenizer);
-  TEST_ASSERT_EQUAL(tokenizer->index, 8);
-  TEST_ASSERT_EQUAL_STRING(Token->str, "123");
-  TEST_ASSERT_EQUAL(Token->type, INTEGER_TYPE);
-  
-  freeTokenizer(tokenizer);
-  freeToken(Token);
-}
-
-void test_Tokenizer_check_first_token_1point2345(void)
-{
-
-  char  *str = "1.2345";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = NULL;
-  Token = getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(tokenizer->str, "1.2345");
-  TEST_ASSERT_EQUAL_STRING(Token->str, "1.2345");
-  TEST_ASSERT_EQUAL(tokenizer->index, 6);
-  freeTokenizer(tokenizer);
-}
-
-void test_Tokenizer_check_first_token_123MOVWF(void)
-{
-  char  *str = "123MOVWF";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = NULL;
-  
-  Try{
-  Token = getToken(tokenizer);
-  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-		dumpException(ex);
-		TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
-		freeException(ex);
-	}
-  freeTokenizer(tokenizer);
-}
-
-void test_Tokenizer_check_first_token_35point83point33(void)
-{
-  char  *str = "35.83.33";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = NULL;
-  Try{
-  Token = getToken(tokenizer);
-  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-		dumpException(ex);
-		TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
-		freeException(ex);
-	}
-  freeTokenizer(tokenizer);
-}
-
-void test_Tokenizer_check_first_token_35point83c3(void)
-{
-  char  *str = "35.83c3";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = NULL;
-  Try{
-  Token = getToken(tokenizer);
-  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-		dumpException(ex);
-		TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
-		freeException(ex);
-	}
-  freeTokenizer(tokenizer);
-}
-
-void test_Tokenizer_check_first_token_35point34e8(void)
-{
-  char  *str = "35.34e8";
-  Tokenizer *tokenizer = createTokenizer(str);
-  token *Token = NULL;
-  Token = getToken(tokenizer);
-  TEST_ASSERT_EQUAL_STRING(Token->str, "35.34e8");
-  TEST_ASSERT_EQUAL(tokenizer->index, 7);
-  freeTokenizer(tokenizer);
-}
-*/
