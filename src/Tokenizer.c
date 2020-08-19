@@ -54,11 +54,9 @@ void  freeToken(void *token){
 char  *errorIndicator(int startColumn, char *str){
   int i = startColumn, j = 0, k, l;
   if(str[0] == '\"'){
-    while(str[j] != 0){
+    for(j = 0; str[j] != 0; j++)
       i++;
-      j++;
-    }
-    char  *linestr = malloc((i+1)*sizeof(char));
+    char  *linestr = malloc((i+1)*sizeof(char)); //Will be free in freeException
     for(k = 0; k < startColumn; k++)
       linestr[k] = ' ';
     linestr[k] = '^';
@@ -78,7 +76,7 @@ char  *errorIndicator(int startColumn, char *str){
   linestr[l] = '\0';
   return  linestr; 
 }
-//No free() function yet!
+
 
 char  *duplicateSubstring(char *str, int length){
   char  *resultstr = malloc((length+1)*sizeof(char));
@@ -101,7 +99,7 @@ char *tokenizerSkipSpaces(Tokenizer *tokenizer){
 void  callThrowException(char *message, char *substr, char *str, int startColumn, int errorType){
     char  *errorLine = errorIndicator(startColumn, substr);
     int x = strlen(errorLine) - startColumn;
-    throwException(errorType,NULL, 0, "%s: %.*s\n%s\n%s\n ", message, x, substr, str, errorLine);
+    throwException(errorType,NULL, 0, errorLine, "%s: %.*s\n%s\n%s\n ", message, x, substr, str, errorLine);
 }
 
 Token  *getNumberToken(Tokenizer *tokenizer){

@@ -23,6 +23,9 @@ void freeException(Exception *e){
 	if(e->msg){
 		free(e->msg);
 	}
+  //if(e->errorLine){
+  //  free(e->errorLine);
+  //}
 	free(e);
 }
 void dumpException(Exception *e){
@@ -30,7 +33,7 @@ void dumpException(Exception *e){
   printf("%s \n", e->msg);
 }
 
-void throwException(int errorCode, void *data, int freeDataOnFreeingException, char *message,...){
+void throwException(int errorCode, void *data, int freeDataOnFreeingException, char *errorLine, char *message,...){
 	Exception *e;
 	size_t len;
 	char *buffer;
@@ -46,7 +49,8 @@ void throwException(int errorCode, void *data, int freeDataOnFreeingException, c
 	e->data=data;
 	e->freeDataOnFreeingException=freeDataOnFreeingException;
 	e->msg=buffer;
-	
+  if(errorLine)
+    free(errorLine);
 	Throw(e);
 }
 
