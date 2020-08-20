@@ -203,24 +203,24 @@ TokenFloat  *getFloatToken(Tokenizer  *tokenizer){
   double  convertedValue; 
   int size;
   convertedValue = strtod(str, &ptr);
-  if(isalpha(ptr[i])){     // when e is detected
+  if(isalpha(ptr[i])){     // when e is detected, check next character
     if(ptr[i] == 'e'){
       if(!isdigit(ptr[i+1]) && ptr[i+1] != '+' && ptr[i+1] != '-')
-        callThrowException("Invalid floating point value", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
+        callThrowException("Invalid floating point value(Invalid operator detected)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
       if(!isdigit(ptr[i+2]))
         callThrowException("Invalid floating point value", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
       for(int j = i+3; ptr[j] != ' ' && !ispunct(ptr[j]) && ptr[j] != 0; j++){
         if(isalpha(ptr[j]))
-          callThrowException("Invalid floating point value(Detected invalid alphabet)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
+          callThrowException("Invalid floating point value(Invalid alphabet detected)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
         if(ptr[j] == '.')
-          callThrowException("Invalid floating point value(Detected multiple dots)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
+          callThrowException("Invalid floating point value(Multiple dots detected)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
       }
     }
     else
-      callThrowException("Invalid floating point value(Detected invalid alphabet)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
+      callThrowException("Invalid floating point value(Invalid alphabet detected)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
   }
   if(*ptr == '.')
-    callThrowException("Invalid floating point value(Detected multiple dots)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
+    callThrowException("Invalid floating point value(Multiple dots detected)", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
   if(*ptr != ' '&& *ptr != '\0' && *ptr != 'e' && !ispunct(*ptr))
     callThrowException("Invalid floating point value", str, tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
   resultstr = duplicateSubstring(str, ptr-str);
