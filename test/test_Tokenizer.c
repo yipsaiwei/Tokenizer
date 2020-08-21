@@ -94,7 +94,7 @@ void  test_callThrowException_string(){
   char  *substr = "\" Hello World ";
   int   startColumn = 8;
   Try{
-    callThrowException("Test Exception#1", substr, str, startColumn, ERROR_INVALID_STRING);
+    callThrowException("Test Exception#1", str, startColumn, ERROR_INVALID_STRING);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);
@@ -108,7 +108,7 @@ void  test_callThrowException_decimal(){
   char  *substr = "1864ab";
   int   startColumn = 10;
   Try{
-    callThrowException("Test Exception#2", substr, str, startColumn, ERROR_INVALID_INTEGER);
+    callThrowException("Test Exception#2", str, startColumn, ERROR_INVALID_INTEGER);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);
@@ -122,7 +122,7 @@ void  test_callThrowException_operator(){
   char  *substr = "%";
   int   startColumn = 22;
   Try{
-    callThrowException("Test Exception#3", substr, str, startColumn, ERROR_INVALID_OPERATOR);
+    callThrowException("Test Exception#3", str, startColumn, ERROR_INVALID_OPERATOR);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_OPERATOR_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);
