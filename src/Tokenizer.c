@@ -56,7 +56,7 @@ char  *errorIndicator(int startColumn, char *str){
   if(str[0] == '\"'){
     for(j = 0; str[j] != 0; j++)
       i++;
-    char  *linestr = malloc((i+1)*sizeof(char)); //Will be free in freeException
+    char  *linestr = malloc((i+1)*sizeof(char)); //Will be free in throwException
     for(k = 0; k < startColumn; k++)
       linestr[k] = ' ';
     linestr[k] = '^';
