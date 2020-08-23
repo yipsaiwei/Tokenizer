@@ -21,6 +21,7 @@ TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char
   newToken->str = str;
   newToken->startColumn = index;
   newToken->type = type;
+  newToken->length = strlen(str);
   newToken->value = value;
   return newToken;
 }
@@ -31,6 +32,7 @@ TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr
   newToken->str = str;
   newToken->startColumn = index;
   newToken->type = type;
+  newToken->length = strlen(str);
   return newToken;
 }
 
@@ -40,6 +42,7 @@ TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENT
   newToken->str = str;
   newToken->startColumn = index;
   newToken->type = type;
+  newToken->length = strlen(str);
   return newToken;
 }
 
@@ -49,6 +52,7 @@ TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TO
   newToken->str = str;
   newToken->startColumn = index;
   newToken->type = type;
+  newToken->length = strlen(str);
   return newToken;
 }
 

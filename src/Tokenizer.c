@@ -16,6 +16,10 @@ Tokenizer  *createTokenizer(char *str){
 
 
 void  freeTokenizer(Tokenizer *tokenizer){
+  for(int i = 0; i<tokenizer->tokenIndex; i++){
+    if(tokenizer->token[i] != NULL)
+      freeToken(tokenizer->token[i]);
+  }
   if(tokenizer != NULL)
     free(tokenizer);
 }
@@ -108,9 +112,17 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
 
 void  pushBackToken(Tokenizer *tokenizer, Token *token){
   int i = token->length;
+  tokenizer->token[tokenizer->tokenIndex] = malloc(sizeof(Token));
+  Token *tokenptr = tokenizer->token[tokenizer->tokenIndex];
+  tokenptr->type = token->type;
   tokenizer->index -= token->length;
-  tokenizer->token[tokenizer->tokenIndex] = token;
+  tokenptr->originalstr = token->originalstr;
+  tokenptr->str = malloc((strlen(token->str)+1)*sizeof(char));
+  strcpy(tokenptr->str, token->str);
+  tokenptr->startColumn = token->startColumn;
+  tokenptr->length = token->length;
   tokenizer->tokenIndex++;
+  freeToken(token);
 }
 
 Token  *getNumberToken(Tokenizer *tokenizer){
