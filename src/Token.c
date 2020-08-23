@@ -8,10 +8,10 @@ TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *s
   TokenInteger *newToken = malloc(sizeof(TokenInteger));
   newToken->originalstr = originalstr;
   newToken->str = str;
-  newToken->value = value;
   newToken->startColumn = index;
   newToken->type = type;
   newToken->length = strlen(str);
+  newToken->value = value;
   return newToken;
 }
 
@@ -19,9 +19,9 @@ TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char
   TokenFloat *newToken = malloc(sizeof(TokenFloat));
   newToken->originalstr = originalstr;
   newToken->str = str;
-  newToken->value = value;
   newToken->startColumn = index;
   newToken->type = type;
+  newToken->value = value;
   return newToken;
 }
 

@@ -14,6 +14,7 @@ struct Tokenizer {
   char *str;
   int index;
   uint32_t length;
+  int tokenIndex;
   Token *token[10];
 };
 Tokenizer *createTokenizer(char *str);
@@ -37,4 +38,5 @@ TokenString  *getStringToken(Tokenizer  *tokenizer);
 char  *duplicateSubstring(char *str, int length);
 char  *errorIndicator(int startColumn, char *str);
 void  callThrowException(char *message, char *str, int startColumn, int errorType);
+void  pushBackToken(Tokenizer *tokenizer, Token *token);
 #endif // TOKENIZER_H

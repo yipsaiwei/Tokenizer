@@ -511,6 +511,18 @@ void  test_getFloatToken_given_3point836e2_expect_same(){
   freeToken(token);
   freeTokenizer(tokenizer);
 }
+
+void  test_getFloatToken_given_7pointe2_expect_same(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  7.e2"); 
+  TokenFloat *token = NULL;
+  token = getFloatToken(tokenizer);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL_FLOAT(7.e2,token->value);
+  TEST_ASSERT_EQUAL(2, token->startColumn);
+  freeToken(token);
+  freeTokenizer(tokenizer);
+}
   
 void  test_getFloatToken_given_53point12eplus2_expect_same(){
   Tokenizer *tokenizer = NULL;
@@ -665,6 +677,21 @@ void  test_getFloatToken_given_12point1eslash5_expect_exception_to_be_thrown(){
   freeTokenizer(tokenizer);
 }
 
+
+void  test_getFloatToken_given_81point3eplusq_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  81.3e+q  "); 
+  TokenFloat *token = NULL;
+  Try{
+  token = getFloatToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
 
 void  test_getBinToken_given_0b110_expect_decimal_6(){
   Tokenizer *tokenizer = NULL;
@@ -1278,6 +1305,7 @@ void  test_getToken_given_0b10111_expect_getBinToken_called(){
   freeTokenizer(tokenizer);
 }
 
+
 void  test_getToken_given_plus_expect_getOperatorToken_called(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("   +"); 
@@ -1610,3 +1638,16 @@ void  test_getToken_given_operator_and_number_and_string(){
   freeTokenizer(tokenizer);
 }
 
+void  test_pushBackToken_given_decimal_float_identifier(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  1934 3e-2 HIHI   ");  
+  TokenInteger  *token0 = NULL;
+  token0 = (TokenInteger  *)getToken(tokenizer);
+  pushBackToken(tokenizer,(Token  *) token0);
+  Token *tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
+  TEST_ASSERT_EQUAL(INTEGER_TYPE, tokenptr->type);
+  TEST_ASSERT_EQUAL(1, tokenizer->tokenIndex);
+  TEST_ASSERT_EQUAL_STRING("1934", tokenptr->str);
+  
+  //token0 = (TokenInteger  *)getToken(tokenizer);
+}

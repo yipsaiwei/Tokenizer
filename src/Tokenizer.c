@@ -8,6 +8,7 @@ Tokenizer  *createTokenizer(char *str){
   Tokenizer *tokenizer;
   tokenizer = malloc(sizeof(Tokenizer));
   tokenizer->index = 0;
+  tokenizer->tokenIndex = 0;
   tokenizer->length = strlen(str);
   tokenizer->str = str;
   return  tokenizer;
@@ -103,6 +104,13 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
     char  *errorLine = errorIndicator(startColumn, substr);
     int x = strlen(errorLine) - startColumn;
     throwException(errorType,NULL, 0, errorLine, "%s: %.*s\n%s\n%s\n ", message, x, substr, str, errorLine);
+}
+
+void  pushBackToken(Tokenizer *tokenizer, Token *token){
+  int i = token->length;
+  tokenizer->index -= token->length;
+  tokenizer->token[tokenizer->tokenIndex] = token;
+  tokenizer->tokenIndex++;
 }
 
 Token  *getNumberToken(Tokenizer *tokenizer){

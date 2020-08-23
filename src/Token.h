@@ -30,8 +30,8 @@ typedef struct
 	char	*str;
 	int		startColumn;
 	int		length;
-	int		value;
   TOKENTYPE	type;
+  int		value;
 }TokenInteger;
 
 typedef struct
@@ -40,8 +40,8 @@ typedef struct
 	char	*str;
 	int		startColumn;
 	int		length;
-	double		value;
   TOKENTYPE	type;
+  double		value;
 }TokenFloat;
 
 typedef struct
@@ -59,7 +59,6 @@ typedef struct
 	char	*str;
 	int		startColumn;
 	int		length;
-	int		value;
   TOKENTYPE	type;
 	Token	*token[2];
 }TokenOperator;
