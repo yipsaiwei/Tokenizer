@@ -110,6 +110,7 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
     throwException(errorType,NULL, 0, errorLine, "%s: %.*s\n%s\n%s\n ", message, x, substr, str, errorLine);
 }
 
+
 void  pushBackToken(Tokenizer *tokenizer, Token *token){
   int i = token->length;
   tokenizer->token[tokenizer->tokenIndex] = malloc(sizeof(Token));
@@ -124,6 +125,7 @@ void  pushBackToken(Tokenizer *tokenizer, Token *token){
   tokenizer->tokenIndex++;
   freeToken(token);
 }
+
 
 Token  *getNumberToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -145,7 +147,7 @@ Token  *getNumberToken(Tokenizer *tokenizer){
 Token  *getIntegerOrFloatToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   int i = 0;
-  while(str[i]!='\0' && str[i]!=' '){
+  while(str[i]!='\0' && str[i]!=' ' && (!ispunct(str[i]) || str[i] == '.')){
     if(str[i] == '.' || str[i] == 'e')
       return  (Token  *)getFloatToken(tokenizer);
     else
