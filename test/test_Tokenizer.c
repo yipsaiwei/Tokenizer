@@ -1824,6 +1824,15 @@ void  test_getToken_given_operator_and_indentifier_and_string(){
   
 }
 
+/*
+list        item4     item3     item2     item1     
+head------->next ---->next----->next----->next
+tail----    prev <----prev<-----prev<-----prev
+count  |    token3    token2    token1    token0
+       |                                    ^
+       |____________________________________|
+*/
+
 void  test_addTokenToHead(){
   TokenLinkedList list = {NULL, NULL, 0};
   Tokenizer *tokenizer = NULL;
