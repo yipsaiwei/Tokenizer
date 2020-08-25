@@ -1823,7 +1823,83 @@ void  test_getToken_given_operator_and_indentifier_and_string(){
   freeTokenizer(tokenizer);
   
 }
+
+void  test_addTokenToHead(){
+  TokenLinkedList list = {NULL, NULL, 0};
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  1934 HIHI  \"String 1294734+-*/ \"   % ");  
+  TokenInteger  *token0 = NULL;
+  token0 = (TokenInteger  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(INTEGER_TYPE, token0->type);
+  TEST_ASSERT_EQUAL(6, tokenizer->index);
+  TEST_ASSERT_EQUAL(1934, token0->value);
+  TEST_ASSERT_EQUAL_STRING("1934", token0->str);
+  TEST_ASSERT_EQUAL(2, token0->startColumn);
   
+  ListItem  Item1 = {NULL, NULL, (Token *)token0};
+  addTokenToHead(&Item1, &list);
+  TEST_ASSERT_EQUAL_STRING("1934", list.head->token->str);
+  TEST_ASSERT_EQUAL(2, list.head->token->startColumn);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.head->next);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.head->prev);
+  
+  TokenIdentifier  *token1 = NULL;
+  token1 = (TokenIdentifier  *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, token1->type);
+  TEST_ASSERT_EQUAL(11, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("HIHI", token1->str);
+  TEST_ASSERT_EQUAL(7, token1->startColumn);
+  
+  ListItem  Item2 = {NULL, NULL, (Token *)token1};
+  addTokenToHead(&Item2, &list);
+  TEST_ASSERT_EQUAL_PTR(token1, list.head->token);
+  TEST_ASSERT_EQUAL_PTR(token0, list.tail->token);
+  TEST_ASSERT_EQUAL_PTR(token1, list.tail->prev->token);
+  TEST_ASSERT_EQUAL_PTR(token0, list.head->next->token);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.head->prev);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.tail->next);
+  
+  TokenString *token2 = NULL;
+  token2 = (TokenString *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(STRING_TYPE, token2->type);
+  TEST_ASSERT_EQUAL(34, tokenizer->index);
+  TEST_ASSERT_EQUAL_STRING("\"String 1294734+-*/ \"", token2->str);
+  TEST_ASSERT_EQUAL(13, token2->startColumn);
+  
+  ListItem  Item3 = {NULL, NULL, (Token *)token2};
+  addTokenToHead(&Item3, &list);
+  TEST_ASSERT_EQUAL_PTR(token2, list.head->token);
+  TEST_ASSERT_EQUAL_PTR(token0, list.tail->token);
+  TEST_ASSERT_EQUAL_PTR(token1, list.head->next->token);
+  TEST_ASSERT_EQUAL_PTR(token1, list.tail->prev->token);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.head->prev);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.tail->next);
+  
+  TokenOperator *token3 = NULL;
+  token3 = (TokenOperator *)getToken(tokenizer);
+  TEST_ASSERT_EQUAL(38, tokenizer->index);
+  TEST_ASSERT_EQUAL(OPERATOR_TYPE, token3->type);
+  TEST_ASSERT_EQUAL_STRING("%", token3->str);
+  TEST_ASSERT_EQUAL(37, token3->startColumn);
+  
+  ListItem  Item4 = {NULL, NULL, (Token *)token3};
+  addTokenToHead(&Item4, &list);
+  TEST_ASSERT_EQUAL_PTR(token3, list.head->token);
+  TEST_ASSERT_EQUAL_PTR(token2, list.head->next->token);
+  TEST_ASSERT_EQUAL_PTR(token1, list.head->next->next->token);
+  TEST_ASSERT_EQUAL_PTR(token0, list.head->next->next->next->token);
+  TEST_ASSERT_EQUAL_PTR(token0, list.tail->token);
+  TEST_ASSERT_EQUAL_PTR(token1, list.tail->prev->token);
+  TEST_ASSERT_EQUAL_PTR(token2, list.tail->prev->prev->token);
+  TEST_ASSERT_EQUAL_PTR(token3, list.tail->prev->prev->prev->token);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.head->prev);
+  TEST_ASSERT_EQUAL_PTR(NULL, list.tail->next);
+  freeToken(token2);
+  freeToken(token1);
+  freeToken(token0);
+  freeTokenizer(tokenizer);
+}
+
 void  test_pushBackToken_given_decimal_float_identifier(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  1934 3e-2 HIHI   ");  
@@ -1835,13 +1911,14 @@ void  test_pushBackToken_given_decimal_float_identifier(){
   TEST_ASSERT_EQUAL_STRING("1934", token0->str);
   TEST_ASSERT_EQUAL(2, token0->startColumn);
   
+  TokenLinkedList *tokenList = tokenizer->tokenList;
   pushBackToken(tokenizer,(Token  *) token0);
-  
-  Token *tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
-  TEST_ASSERT_EQUAL(INTEGER_TYPE, tokenptr->type);
   TEST_ASSERT_EQUAL(2, tokenizer->index);
-  TEST_ASSERT_EQUAL(1, tokenizer->tokenIndex);
-  TEST_ASSERT_EQUAL_STRING("1934", tokenptr->str);
+  TEST_ASSERT_EQUAL_STRING("1934", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_PTR(NULL, tokenList->head->prev);
+  TEST_ASSERT_EQUAL_PTR(NULL, tokenList->head->next);
+  TEST_ASSERT_EQUAL(2, tokenList->head->token->startColumn);
+  TEST_ASSERT_EQUAL(INTEGER_TYPE, tokenList->head->token->type);
   
   token0 = (TokenInteger  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(INTEGER_TYPE, token0->type);
@@ -1860,15 +1937,11 @@ void  test_pushBackToken_given_decimal_float_identifier(){
   TEST_ASSERT_EQUAL(7, token1->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token1);
-  
   TEST_ASSERT_EQUAL(7, tokenizer->index);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
-  TEST_ASSERT_EQUAL(FLOAT_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL(2, tokenizer->tokenIndex);
-  TEST_ASSERT_EQUAL_STRING("3e-2", tokenptr->str);
+  TEST_ASSERT_EQUAL_STRING("3e-2", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("1934", tokenList->tail->token->str);
   
   token1 = (TokenFloat  *)getToken(tokenizer);
-  
   TEST_ASSERT_EQUAL(11, tokenizer->index);
   TEST_ASSERT_EQUAL(FLOAT_TYPE, token1->type);
   TEST_ASSERT_EQUAL_FLOAT(3e-2, token1->value);
@@ -1884,11 +1957,10 @@ void  test_pushBackToken_given_decimal_float_identifier(){
   TEST_ASSERT_EQUAL(12, token2->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token2);
-  
   TEST_ASSERT_EQUAL(12, tokenizer->index);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
-  TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("HIHI", tokenptr->str);
+  TEST_ASSERT_EQUAL_STRING("HIHI", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("1934", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("3e-2", tokenList->head->next->token->str);
   
   token2 = (TokenIdentifier  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(16, tokenizer->index);
@@ -1896,10 +1968,8 @@ void  test_pushBackToken_given_decimal_float_identifier(){
   TEST_ASSERT_EQUAL_STRING("HIHI", token2->str);
   TEST_ASSERT_EQUAL(12, token2->startColumn);
   freeToken(token2);
-  
   freeTokenizer(tokenizer);
 }
-
 
 void  test_pushBackToken_given_octal_string_operator(){
   Tokenizer *tokenizer = NULL;
@@ -1912,14 +1982,12 @@ void  test_pushBackToken_given_octal_string_operator(){
   TEST_ASSERT_EQUAL(0231, token0->value);
   TEST_ASSERT_EQUAL_STRING("0231", token0->str);
   TEST_ASSERT_EQUAL(1, token0->startColumn);
-  
+ 
+  TokenLinkedList *tokenList = tokenizer->tokenList;
   pushBackToken(tokenizer,(Token  *) token0);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(1, tokenizer->index);
-  TEST_ASSERT_EQUAL(INTEGER_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("0231", tokenptr->str);
-  TEST_ASSERT_EQUAL(1, tokenptr->startColumn);
-  
+  TEST_ASSERT_EQUAL_STRING("0231", tokenList->head->token->str);
+
   token0 = (TokenInteger  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(5, tokenizer->index);
   TEST_ASSERT_EQUAL(INTEGER_TYPE, token0->type);
@@ -1936,11 +2004,11 @@ void  test_pushBackToken_given_octal_string_operator(){
   TEST_ASSERT_EQUAL(6, token1->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token1);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(6, tokenizer->index);
-  TEST_ASSERT_EQUAL(STRING_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("\"STRING here 1202\"", tokenptr->str);
-  TEST_ASSERT_EQUAL(6, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("\"STRING here 1202\"", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("\"STRING here 1202\"", tokenList->tail->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("0231", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("0231", tokenList->head->next->token->str);
   
   token1 = (TokenString *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(24, tokenizer->index);
@@ -1957,11 +2025,13 @@ void  test_pushBackToken_given_octal_string_operator(){
   TEST_ASSERT_EQUAL(25, token2->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token2);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(25, tokenizer->index);
-  TEST_ASSERT_EQUAL(OPERATOR_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("%", tokenptr->str);
-  TEST_ASSERT_EQUAL(25, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("%", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("\"STRING here 1202\"", tokenList->head->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("0231", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("\"STRING here 1202\"", tokenList->tail->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("%", tokenList->tail->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("0231", tokenList->head->next->next->token->str);
   
   token2 = (TokenOperator *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(26, tokenizer->index);
@@ -1984,12 +2054,11 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
   TEST_ASSERT_EQUAL_STRING("0x19E3", token0->str);
   TEST_ASSERT_EQUAL(1, token0->startColumn);
   
+  TokenLinkedList *tokenList = tokenizer->tokenList;
   pushBackToken(tokenizer,(Token  *) token0);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(1, tokenizer->index);
-  TEST_ASSERT_EQUAL(INTEGER_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenptr->str);
-  TEST_ASSERT_EQUAL(1, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->tail->token->str);
   
   token0 = (TokenInteger  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(7, tokenizer->index);
@@ -2007,11 +2076,11 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
   TEST_ASSERT_EQUAL(7, token1->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token1);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(7, tokenizer->index);
-  TEST_ASSERT_EQUAL(OPERATOR_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("/", tokenptr->str);
-  TEST_ASSERT_EQUAL(7, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->tail->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->head->next->token->str);
   
   token1 = (TokenOperator *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(8, tokenizer->index);
@@ -2029,11 +2098,13 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
   TEST_ASSERT_EQUAL(8, token2->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token2);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(8, tokenizer->index);
-  TEST_ASSERT_EQUAL(FLOAT_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenptr->str);
-  TEST_ASSERT_EQUAL(8, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenList->tail->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->head->next->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->head->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->tail->prev->token->str);
   
   token2 = (TokenFloat  *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(14, tokenizer->index);
@@ -2051,11 +2122,15 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
   TEST_ASSERT_EQUAL(14, token3->startColumn);
   
   pushBackToken(tokenizer,(Token  *) token3);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
   TEST_ASSERT_EQUAL(14, tokenizer->index);
-  TEST_ASSERT_EQUAL(OPERATOR_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("*", tokenptr->str);
-  TEST_ASSERT_EQUAL(14, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("*", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("*", tokenList->tail->prev->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenList->head->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenList->tail->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->head->next->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->tail->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->head->next->next->next->token->str);
   
   token3 = (TokenOperator *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(15, tokenizer->index);
@@ -2073,10 +2148,16 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
   
   pushBackToken(tokenizer,(Token  *) token4);
   TEST_ASSERT_EQUAL(15, tokenizer->index);
-  tokenptr = (Token  *)tokenizer->token[tokenizer->tokenIndex - 1];
-  TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, tokenptr->type);
-  TEST_ASSERT_EQUAL_STRING("index", tokenptr->str);
-  TEST_ASSERT_EQUAL(15, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("index", tokenList->head->token->str);
+  TEST_ASSERT_EQUAL_STRING("index", tokenList->tail->prev->prev->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("*", tokenList->head->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("*", tokenList->tail->prev->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenList->head->next->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("12.e-2", tokenList->tail->prev->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->head->next->next->next->token->str);
+  TEST_ASSERT_EQUAL_STRING("/", tokenList->tail->prev->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->tail->token->str);
+  TEST_ASSERT_EQUAL_STRING("0x19E3", tokenList->head->next->next->next->next->token->str);
   
   token4 = (TokenIdentifier *)getToken(tokenizer);
   TEST_ASSERT_EQUAL(20, tokenizer->index);
@@ -2086,3 +2167,4 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
   freeToken(token4);
   freeTokenizer(tokenizer);
 }
+  

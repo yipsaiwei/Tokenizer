@@ -9,14 +9,31 @@
 #include <ctype.h>
 #include  "Errors.h"
 
+typedef	struct	ListItem	ListItem;
+struct ListItem{
+	ListItem		*next;
+	ListItem		*prev;
+	Token			*token;
+};
+
+typedef	struct	TokenLinkedList	TokenLinkedList;
+struct	TokenLinkedList{
+	ListItem		*head;
+	ListItem		*tail;
+	int			count;
+};
+
 typedef struct Tokenizer Tokenizer;
 struct Tokenizer {
   char *str;
   int index;
   uint32_t length;
   int tokenIndex;
-  Token *token[10];
+  //Token *token[10];
+  TokenLinkedList *tokenList;
 };
+
+
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
@@ -39,4 +56,7 @@ char  *duplicateSubstring(char *str, int length);
 char  *errorIndicator(int startColumn, char *str);
 void  callThrowException(char *message, char *str, int startColumn, int errorType);
 void  pushBackToken(Tokenizer *tokenizer, Token *token);
+int	addTokenToHead(ListItem *item, TokenLinkedList *tokenList);
+Token *duplicateToken(Token  *token);
+ListItem  *createListItem(Token  *token);
 #endif // TOKENIZER_H

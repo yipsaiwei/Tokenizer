@@ -11,19 +11,39 @@ Tokenizer  *createTokenizer(char *str){
   tokenizer->tokenIndex = 0;
   tokenizer->length = strlen(str);
   tokenizer->str = str;
+  tokenizer->tokenList = malloc(sizeof(TokenLinkedList));
+  tokenizer->tokenList->head = NULL;
+  tokenizer->tokenList->tail = NULL;
+  tokenizer->tokenList->count = 0;
   return  tokenizer;
 }
 
 
 void  freeTokenizer(Tokenizer *tokenizer){
-  for(int i = 0; i<tokenizer->tokenIndex; i++){
-    if(tokenizer->token[i] != NULL)
-      freeToken(tokenizer->token[i]);
+  ListItem  *listptr;
+  if(tokenizer->tokenList){
+    TokenLinkedList *tokenList = tokenizer->tokenList;
+    while(tokenList->head != NULL){
+      listptr = tokenList->head;
+      tokenList->head = tokenList->head->next;
+      freeToken(listptr->token);
+      free(listptr);
+    }
+    free(tokenizer->tokenList);
   }
   if(tokenizer != NULL)
     free(tokenizer);
 }
 
+
+void  freeToken(void *token){
+  Token *tokenFree;
+  tokenFree = (Token  *)token;
+  if(tokenFree->str)
+    free(tokenFree->str);
+  if(tokenFree)
+    free(tokenFree);
+}
 
 Token  *getToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -43,16 +63,6 @@ Token  *createToken(Tokenizer  *tokenizer){
   newToken->originalstr = tokenizer->str;
   newToken->startColumn = tokenizer->index;
   return newToken;
-}
-
-
-void  freeToken(void *token){
-  Token *tokenFree;
-  tokenFree = (Token  *)token;
-  if(tokenFree->str != NULL)
-    free( tokenFree->str);
-  if(tokenFree != NULL)
-    free(tokenFree);
 }
 
 
@@ -112,19 +122,32 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
 
 
 void  pushBackToken(Tokenizer *tokenizer, Token *token){
-  int i = token->length;
-  tokenizer->token[tokenizer->tokenIndex] = malloc(sizeof(Token));
-  Token *tokenptr = tokenizer->token[tokenizer->tokenIndex];
-  tokenptr->type = token->type;
+  ListItem  *item = createListItem(token);
+  item->token->originalstr = tokenizer->str;
   tokenizer->index -= token->length;
-  tokenptr->originalstr = token->originalstr;
-  tokenptr->str = malloc((strlen(token->str)+1)*sizeof(char));
-  strcpy(tokenptr->str, token->str);
-  tokenptr->startColumn = token->startColumn;
-  tokenptr->length = token->length;
-  tokenizer->tokenIndex++;
+  addTokenToHead(item, tokenizer->tokenList);
   freeToken(token);
 }
+
+ListItem  *createListItem(Token  *token){
+  ListItem  *item = malloc(sizeof(ListItem));   
+  item->next = NULL;
+  item->prev = NULL;
+  item->token = duplicateToken(token);
+  return  item;
+}
+
+Token *duplicateToken(Token  *token){
+  Token *newToken;
+  newToken = malloc(sizeof(Token));
+  newToken->originalstr = duplicateSubstring(token->originalstr, strlen(token->originalstr) + 1);
+  newToken->str = duplicateSubstring(token->str, strlen(token->str) + 1);
+  newToken->startColumn = token->startColumn;
+  newToken->length = token->length;
+  newToken->type = token->type;
+  return  newToken;
+}
+
 
 
 Token  *getNumberToken(Tokenizer *tokenizer){
@@ -299,3 +322,24 @@ TokenString  *getStringToken(Tokenizer  *tokenizer){
   return  createStringToken(resultstr, startColumn, str, STRING_TYPE);
 }
 
+int	addTokenToHead(ListItem *item, TokenLinkedList *tokenList){
+  int count;
+  if(tokenList->head==NULL)
+  {
+    tokenList->head=item;
+    tokenList->tail=item;
+    tokenList->count=1;
+    count=tokenList->count;
+    return count;
+  }
+  else
+  {
+    item->next=tokenList->head;
+    tokenList->head->prev=item;
+    tokenList->head=item;
+    item->prev=NULL;
+    tokenList->count++;
+    count=tokenList->count;
+    return count;		
+  }
+}
