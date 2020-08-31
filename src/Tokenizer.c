@@ -2,39 +2,33 @@
 #include "Exception.h"
 #include "CException.h"
 #include  "string.h"
+//#include  "DoubleLinkedList.h"
 
 
 Tokenizer  *createTokenizer(char *str){
   Tokenizer *tokenizer;
   tokenizer = malloc(sizeof(Tokenizer));
   tokenizer->index = 0;
-  tokenizer->tokenIndex = 0;
   tokenizer->length = strlen(str);
   tokenizer->str = str;
-  tokenizer->tokenList = malloc(sizeof(TokenLinkedList));
-  tokenizer->tokenList->head = NULL;
-  tokenizer->tokenList->tail = NULL;
-  tokenizer->tokenList->count = 0;
+  tokenizer->list = malloc(sizeof(DoubleLinkedList));
+  tokenizer->list->head = NULL;
+  tokenizer->list->tail = NULL;
+  tokenizer->list->count = 0;
   return  tokenizer;
 }
 
 
 void  freeTokenizer(Tokenizer *tokenizer){
   ListItem  *listptr;
-  if(tokenizer->tokenList){
-    TokenLinkedList *tokenList = tokenizer->tokenList;
-    while(tokenList->head != NULL){
-      listptr = tokenList->head;
-      tokenList->head = tokenList->head->next;
-      freeToken(listptr->token);
-      free(listptr);
-    }
-    free(tokenizer->tokenList);
+  if(tokenizer->list){
+    linkedListFreeList(tokenizer->list,  freeToken);
   }
   if(tokenizer != NULL)
     free(tokenizer);
 }
 
+//linkedListFree(TokenLinkedList)
 
 void  freeToken(void *token){
   Token *tokenFree;
@@ -47,6 +41,8 @@ void  freeToken(void *token){
 
 Token  *getToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
+  if(tokenizer->list->head != NULL)
+    return  popToken(tokenizer);
   if  (isdigit(str[0]))
     return  getNumberToken(tokenizer);
   else  if(isalpha(str[0]) || str[0] == '_')
@@ -121,21 +117,25 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
 }
 
 
+//Once the token is pushed back, the token then belongs to tokenizer. 
+//Therefore, the token cannot be freed.
 void  pushBackToken(Tokenizer *tokenizer, Token *token){
-  ListItem  *item = createListItem(token);
-  item->token->originalstr = tokenizer->str;
-  tokenizer->index -= token->length;
-  addTokenToHead(item, tokenizer->tokenList);
-  freeToken(token);
+  ListItem  *item = linkedListCreateListItem((void  *)token);
+  ((Token *)(item->data))->originalstr = tokenizer->str;
+  tokenizer->index = token->startColumn;
+  linkedListAddItemToHead(item, tokenizer->list);
 }
 
-ListItem  *createListItem(Token  *token){
-  ListItem  *item = malloc(sizeof(ListItem));   
-  item->next = NULL;
-  item->prev = NULL;
-  item->token = duplicateToken(token);
-  return  item;
+Token *popToken(Tokenizer *tokenizer){
+  Token *token;
+  ListItem  *item = linkedListRemoveItemFromHead(tokenizer->list);
+  token = item->data;
+  item->data = NULL;
+  tokenizer->index += token->length;
+  linkedListFreeListItem(item);
+  return  token;
 }
+
 
 Token *duplicateToken(Token  *token){
   Token *newToken;
@@ -322,24 +322,3 @@ TokenString  *getStringToken(Tokenizer  *tokenizer){
   return  createStringToken(resultstr, startColumn, str, STRING_TYPE);
 }
 
-int	addTokenToHead(ListItem *item, TokenLinkedList *tokenList){
-  int count;
-  if(tokenList->head==NULL)
-  {
-    tokenList->head=item;
-    tokenList->tail=item;
-    tokenList->count=1;
-    count=tokenList->count;
-    return count;
-  }
-  else
-  {
-    item->next=tokenList->head;
-    tokenList->head->prev=item;
-    tokenList->head=item;
-    item->prev=NULL;
-    tokenList->count++;
-    count=tokenList->count;
-    return count;		
-  }
-}
