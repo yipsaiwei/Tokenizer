@@ -6,7 +6,7 @@
 #include <malloc.h> 
 #include <stdarg.h>
 #include  "DoubleLinkedList.h"
-#include  "memAlloc.h"
+#include  "MemAlloc.h"
 
 void setUp(void)
 {

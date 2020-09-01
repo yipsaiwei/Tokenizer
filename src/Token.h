@@ -2,6 +2,7 @@
 #define TOKEN_H
 //#include  "Tokenizer.h"
 #include <stdlib.h>
+#include  "MemAlloc.h"
 
 typedef enum
 {

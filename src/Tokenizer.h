@@ -4,12 +4,11 @@
 #include <stdint.h>
 #include <malloc.h>
 #include <stdio.h>
-#include  <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include  "Errors.h"
 #include  "DoubleLinkedList.h"
-#include  "memAlloc.h"
+#include  "MemAlloc.h"
 
 
 
@@ -17,6 +16,7 @@ typedef struct Tokenizer Tokenizer;
 struct Tokenizer {
   char *str;
   int index;
+  //uint32_t prevStartColumn;
   uint32_t length;
   //int tokenIndex;
   DoubleLinkedList *list;

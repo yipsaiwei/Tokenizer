@@ -5,7 +5,7 @@
 
 
 TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type){
-  TokenInteger *newToken = malloc(sizeof(TokenInteger));
+  TokenInteger *newToken = memAlloc(sizeof(TokenInteger));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -16,7 +16,7 @@ TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *s
 }
 
 TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char  *str, TOKENTYPE  type){
-  TokenFloat *newToken = malloc(sizeof(TokenFloat));
+  TokenFloat *newToken = memAlloc(sizeof(TokenFloat));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -27,7 +27,7 @@ TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char
 }
 
 TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
-  TokenIdentifier *newToken = malloc(sizeof(TokenIdentifier));
+  TokenIdentifier *newToken = memAlloc(sizeof(TokenIdentifier));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -37,7 +37,7 @@ TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr
 }
 
 TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
-  TokenString *newToken = malloc(sizeof(TokenString));
+  TokenString *newToken = memAlloc(sizeof(TokenString));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -47,7 +47,7 @@ TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENT
 }
 
 TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
-  TokenOperator *newToken = malloc(sizeof(TokenOperator));
+  TokenOperator *newToken = memAlloc(sizeof(TokenOperator));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;

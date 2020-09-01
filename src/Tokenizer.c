@@ -7,11 +7,11 @@
 
 Tokenizer  *createTokenizer(char *str){
   Tokenizer *tokenizer;
-  tokenizer = malloc(sizeof(Tokenizer));
+  tokenizer = memAlloc(sizeof(Tokenizer));
   tokenizer->index = 0;
   tokenizer->length = strlen(str);
   tokenizer->str = str;
-  tokenizer->list = malloc(sizeof(DoubleLinkedList));
+  tokenizer->list = memAlloc(sizeof(DoubleLinkedList));
   tokenizer->list->head = NULL;
   tokenizer->list->tail = NULL;
   tokenizer->list->count = 0;
@@ -25,18 +25,17 @@ void  freeTokenizer(Tokenizer *tokenizer){
     linkedListFreeList(tokenizer->list,  freeToken);
   }
   if(tokenizer != NULL)
-    free(tokenizer);
+    memFree(tokenizer);
 }
 
-//linkedListFree(TokenLinkedList)
 
 void  freeToken(void *token){
   Token *tokenFree;
   tokenFree = (Token  *)token;
   if(tokenFree->str)
-    free(tokenFree->str);
+    memFree(tokenFree->str);
   if(tokenFree)
-    free(tokenFree);
+    memFree(tokenFree);
 }
 
 Token  *getToken(Tokenizer *tokenizer){
@@ -53,21 +52,13 @@ Token  *getToken(Tokenizer *tokenizer){
     return  (Token  *)getOperatorToken(tokenizer);
 }
 
- 
-Token  *createToken(Tokenizer  *tokenizer){
-  Token *newToken = malloc(sizeof(Token));
-  newToken->originalstr = tokenizer->str;
-  newToken->startColumn = tokenizer->index;
-  return newToken;
-}
-
 
 char  *errorIndicator(int startColumn, char *str){
   int i = startColumn, j = 0, k, l;
   if(str[0] == '\"'){
     for(j = 0; str[j] != 0; j++)
       i++;
-    char  *linestr = malloc((i+1)*sizeof(char)); //Will be free in throwException
+    char  *linestr = memAlloc((i+1)*sizeof(char)); //Will be free in throwException
     for(k = 0; k < startColumn; k++)
       linestr[k] = ' ';
     linestr[k] = '^';
@@ -78,7 +69,7 @@ char  *errorIndicator(int startColumn, char *str){
   }
   for (j = 0; !isspace(str[j]) && str[j] != 0; j++)
     i++;
-  char  *linestr = malloc((i+1)*sizeof(char));
+  char  *linestr = memAlloc((i+1)*sizeof(char));
   for(int k = 0; k != startColumn; k++)
     linestr[k] = ' ';
   linestr[startColumn] = '^';
@@ -90,7 +81,7 @@ char  *errorIndicator(int startColumn, char *str){
 
 
 char  *duplicateSubstring(char *str, int length){
-  char  *resultstr = malloc((length+1)*sizeof(char));
+  char  *resultstr = memAlloc((length+1)*sizeof(char));
   strncpy(resultstr, str, length);
   resultstr[length] = '\0';
   return  resultstr;
@@ -139,7 +130,7 @@ Token *popToken(Tokenizer *tokenizer){
 
 Token *duplicateToken(Token  *token){
   Token *newToken;
-  newToken = malloc(sizeof(Token));
+  newToken = memAlloc(sizeof(Token));
   newToken->originalstr = duplicateSubstring(token->originalstr, strlen(token->originalstr) + 1);
   newToken->str = duplicateSubstring(token->str, strlen(token->str) + 1);
   newToken->startColumn = token->startColumn;
