@@ -19,7 +19,7 @@ void tearDown(void)
 void  test_createTokenizer(){
   char  *str = "Hello World!";
   DoubleLinkedList  list = {NULL, NULL, 0};
-  Tokenizer tokenizer = {NULL, 0, 0, NULL};
+  Tokenizer tokenizer = {NULL, 0, 0, 0, NULL};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
   memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);  
   Tokenizer *tokenizerptr = createTokenizer(str);
@@ -28,14 +28,14 @@ void  test_createTokenizer(){
 }
 
 void  test_freeTokenizer(){
-  Tokenizer tokenizer = {NULL, 0, 0, NULL};
+  Tokenizer tokenizer = {NULL, 0, 0, 0, NULL};
   memFree_Expect(&tokenizer);
   freeTokenizer(&tokenizer);
 }
 
 void  test_freeTokenizer_with_list(){
   DoubleLinkedList  list = {NULL, NULL, 0};
-  Tokenizer tokenizer = {NULL, 0, 0, &list};
+  Tokenizer tokenizer = {NULL, 0, 0, 0, &list};
   memFree_Expect(&list);
   memFree_Expect(&tokenizer);
   freeTokenizer(&tokenizer);
@@ -45,7 +45,7 @@ void  test_freeTokenizer_with_list_with_item(){
   Token token = {"123", "123", 0, 3, INTEGER_TYPE};
   ListItem  item = {NULL, NULL, &token};
   DoubleLinkedList  list = {&item, &item, 1};
-  Tokenizer tokenizer = {NULL, 0, 0, &list};
+  Tokenizer tokenizer = {NULL, 0, 0, 0, &list};
   memFree_Expect(token.str);
   memFree_Expect(&token);
   memFree_Expect(&item);
@@ -122,4 +122,59 @@ void  test_freeToken_with_string(){
   memFree_Expect(token.str);
   memFree_Expect(&token);
   freeToken(&token);
+}
+
+void  test_popToken_given_a_token_in_linked_list(){
+  Tokenizer tokenizer;
+  DoubleLinkedList  list;
+  memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
+  memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
+  Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
+  TokenIdentifier token = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
+  ListItem  item = {NULL, NULL, &token};
+  Token *tokenptr;
+  tokenizerptr->list->head = &item;
+  tokenizerptr->list->tail = &item;
+  tokenizerptr->list->count = 1;
+  memFree_Expect(&item);
+  tokenptr = popToken(tokenizerptr);
+  TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
+}
+
+/*
+list             item2            item1
+head------------>next------------>next-----------   
+tail-----        prev<-----------prev           v
+count=2 |        &token2         &token1      NULL
+        |                         ^
+        |_________________________|
+
+*/
+void  test_popToken_given_2_tokens_in_linked_list(){
+  Tokenizer tokenizer;
+  DoubleLinkedList  list;
+  memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
+  memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
+  Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
+  TokenIdentifier token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
+  TokenInteger token2 = {"  rlcf  0x33 ", "0x33", 8, 4, INTEGER_TYPE, 0x33};
+  ListItem  item1 = {NULL, NULL, &token1};
+  ListItem  item2 = {NULL, NULL, &token2};
+  Token *tokenptr;
+  tokenizerptr->list->head = &item2;
+  tokenizerptr->list->tail = &item1;
+  tokenizerptr->list->head->next = &item1;
+  tokenizerptr->list->head->prev = NULL;
+  tokenizerptr->list->tail->next = NULL;
+  tokenizerptr->list->tail->prev = &item2;
+  tokenizerptr->list->count = 2;
+  memFree_Expect(&item2);
+  tokenptr = popToken(tokenizerptr);
+  TEST_ASSERT_EQUAL_PTR(&token2, tokenptr);
+  TEST_ASSERT_EQUAL_PTR(&item1, tokenizerptr->list->head);
+  TEST_ASSERT_EQUAL_PTR(&item1, tokenizerptr->list->tail);
+  memFree_Expect(&item1);
+  tokenptr = popToken(tokenizerptr);
+  TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list->head);
+  TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list->tail);
 }

@@ -10,15 +10,17 @@
 #include  "DoubleLinkedList.h"
 #include  "MemAlloc.h"
 
-
+#define TOKENIZER_DOLLAR_SIGN_HEX         (1 << 0)
+#define TOKENIZER_HEX_H                   (1 << 1)
+#define TOKENIZER_OCT_O                   (1 << 2)
+#define TOKENIZER_BIN_B                   (1 << 3)
 
 typedef struct Tokenizer Tokenizer;
 struct Tokenizer {
   char *str;
   int index;
-  //uint32_t prevStartColumn;
+  uint32_t  config;
   uint32_t length;
-  //int tokenIndex;
   DoubleLinkedList *list;
 };
 
@@ -26,11 +28,9 @@ struct Tokenizer {
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
-Token *getNextToken(Tokenizer *tokenizer);
 void  freeToken(void *token);
 Token *createToken(Tokenizer *tokenizer);
 Token *getIntegerOrFloatToken(Tokenizer *tokenizer);
-TOKENTYPE getNumberType(char  *str);
 char *tokenizerSkipSpaces(Tokenizer *tokenizer);
 TokenInteger *getOctalToken(Tokenizer  *tokenizer);
 TokenInteger *getHexToken(Tokenizer *tokenizer);
@@ -47,4 +47,5 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
 void  pushBackToken(Tokenizer *tokenizer, Token *token);
 Token *popToken(Tokenizer *tokenizer);
 Token *duplicateToken(Token  *token);
+void configureTokenizer(Tokenizer *tokenizer, uint32_t configuration);
 #endif // TOKENIZER_H

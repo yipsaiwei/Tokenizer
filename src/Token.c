@@ -56,3 +56,13 @@ TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TO
   return newToken;
 }
 
+
+Token *createNULLToken(char *originalstr, int index, TOKENTYPE type){
+  Token *newToken = memAlloc(sizeof(Token));
+  newToken->originalstr = originalstr;
+  newToken->str = NULL;
+  newToken->startColumn = index;
+  newToken->length = 0;
+  newToken->type = type;
+  return  newToken;
+}

@@ -1,6 +1,5 @@
 #ifndef TOKEN_H
 #define TOKEN_H
-//#include  "Tokenizer.h"
 #include <stdlib.h>
 #include  "MemAlloc.h"
 
@@ -69,5 +68,6 @@ TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char
 TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
+Token *createNULLToken(char *originalstr, int index, TOKENTYPE type);
 
 #endif // TOKEN_H
