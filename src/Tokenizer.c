@@ -42,7 +42,7 @@ void  freeToken(void *token){
 // Specify the type of token here
 Token  *getToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
-  if(tokenizer->list->head != NULL)
+    if(tokenizer->list->head != NULL)
     return  popToken(tokenizer);  //pop token from doubleLinkedList stored in tokenizer
   if  (isdigit(str[0]))
     return  getNumberToken(tokenizer);
@@ -98,7 +98,7 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
     substr++;
   char  *errorLine = errorIndicator(startColumn, substr);
   int x = strlen(errorLine) - startColumn;
-  throwException(errorType,NULL, 0, errorLine, "%s: %.*s\n%s\n%s\n ", message, x, substr, str, errorLine);
+  throwException(errorType, errorLine, 1, "%s: %.*s\n%s\n%s\n ", message, x, substr, str, errorLine);
 }
 
 // Skip whitespaces of a string
@@ -183,9 +183,12 @@ TokenInteger  *getDecimalToken(Tokenizer  *tokenizer){
   int size;
   convertedValue = strtol(str, &ptr, 10);
   if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0'){
-    if((tokenizer->config & 2) && ( *ptr == 'h' || (*ptr >= 'A' && *ptr <= 'F') || (*ptr >= 'a' && *ptr <= 'f'))){
+    if((tokenizer->config & 2) && ( *ptr == 'h' || (*ptr >= 'A' && *ptr <= 'F') || (*ptr >= 'a' && *ptr <= 'f')))
       return  getHexToken(tokenizer);
-    }
+    else if ((tokenizer->config &8) && ( *ptr == 'b' || *ptr == 'B'))
+      return  getBinToken(tokenizer);
+    else if ((tokenizer->config &4) && (*ptr == 'o' || *ptr == 'O'))
+      return  getOctalToken(tokenizer);
     else
     callThrowException("Invalid decimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   }
@@ -203,8 +206,12 @@ TokenInteger  *getOctalToken(Tokenizer  *tokenizer){
   int size;
   strnum = str;
   convertedValue = strtol(strnum, &ptr, 8);
-  if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0')
-    callThrowException("Invalid octal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+  if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0'){
+    if((tokenizer->config & 4) && (*ptr == 'o' || *ptr == 'O') && (*(ptr+1) == ' ' || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_')))
+      ptr++;
+    else
+      callThrowException("Invalid octal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+  }
   if(*ptr > '7')
     callThrowException("Invalid octal value(Number >7 detected)", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   resultstr = duplicateSubstring(str, ptr-str);
@@ -218,10 +225,21 @@ TokenInteger *getBinToken(Tokenizer  *tokenizer){
   char  *ptr, *strnum;
   int startColumn = tokenizer->index;
   int  convertedValue;
-  strnum = str + 2;
+  if(str[0] == '0' && str[1] == 'b')
+    strnum = str + 2;
+  else
+    strnum = str;
   convertedValue = strtol(strnum, &ptr, 2);
-  if(*ptr != '1' && *ptr != '0' && *ptr != '\0' && *ptr != ' ' && !ispunct(*ptr))
-    callThrowException("Invalid invalid binary", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+  if(str[0] == '0' && str[1] == 'b'){
+    if(*ptr != '\0' && *ptr != ' ' && !ispunct(*ptr))
+      callThrowException("Invalid binary", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+  }
+  else{
+    if((tokenizer->config & 8) && (*ptr == 'B' || *ptr == 'b') && (*(ptr+1) == ' ' || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_')) && str[0] != '0' && str[1] != 'b')
+      ptr++;
+    else
+      callThrowException("Invalid binary", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+  }
   char  *resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr - str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);
@@ -240,10 +258,14 @@ TokenInteger  *getHexToken(Tokenizer  *tokenizer){
     strnum = str;
   convertedValue = strtol(strnum, &ptr, 16);
   if(*ptr != ' '&& !ispunct(*ptr) && *ptr != '\0'){
-    if((tokenizer->config & 2) && (*ptr == 'h' || *ptr == 'H') && ((ispunct(*(ptr+1)) && *(ptr+1) != '_') || *(ptr+1) == ' ' || *(ptr+1) == 0))
-      ptr++;
-    else
+    if(str[0] == '0' && str[1] == 'x')
       callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+    else{
+      if((tokenizer->config & 2) && (*ptr == 'h' || *ptr == 'H') && ((ispunct(*(ptr+1)) && *(ptr+1) != '_') || *(ptr+1) == ' ' || *(ptr+1) == 0))
+        ptr++;
+      else
+        callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+    }
   }
   resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
