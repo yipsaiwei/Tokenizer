@@ -20,10 +20,9 @@ void  test_createTokenizer(){
   char  *str = "Hello World!";
   DoubleLinkedList  list = {NULL, NULL, 0};
   Tokenizer tokenizer = {NULL, 0, 0, 0, NULL};
-  memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);  
+  memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer); 
   Tokenizer *tokenizerptr = createTokenizer(str);
-  TEST_ASSERT_EQUAL_PTR(&list, tokenizerptr->list);
+  TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list);
   TEST_ASSERT_EQUAL_PTR(&tokenizer, tokenizerptr);
 }
 
@@ -126,13 +125,14 @@ void  test_freeToken_with_string(){
 
 void  test_popToken_given_a_token_in_linked_list(){
   Tokenizer tokenizer;
-  DoubleLinkedList  list;
+  DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
+  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   TokenIdentifier token = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
   ListItem  item = {NULL, NULL, &token};
   Token *tokenptr;
+  tokenizerptr->list = &list;
   tokenizerptr->list->head = &item;
   tokenizerptr->list->tail = &item;
   tokenizerptr->list->count = 1;
@@ -152,15 +152,16 @@ count=2 |        &token2         &token1      NULL
 */
 void  test_popToken_given_2_tokens_in_linked_list(){
   Tokenizer tokenizer;
-  DoubleLinkedList  list;
+  DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
+  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   TokenIdentifier token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
   TokenInteger token2 = {"  rlcf  0x33 ", "0x33", 8, 4, INTEGER_TYPE, 0x33};
   ListItem  item1 = {NULL, NULL, &token1};
   ListItem  item2 = {NULL, NULL, &token2};
   Token *tokenptr;
+  tokenizerptr->list = &list;
   tokenizerptr->list->head = &item2;
   tokenizerptr->list->tail = &item1;
   tokenizerptr->list->head->next = &item1;
