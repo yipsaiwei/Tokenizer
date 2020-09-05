@@ -12,7 +12,6 @@ Tokenizer  *createTokenizer(char *str){
   tokenizer->length = strlen(str);
   tokenizer->str = str;
   tokenizer->config = 0;
-  //tokenizer->list = linkedListCreateList();
   tokenizer->list = NULL;
   return  tokenizer;
 }
@@ -31,16 +30,6 @@ void  freeTokenizer(Tokenizer *tokenizer){
 }
 
 
-void  freeToken(void *token){
-  Token *tokenFree;
-  tokenFree = (Token  *)token;
-  if(tokenFree->str)
-    memFree(tokenFree->str);
-  if(tokenFree)
-    memFree(tokenFree);
-}
-
-// Specify the type of token here
 Token  *getToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
     if(tokenizer->list != NULL){
@@ -188,10 +177,10 @@ TokenInteger  *getDecimalToken(Tokenizer  *tokenizer){
   int size;
   convertedValue = strtol(str, &ptr, 10);
   if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0'){
+    if ((tokenizer->config &8) && ( *ptr == 'b' || *ptr == 'B'))
+      return  getBinToken(tokenizer);
     if((tokenizer->config & 2) && ( *ptr == 'h' || (*ptr >= 'A' && *ptr <= 'F') || (*ptr >= 'a' && *ptr <= 'f')))
       return  getHexToken(tokenizer);
-    else if ((tokenizer->config &8) && ( *ptr == 'b' || *ptr == 'B'))
-      return  getBinToken(tokenizer);
     else if ((tokenizer->config &4) && (*ptr == 'o' || *ptr == 'O'))
       return  getOctalToken(tokenizer);
     else
@@ -260,10 +249,10 @@ TokenInteger  *getHexToken(Tokenizer  *tokenizer){
   if(str[0] == '0' && str[1] == 'x')
     strnum = str + 2; //convert hexadecimal value without 0x
   else if (str[0] == '$'){
-    if(tokenizer->config & 1)
+    if(tokenizer->config & 1 && str[1] != '0' && str[2] != 'x')
       strnum = str + 1;
     else
-      callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+      callThrowException("Invalid hexadecimal value(detected $ and 0x or unconfigured $ sign)", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   }
   else
     strnum = str;
@@ -282,8 +271,7 @@ TokenInteger  *getHexToken(Tokenizer  *tokenizer){
   tokenizer->index += (ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
 }
-  //if(*ptr != 'h' ||( *(ptr +1) != ' ' && *(ptr+1) != 0 && !ispunct(*ptr) )|| *(ptr+1) == '_')
-   // callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+
 
 TokenFloat  *getFloatToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -325,6 +313,12 @@ TokenIdentifier *getIdentifierToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   int startColumn = tokenizer->index;
   int i = 0;
+  char  *ptr;
+  if(tokenizer->config & 1){
+    strtol(str, &ptr, 16);
+    if((*ptr == 'h' || *ptr == 'H') && !isalnum(*(ptr+1)) && *(ptr+1) != '_')
+      return  getHexToken(tokenizer);
+  }
   while(str[i] != '\0' && str[i] != ' ' && (str[i] == '_' || isalnum(str[i]))){
     i++;
     tokenizer->index++;
@@ -337,8 +331,10 @@ return  createIdentifierToken(resultstr, startColumn, tokenizer->str, IDENTIFIER
 TokenOperator *getOperatorToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   int startColumn = tokenizer->index;
-  if((tokenizer->config & 1) && (*str == '$'))
-    return  (TokenOperator *)getHexToken(tokenizer);
+  if((tokenizer->config & 1) && (*str == '$')){
+    if(isdigit(*(str+1)) || (*(str+1) >= 'A' && *(str+1) <= 'F') || (*(str+1) >= 'a' && *(str+1) <= 'f'))
+      return  (TokenOperator *)getHexToken(tokenizer);
+  }
   tokenizer->index++;
   char  *resultstr = duplicateSubstring(str, 1);
   resultstr[1] = '\0';

@@ -69,5 +69,6 @@ TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr
 TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 Token *createNULLToken(char *originalstr, int index, TOKENTYPE type);
+void  freeToken(void *token);
 
 #endif // TOKEN_H

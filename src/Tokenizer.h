@@ -28,7 +28,6 @@ struct Tokenizer {
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
-void  freeToken(void *token);
 Token *createToken(Tokenizer *tokenizer);
 Token *getIntegerOrFloatToken(Tokenizer *tokenizer);
 char *tokenizerSkipSpaces(Tokenizer *tokenizer);

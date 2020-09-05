@@ -66,3 +66,12 @@ Token *createNULLToken(char *originalstr, int index, TOKENTYPE type){
   newToken->type = type;
   return  newToken;
 }
+
+void  freeToken(void *token){
+  Token *tokenFree;
+  tokenFree = (Token  *)token;
+  if(tokenFree->str)
+    memFree(tokenFree->str);
+  if(tokenFree)
+    memFree(tokenFree);
+}
