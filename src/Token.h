@@ -32,7 +32,7 @@ typedef struct
 	int		length;
   TOKENTYPE	type;
   int		value;
-}TokenInteger;
+}IntegerToken;
 
 typedef struct
 {
@@ -42,7 +42,7 @@ typedef struct
 	int		length;
   TOKENTYPE	type;
   double		value;
-}TokenFloat;
+}FloatToken;
 
 typedef struct
 {
@@ -51,7 +51,7 @@ typedef struct
 	int		startColumn;
 	int		length;
   TOKENTYPE	type;
-}TokenIdentifier, TokenString;
+}IdentifierToken, StringToken;
 
 typedef struct
 {
@@ -61,13 +61,13 @@ typedef struct
 	int		length;
   TOKENTYPE	type;
 	Token	*token[2];
-}TokenOperator;
+}OperatorToken;
 	
-TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type);
-TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char  *str, TOKENTYPE type);
-TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
-TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
-TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
+IntegerToken *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type);
+FloatToken *createFloatToken(double  value, int  index, char  *originalstr, char  *str, TOKENTYPE type);
+IdentifierToken *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
+StringToken *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
+OperatorToken *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 Token *createNULLToken(char *originalstr, int index, TOKENTYPE type);
 void  freeToken(void *token);
 

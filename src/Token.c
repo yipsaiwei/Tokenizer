@@ -4,8 +4,8 @@
 #include  "Tokenizer.h"
 
 
-TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type){
-  TokenInteger *newToken = memAlloc(sizeof(TokenInteger));
+IntegerToken *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type){
+  IntegerToken *newToken = memAlloc(sizeof(IntegerToken));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -15,8 +15,8 @@ TokenInteger *createIntToken(int  value, int  index, char  *originalstr, char *s
   return newToken;
 }
 
-TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char  *str, TOKENTYPE  type){
-  TokenFloat *newToken = memAlloc(sizeof(TokenFloat));
+FloatToken *createFloatToken(double  value, int  index, char  *originalstr, char  *str, TOKENTYPE  type){
+  FloatToken *newToken = memAlloc(sizeof(FloatToken));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -26,8 +26,8 @@ TokenFloat *createFloatToken(double  value, int  index, char  *originalstr, char
   return newToken;
 }
 
-TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
-  TokenIdentifier *newToken = memAlloc(sizeof(TokenIdentifier));
+IdentifierToken *createIdentifierToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
+  IdentifierToken *newToken = memAlloc(sizeof(IdentifierToken));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -36,8 +36,8 @@ TokenIdentifier *createIdentifierToken(char *str, int  index, char  *originalstr
   return newToken;
 }
 
-TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
-  TokenString *newToken = memAlloc(sizeof(TokenString));
+StringToken *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
+  StringToken *newToken = memAlloc(sizeof(StringToken));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;
@@ -46,8 +46,8 @@ TokenString *createStringToken(char *str, int  index, char  *originalstr, TOKENT
   return newToken;
 }
 
-TokenOperator *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
-  TokenOperator *newToken = memAlloc(sizeof(TokenOperator));
+OperatorToken *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE  type){
+  OperatorToken *newToken = memAlloc(sizeof(OperatorToken));
   newToken->originalstr = originalstr;
   newToken->str = str;
   newToken->startColumn = index;

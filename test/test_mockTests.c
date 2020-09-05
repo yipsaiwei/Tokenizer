@@ -54,9 +54,9 @@ void  test_freeTokenizer_with_list_with_item(){
 }
 
 void  test_createIntToken(){
-  TokenInteger  token = {NULL, NULL, 0, 0, INTEGER_TYPE, 0};
-  memAlloc_ExpectAndReturn(sizeof(TokenInteger), &token);
-  TokenInteger  *tokenptr = createIntToken(23, 9, "         23", "23", INTEGER_TYPE);
+  IntegerToken  token = {NULL, NULL, 0, 0, INTEGER_TYPE, 0};
+  memAlloc_ExpectAndReturn(sizeof(IntegerToken), &token);
+  IntegerToken  *tokenptr = createIntToken(23, 9, "         23", "23", INTEGER_TYPE);
   TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
   TEST_ASSERT_EQUAL(23, tokenptr->value);
   TEST_ASSERT_EQUAL(9, tokenptr->startColumn);
@@ -66,9 +66,9 @@ void  test_createIntToken(){
 }
 
 void  test_createFloatToken(){
-  TokenFloat  token = {NULL, NULL, 0, 0, FLOAT_TYPE, 0};
-  memAlloc_ExpectAndReturn(sizeof(TokenFloat), &token);
-  TokenFloat  *tokenptr = createFloatToken(2.431, 3, "   2.431", "2.431", FLOAT_TYPE);
+  FloatToken  token = {NULL, NULL, 0, 0, FLOAT_TYPE, 0};
+  memAlloc_ExpectAndReturn(sizeof(FloatToken), &token);
+  FloatToken  *tokenptr = createFloatToken(2.431, 3, "   2.431", "2.431", FLOAT_TYPE);
   TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
   TEST_ASSERT_EQUAL_FLOAT(2.431, tokenptr->value);
   TEST_ASSERT_EQUAL(3, tokenptr->startColumn);
@@ -78,9 +78,9 @@ void  test_createFloatToken(){
 }
 
 void  test_createIdentifierToken(){
-  TokenIdentifier  token = {NULL, NULL, 0, 0, IDENTIFIER_TYPE};
-  memAlloc_ExpectAndReturn(sizeof(TokenIdentifier), &token);
-  TokenIdentifier  *tokenptr = createIdentifierToken( "Hello123", 2, "  Hello123-  ", IDENTIFIER_TYPE);
+  IdentifierToken  token = {NULL, NULL, 0, 0, IDENTIFIER_TYPE};
+  memAlloc_ExpectAndReturn(sizeof(IdentifierToken), &token);
+  IdentifierToken  *tokenptr = createIdentifierToken( "Hello123", 2, "  Hello123-  ", IDENTIFIER_TYPE);
   TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
   TEST_ASSERT_EQUAL(2, tokenptr->startColumn);
   TEST_ASSERT_EQUAL_STRING("  Hello123-  ", tokenptr->originalstr);
@@ -89,9 +89,9 @@ void  test_createIdentifierToken(){
 }
 
 void  test_createStringToken(){
-  TokenString  token = {NULL, NULL, 0, 0, STRING_TYPE};
-  memAlloc_ExpectAndReturn(sizeof(TokenString), &token);
-  TokenString  *tokenptr = createIdentifierToken( "\" A string \"", 1, " \" A string \"  ", STRING_TYPE);
+  StringToken  token = {NULL, NULL, 0, 0, STRING_TYPE};
+  memAlloc_ExpectAndReturn(sizeof(StringToken), &token);
+  StringToken  *tokenptr = createIdentifierToken( "\" A string \"", 1, " \" A string \"  ", STRING_TYPE);
   TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
   TEST_ASSERT_EQUAL(1, tokenptr->startColumn);
   TEST_ASSERT_EQUAL_STRING(" \" A string \"  ", tokenptr->originalstr);
@@ -100,9 +100,9 @@ void  test_createStringToken(){
 }
 
 void  test_createOperatorToken(){
-  TokenOperator  token = {NULL, NULL, 0, 0, OPERATOR_TYPE};
-  memAlloc_ExpectAndReturn(sizeof(TokenOperator), &token);
-  TokenOperator  *tokenptr = createOperatorToken( "@", 0, "@ ", OPERATOR_TYPE);
+  OperatorToken  token = {NULL, NULL, 0, 0, OPERATOR_TYPE};
+  memAlloc_ExpectAndReturn(sizeof(OperatorToken), &token);
+  OperatorToken  *tokenptr = createOperatorToken( "@", 0, "@ ", OPERATOR_TYPE);
   TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
   TEST_ASSERT_EQUAL(0, tokenptr->startColumn);
   TEST_ASSERT_EQUAL_STRING("@ ", tokenptr->originalstr);
@@ -129,7 +129,7 @@ void  test_popToken_given_a_token_in_linked_list(){
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
   //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
-  TokenIdentifier token = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
+  IdentifierToken token = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
   ListItem  item = {NULL, NULL, &token};
   Token *tokenptr;
   tokenizerptr->list = &list;
@@ -156,8 +156,8 @@ void  test_popToken_given_2_tokens_in_linked_list(){
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
   //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
-  TokenIdentifier token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
-  TokenInteger token2 = {"  rlcf  0x33 ", "0x33", 8, 4, INTEGER_TYPE, 0x33};
+  IdentifierToken token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
+  IntegerToken token2 = {"  rlcf  0x33 ", "0x33", 8, 4, INTEGER_TYPE, 0x33};
   ListItem  item1 = {NULL, NULL, &token1};
   ListItem  item2 = {NULL, NULL, &token2};
   Token *tokenptr;
