@@ -136,8 +136,10 @@ Token  *getNumberToken(Tokenizer *tokenizer){
       return  (Token  *)getHexToken(tokenizer);
     else if(str[1] == 'b')
       return  (Token  *)getBinToken(tokenizer);
-    else
+    else if(isdigit(str[1]))
       return  (Token  *)getOctalToken(tokenizer);
+    else
+      return  (Token  *)getDecimalToken(tokenizer);
   }
   else
     return  (Token  *)getDecimalToken(tokenizer);
@@ -177,7 +179,7 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   int size;
   strnum = str;
   convertedValue = strtol(strnum, &ptr, 8);
-  if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0'){
+  if(*ptr != ' ' && (!ispunct(*ptr) || *ptr == '.') && *ptr != '\0'){
     if((tokenizer->config & 4) && (*ptr == 'o' || *ptr == 'O') && (*(ptr+1) == ' ' || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_')))
       ptr++;
     else
@@ -206,8 +208,12 @@ IntegerToken *getBinToken(Tokenizer  *tokenizer){
       callThrowException("Invalid binary", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   }
   else{
-    if((tokenizer->config & 8) && (*ptr == 'B' || *ptr == 'b') && (*(ptr+1) == ' ' || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_')) && str[0] != '0' && str[1] != 'b')
-      ptr++;
+    if(tokenizer->config & 8){
+      if((*ptr == 'B' || *ptr == 'b') && (*(ptr+1) == ' ' || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')) && str[0] != '0' && str[1] != 'b')
+        ptr++;
+      else
+        callThrowException("Invalid binary", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+    }
     else
       callThrowException("Invalid binary", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   }
@@ -234,12 +240,16 @@ IntegerToken  *getHexToken(Tokenizer  *tokenizer){
   else
     strnum = str;
   convertedValue = strtol(strnum, &ptr, 16);
-  if(*ptr != ' '&& !ispunct(*ptr) && *ptr != '\0'){
+  if(*ptr != ' '&& (!ispunct(*ptr) || *ptr == '.') && *ptr != '\0'){
     if((str[0] == '0' && str[1] == 'x') || (str[0] == '$'))
       callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
     else{
-      if((tokenizer->config & 2) && (*ptr == 'h' || *ptr == 'H') && ((ispunct(*(ptr+1)) && *(ptr+1) != '_') || *(ptr+1) == ' ' || *(ptr+1) == 0))
-        ptr++;
+      if(tokenizer->config & 2){
+        if((*ptr == 'h' || *ptr == 'H') && ((ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.') || *(ptr+1) == ' ' || *(ptr+1) == 0))
+          ptr++;
+        else
+          callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
+      }
       else
         callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
     }
@@ -261,7 +271,7 @@ FloatToken  *getFloatToken(Tokenizer  *tokenizer){
   if(isalpha(ptr[i])){     // when e is detected, check next character
     if(ptr[i] == 'e'){
       if(ptr[i+1] == ' ')
-        callThrowException("Invalid floating point value(Expect digits or valid operator after 'e')", tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
+        callThrowException("Invalid floating point value(Expect digits or valid value after 'e')", tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
       if(!isdigit(ptr[i+1]) && ptr[i+1] != '+' && ptr[i+1] != '-')
         callThrowException("Invalid floating point value(Invalid operator detected after 'e')", tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
       if(!isdigit(ptr[i+2]))

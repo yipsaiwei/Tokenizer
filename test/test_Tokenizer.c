@@ -248,7 +248,7 @@ void  test_getDecimalToken_given_87bracket_expect_decimal_87(){
 
 void  test_getDecimalToken_given_873Ah_without_hex_config_expect_exception_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  873Ah"); 
+  tokenizer = createTokenizer("  873Ah  (No HEX config)"); 
   IntegerToken *token = NULL;
   Try{
     token = getDecimalToken(tokenizer);
@@ -411,7 +411,7 @@ void  test_getDecimalToken_given_0xF2A1h__with_hex_config_expect_exception_to_be
 
 void  test_getDecimalToken_given_10001b_without_bin_config_expect_exception_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   10001b "); 
+  tokenizer = createTokenizer("   10001b (without bin config) "); 
   IntegerToken *token = NULL;
   Try{
     token = getDecimalToken(tokenizer);
@@ -542,7 +542,7 @@ void  test_getDecimalToken_given_11111b43_hello__with_bin_config_expect_exceptio
 
 void  test_getDecimalToken_given_134o_without_oct_config_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  134o "); 
+  tokenizer = createTokenizer("  134o (without oct config)"); 
   IntegerToken *token = NULL;
   Try{
     token = getDecimalToken(tokenizer);
@@ -565,6 +565,27 @@ void  test_getDecimalToken_given_134o_with_oct_config_expect_oct_134(){
     TEST_ASSERT_EQUAL(7, tokenizer->index);
     TEST_ASSERT_EQUAL(4, token->length);
     TEST_ASSERT_EQUAL(0134, token->value);
+    TEST_ASSERT_EQUAL(3, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpException(ex);
+    freeException(ex);
+    freeTokenizer(tokenizer);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getDecimalToken_given_0111o_with_oct_config_expect_oct_111(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("   0111o "); 
+  configureTokenizer(tokenizer, TOKENIZER_OCT_O);
+  IntegerToken *token = NULL;
+  Try{
+    token = getDecimalToken(tokenizer);
+    TEST_ASSERT_EQUAL(8, tokenizer->index);
+    TEST_ASSERT_EQUAL(5, token->length);
+    TEST_ASSERT_EQUAL(0111, token->value);
     TEST_ASSERT_EQUAL(3, token->startColumn);
     freeToken(token);
     freeTokenizer(tokenizer);
@@ -695,6 +716,92 @@ void  test_getDecimalToken_given_148o_expect_exception_to_be_thrown(){
   freeTokenizer(tokenizer);
 }
 
+void  test_getDecimalToken_given_354point331_expect_getFloatToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 354.331/#@$ "); 
+  FloatToken *token = NULL;
+  Try{
+    token = (FloatToken *)getDecimalToken(tokenizer);
+    TEST_ASSERT_EQUAL(8, tokenizer->index);
+    TEST_ASSERT_EQUAL(7, token->length);
+    TEST_ASSERT_EQUAL(354.331, token->value);
+    TEST_ASSERT_EQUAL(1, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpException(ex);
+    freeException(ex);
+    freeTokenizer(tokenizer);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getDecimalToken_given_20203e_minus_3_expect_getFloatToken_called(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("   20203e-3*1010101 "); 
+  FloatToken *token = NULL;
+  Try{
+    token = (FloatToken *)getDecimalToken(tokenizer);
+    TEST_ASSERT_EQUAL(11, tokenizer->index);
+    TEST_ASSERT_EQUAL(8, token->length);
+    TEST_ASSERT_EQUAL(20203e-3, token->value);
+    TEST_ASSERT_EQUAL(3, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpException(ex);
+    freeException(ex);
+    freeTokenizer(tokenizer);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getDecimalToken_given_876hpoint1020_with_hex_config_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  876h.1020 "); 
+  configureTokenizer(tokenizer, TOKENIZER_HEX_H);
+  FloatToken *token = NULL;
+  Try{
+    token = (FloatToken *)getDecimalToken(tokenizer);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getDecimalToken_given_674point7y49_expect_exception_to_be_thrown_invalid_float(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  674.7y49 "); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getDecimalToken(tokenizer);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getDecimalToken_given_9e_minus_e2_expect_exception_to_be_thrown_invalid_float(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 9e-e2 "); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getDecimalToken(tokenizer);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
 void  test_getOctalToken_given_035_expect_octal_35(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("035"); 
@@ -810,7 +917,7 @@ void  test_getOctalToken_given_085_expect_exception_to_be_thrown(){
 
 void  test_getOctalToken_given_451o_without_oct_config_expect_octal_63(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" 451o"); 
+  tokenizer = createTokenizer(" 451o (No oct config)"); 
   IntegerToken *token = NULL;
   Try{
     token = getOctalToken(tokenizer);
@@ -1021,7 +1128,7 @@ void  test_getHexToken_given_0xAG23_expect_exception_to_be_thrown(){
 
 void  test_getHexToken_9Ah_without_hex_config_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   39Ah  "); 
+  tokenizer = createTokenizer("   39Ah (No hex config) "); 
   IntegerToken *token = NULL;
   Try{
   token = getHexToken(tokenizer);
@@ -1101,6 +1208,8 @@ void  test_getHexToken_given_82ACH12_with_hex_config_expect_exception_to_be_thro
   IntegerToken *token = NULL;
   Try{
   token = getHexToken(tokenizer);
+  freeToken(token);
+  freeTokenizer(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);
@@ -1128,7 +1237,7 @@ void  test_getHexToken_given_0xC34Ah_with_hex_config_expect_exception_to_be_thro
 
 void  test_getHexToken_given_dollarSign_FADA_without_dollarSign_config_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   $FADA  "); 
+  tokenizer = createTokenizer("   $FADA (No $ config) "); 
   IntegerToken *token = NULL;
   Try{
   token = getHexToken(tokenizer);
@@ -1738,7 +1847,7 @@ void  test_getBinToken_given_0b10010plusplus_expect_exception_to_be_thrown(){
 
 void  test_getBinToken_given_10101b_without_bin_config_expect_exception_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("    10101b  "); 
+  tokenizer = createTokenizer("    10101b  (No config) "); 
   IntegerToken *token = NULL;
   Try{
   token = getBinToken(tokenizer);
@@ -1938,7 +2047,7 @@ void  test_getIdentifierToken_given_addwf_StringHere_expect_without_String(){
 
 void  test_getIdentifierToken_given_DE2AH_no_config_expect_identifier_returned(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   DE2AH  "); 
+  tokenizer = createTokenizer("   DE2AH  (No hex config)"); 
   IdentifierToken *token = NULL;
   token = getIdentifierToken(tokenizer);
   TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, token->type);
@@ -1974,9 +2083,9 @@ void  test_getIdentifierToken_given_A12Eh_123_with_hex_config_expect_identifier_
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  A12Eh_123 "); 
   configureTokenizer(tokenizer, TOKENIZER_HEX_H);
-  IntegerToken *token = NULL;
+  IdentifierToken *token = NULL;
   Try{
-    token = (IntegerToken *)getIdentifierToken(tokenizer);
+    token = (IdentifierToken *)getIdentifierToken(tokenizer);
     TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, token->type);
     TEST_ASSERT_EQUAL(11, tokenizer->index);
     TEST_ASSERT_EQUAL_STRING("A12Eh_123", token->str);
@@ -1997,6 +2106,7 @@ void  test_getNumberToken_given_375_expect_getDecimalToken_called(){
   IntegerToken *token = NULL;
   Try{
     token = (IntegerToken *)getNumberToken(tokenizer);
+    TEST_ASSERT_EQUAL(INTEGER_TYPE, token->type);
     TEST_ASSERT_EQUAL(3, tokenizer->index);
     TEST_ASSERT_EQUAL(375, token->value);
     TEST_ASSERT_EQUAL(0, token->startColumn);
@@ -2017,6 +2127,7 @@ void  test_getNumberToken_given_87point9234_expect_getFloatToken_called(){
   FloatToken *token = NULL;
   Try{
     token = (FloatToken *)getNumberToken(tokenizer);
+    TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
     TEST_ASSERT_EQUAL(7, tokenizer->index);
     TEST_ASSERT_EQUAL(87.9234, token->value);
     TEST_ASSERT_EQUAL(0, token->startColumn);
@@ -2106,9 +2217,24 @@ void  test_getNumberToken_given_0345_expect_getOctToken_called(){
   }
 }
 
-void  test_getNumberToken_given_0139_expect_getIntegerToken_called_exception_is_thrown(){
+void  test_getNumberToken_given_0139_expect_getOctalToken_called_exception_is_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("    0139"); 
+  FloatToken *token = NULL;
+  Try{
+  token = (FloatToken *)getNumberToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getNumberToken_given_0553point532_expect_getOctalToken_called_exception_is_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("    0553.532"); 
   FloatToken *token = NULL;
   Try{
   token = (FloatToken *)getNumberToken(tokenizer);
@@ -2314,185 +2440,6 @@ void  test_getNumberToken_given_19A9H_177o_101111b_3_configs_expect_same(){
   }
 }
 
-/*
-void  test_getIntegerOrFloatToken_given_138point1874_expect_getFloatToken_called(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   138.1874"); 
-  FloatToken *token = NULL;
-  Try{
-    token = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
-    TEST_ASSERT_EQUAL_FLOAT(138.1874, token->value);
-    TEST_ASSERT_EQUAL(11, tokenizer->index);
-    freeToken(token);
-    freeTokenizer(tokenizer);
-  }Catch(ex){
-    dumpException(ex);
-    freeException(ex);
-    freeTokenizer(tokenizer);
-    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
-  }
-}
-
-void  test_getIntegerOrFloatToken_given_87e2_expect_getFloatToken_called(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  87e2"); 
-  FloatToken *token = NULL;
-  Try{
-    token = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
-    TEST_ASSERT_EQUAL_FLOAT(87e2, token->value);
-    TEST_ASSERT_EQUAL(6, tokenizer->index);
-    freeToken(token);
-    freeTokenizer(tokenizer);
-  }Catch(ex){
-    dumpException(ex);
-    freeException(ex);
-    freeTokenizer(tokenizer);
-    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
-  }
-}
-
-void  test_getIntegerOrFloatToken_given_927point34e_minus2_expect_getFloatToken_called(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  927.34e-2  "); 
-  FloatToken *token = NULL;
-  Try{
-    token = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_ASSERT_EQUAL(FLOAT_TYPE, token->type);
-    TEST_ASSERT_EQUAL_FLOAT(927.34e-2, token->value);
-    TEST_ASSERT_EQUAL(2, token->startColumn);
-    TEST_ASSERT_EQUAL(11, tokenizer->index);
-    freeToken(token);
-    freeTokenizer(tokenizer);
-  }Catch(ex){
-    dumpException(ex);
-    freeException(ex);
-    freeTokenizer(tokenizer);
-    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
-  }
-}
-
-void  test_getIntegerOrFloatToken_given_4532_expect_getIntegerToken_called(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" 4532"); 
-  IntegerToken *token = NULL;
-  Try{
-    token = (IntegerToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_ASSERT_EQUAL(INTEGER_TYPE, token->type);
-    TEST_ASSERT_EQUAL(4532, token->value);
-    TEST_ASSERT_EQUAL(5, tokenizer->index);
-    freeToken(token);
-    freeTokenizer(tokenizer);
-  }Catch(ex){
-    dumpException(ex);
-    freeException(ex);
-    freeTokenizer(tokenizer);
-    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
-  }
-}
-
-void  test_getIntegerOrFloatToken_given_54Q2_expect_exception_thrown(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" 54Q2 "); 
-  IntegerToken *token = NULL;
-  Try{
-    token = (IntegerToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpException(ex);
-    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
-    freeException(ex);    
-  }
-  freeTokenizer(tokenizer);
-}
-
-void  test_getIntegerOrFloatToken_given_9point_slash123_expect_exception_thrown(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" 9.4.1.2.3 "); 
-  FloatToken *token = NULL;
-  Try{
-    token = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpException(ex);
-    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
-    freeException(ex);    
-  }
-  freeTokenizer(tokenizer);
-}
-
-void  test_getIntegerOrFloatToken_given_9point_e_plus_plus_2_expect_exception_thrown(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" 9.e++2 "); 
-  FloatToken *token = NULL;
-  Try{
-    token = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpException(ex);
-    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
-    freeException(ex);    
-  }
-  freeTokenizer(tokenizer);
-}
-
-void  test_getIntegerOrFloatToken_given_9point3e_comma2_expect_exception_thrown(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" 9.3e,2 "); 
-  FloatToken *token = NULL;
-  Try{
-    token = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpException(ex);
-    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
-    freeException(ex);    
-  }
-  freeTokenizer(tokenizer);
-}
-
-void  test_getIntegerOrFloatToken_given_382point464e_plus1_18372_expect_getFloatToken_called(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  382.464e+1 18372   "); 
-  FloatToken *token0 = NULL;
-  Try{
-    token0 = (FloatToken *)getIntegerOrFloatToken(tokenizer);
-    TEST_ASSERT_EQUAL(FLOAT_TYPE, token0->type);
-    TEST_ASSERT_EQUAL_FLOAT(382.464e+1, token0->value);
-    TEST_ASSERT_EQUAL(2, token0->startColumn);
-    TEST_ASSERT_EQUAL(12, tokenizer->index);
-    freeToken(token0);
-  
-    IntegerToken *token1 = NULL;
-    token1 = (IntegerToken *)getNumberToken(tokenizer);
-    TEST_ASSERT_EQUAL(18, tokenizer->index);
-    TEST_ASSERT_EQUAL(18372, token1->value);
-    TEST_ASSERT_EQUAL(13, token1->startColumn);
-    freeToken(token1);
-    freeTokenizer(tokenizer);
-  }Catch(ex){
-    dumpException(ex);
-    freeException(ex);
-    freeTokenizer(tokenizer);
-    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
-  }
-}
-  
-void  test_getOperatorToken_given_plus(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("+"); 
-  OperatorToken *token = NULL;
-  token = getOperatorToken(tokenizer);
-  TEST_ASSERT_EQUAL(OPERATOR_TYPE, token->type);
-  TEST_ASSERT_EQUAL(1, tokenizer->index);
-  TEST_ASSERT_EQUAL_STRING("+", token->str);
-  TEST_ASSERT_EQUAL(0, token->startColumn);
-  freeToken(token);
-  freeTokenizer(tokenizer);
-} 
-*/
-
 void  test_getOperatorToken_given_minus(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  - "); 
@@ -2612,7 +2559,7 @@ void  test_getOperatorToken_given_square_bracket_expect_same(){
 
 void  test_getOperatorToken_given_dollar_sign_hex_value_no_config_expect_hex_token_returned(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer(" $19A3  "); 
+  tokenizer = createTokenizer(" $19A3  (No $ config)"); 
   OperatorToken *token = NULL;  
   Try{
     token = (OperatorToken *)getOperatorToken(tokenizer);
@@ -2910,15 +2857,23 @@ void  test_getToken_given_hello123_expect_getIdentifierToken_called(){
 void  test_getToken_given__asdfghjkl_hash_expect_getIdentifierToken_called__asdfghjkl_returned(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  _asdfghjkl_# "); 
-  IdentifierToken *token = NULL;
+  IdentifierToken *token0 = NULL;
   Try{
-    token = (IdentifierToken  *)getToken(tokenizer);
-    TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, token->type);
+    token0 = (IdentifierToken  *)getToken(tokenizer);
+    TEST_ASSERT_EQUAL(IDENTIFIER_TYPE, token0->type);
     TEST_ASSERT_EQUAL(13, tokenizer->index);
-    TEST_ASSERT_EQUAL_STRING("_asdfghjkl_", token->str);
-    TEST_ASSERT_EQUAL(2, token->startColumn);
-    freeToken(token);
-    freeTokenizer(tokenizer);
+    TEST_ASSERT_EQUAL_STRING("_asdfghjkl_", token0->str);
+    TEST_ASSERT_EQUAL(2, token0->startColumn);
+    freeToken(token0);
+    
+    OperatorToken *token1 = NULL;
+    token1 = (OperatorToken *)getToken(tokenizer);
+    TEST_ASSERT_EQUAL(OPERATOR_TYPE, token1->type);
+    TEST_ASSERT_EQUAL(14, tokenizer->index);
+    TEST_ASSERT_EQUAL_STRING("#", token1->str);
+    TEST_ASSERT_EQUAL(13, token1->startColumn);
+    freeToken(token1);
+    freeTokenizer(tokenizer);    
   }Catch(ex){
     dumpException(ex);
     freeException(ex);
@@ -3582,7 +3537,6 @@ void  test_getToken_given_bracket_Identi183__minus0x13_expect_operator_identifie
     TEST_ASSERT_EQUAL(0x13, token3->value);
     TEST_ASSERT_EQUAL(16, token3->startColumn);
     freeToken(token3);
-  
     freeTokenizer(tokenizer);
   }Catch(ex){
     dumpException(ex);
@@ -4017,23 +3971,6 @@ void  test_getToken_given_10110b_point_0765e_minus_2_with_bin_config_expect_inte
   IntegerToken *token0 = NULL;
   Try{
     token0 = (IntegerToken  *)getToken(tokenizer);
-    TEST_ASSERT_EQUAL(INTEGER_TYPE, token0->type);
-    TEST_ASSERT_EQUAL(8, tokenizer->index);
-    TEST_ASSERT_EQUAL(0b10110, token0->value);
-    TEST_ASSERT_EQUAL_STRING("10110b", token0->str);
-    TEST_ASSERT_EQUAL(2, token0->startColumn);
-    freeToken(token0);
-  
-    OperatorToken  *token1 = NULL;
-    token1 = (OperatorToken  *)getToken(tokenizer);
-    TEST_ASSERT_EQUAL(OPERATOR_TYPE, token1->type);
-    TEST_ASSERT_EQUAL(9, tokenizer->index);
-    TEST_ASSERT_EQUAL_STRING(".", token1->str);
-    TEST_ASSERT_EQUAL(8, token1->startColumn);
-    freeToken(token1);
-   
-    FloatToken *token2 = NULL;
-    token2 = (FloatToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);
