@@ -110,6 +110,17 @@ void  test_createOperatorToken(){
   TEST_ASSERT_EQUAL(OPERATOR_TYPE, tokenptr->type);
 }
 
+void  test_createNULLToken(){
+  Token  token = {NULL, NULL, 0, 0, NULL_TYPE};
+  memAlloc_ExpectAndReturn(sizeof(Token), &token);
+  Token  *tokenptr = createNULLToken( "   ", 3, NULL_TYPE);
+  TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
+  TEST_ASSERT_EQUAL(3, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("   ", tokenptr->originalstr);
+  TEST_ASSERT_NULL(tokenptr->str);
+  TEST_ASSERT_EQUAL(NULL_TYPE, tokenptr->type);
+}
+
 void  test_freeToken_without_string(){
   Token token = {NULL, NULL, 0, 0, INTEGER_TYPE};
   memFree_Expect(&token);
@@ -127,7 +138,6 @@ void  test_popToken_given_a_token_in_linked_list(){
   Tokenizer tokenizer;
   DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   IdentifierToken token = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
   ListItem  item = {NULL, NULL, &token};

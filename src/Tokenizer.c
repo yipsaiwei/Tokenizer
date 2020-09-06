@@ -230,7 +230,7 @@ IntegerToken  *getHexToken(Tokenizer  *tokenizer){
   int i = 0, convertedValue; 
   int size;
   if(str[0] == '0' && str[1] == 'x')
-    strnum = str + 2; //convert hexadecimal value without 0x
+    strnum = str + 2; //convert hexadecimal value to without 0x
   else if (str[0] == '$'){
     if(tokenizer->config & 1 && str[1] != '0' && str[2] != 'x')
       strnum = str + 1;
@@ -337,8 +337,6 @@ StringToken  *getStringToken(Tokenizer  *tokenizer){
     i ++;
     tokenizer->index ++;
   }
-  else
-    callThrowException("Invalid string(missing or invalid symbol '\"')", tokenizer->str, startColumn, ERROR_INVALID_STRING);
   while(str[i] != '\"' && str[i] != '\0'){
     i++;
     tokenizer->index++;

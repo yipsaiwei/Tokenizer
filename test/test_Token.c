@@ -60,3 +60,13 @@ void  test_createOperatorToken(){
   TEST_ASSERT_EQUAL_STRING("  + 49382", token->str);
   free(token);
 }
+
+void  test_createNULLToken(){
+  Token *token = createNULLToken("   ", 3, NULL_TYPE);
+  TEST_ASSERT_EQUAL(NULL_TYPE, token->type);
+  TEST_ASSERT_EQUAL(3, token->startColumn);
+  TEST_ASSERT_EQUAL_STRING("   ", token->originalstr);
+  TEST_ASSERT_NULL(token->str);
+  TEST_ASSERT_EQUAL(0, token->length);
+  free(token);
+}
