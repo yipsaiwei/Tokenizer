@@ -2562,7 +2562,7 @@ void  test_getOperatorToken_given_remainder_expect_remainder(){
   freeTokenizer(tokenizer);
 } 
 
-void  test_getOperatorToken_given_AND_expect_AND){
+void  test_getOperatorToken_given_AND_expect_AND(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("     &  "); 
   OperatorToken *token = NULL;
@@ -3182,7 +3182,7 @@ void  test_getToken_given_plus_expect_getOperatorToken_called_operator_returned(
   }
 }
 
-void  test_getToken_given_minus_expect_getOperatorToken_called_operator)returned(){
+void  test_getToken_given_minus_expect_getOperatorToken_called_operator_returned(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("     -  "); 
   OperatorToken *token = NULL;
