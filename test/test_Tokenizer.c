@@ -445,6 +445,21 @@ void  test_getOctalToken_given_043point52_expect_exception_ERROR_INVALID_INTEGER
   freeTokenizer(tokenizer);
 }
 
+void  test_getOctalToken_given_034__expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 034_ "); 
+  IntegerToken *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
 void  test_getHexToken_given_0x55_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("0x55"); 
@@ -486,6 +501,21 @@ void  test_getHexToken_given_0x999_and_Symbol_expect_0x999(){
 void  test_getHexToken_given_0xx5_expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("0xx5"); 
+  IntegerToken *token = NULL;
+  Try{
+  token = getHexToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getHexToken_given_0x456__expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("0x456_"); 
   IntegerToken *token = NULL;
   Try{
   token = getHexToken(tokenizer);
@@ -3727,7 +3757,29 @@ void  test_getToken_given_a_string_float_and_invalid_identifier_expect_string_fl
     freeToken(token1);
 
     IntegerToken  *token2 = NULL;
-    token2 = getDecimalToken(tokenizer);
+    token2 = (IntegerToken  *)getToken(tokenizer);
+    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpException(ex);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getToken_given_a_identifier_integer_integer_expect_integer_returned_exception_ERROR_INVALID_INTEGER_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  asdfghjk 0x345_ 12345"); 
+  IdentifierToken *token0 = NULL;
+  Try{
+    token0 = (IdentifierToken  *)getToken(tokenizer);
+    TEST_ASSERT_EQUAL(10, tokenizer->index);
+    TEST_ASSERT_EQUAL_STRING("asdfghjk", token0->str);
+    TEST_ASSERT_EQUAL(2, token0->startColumn);
+    freeToken(token0);
+  
+    IntegerToken *token1 = NULL;
+    token1 = (IntegerToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
     dumpException(ex);

@@ -153,7 +153,7 @@ IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   int i = 0, convertedValue; 
   int size;
   convertedValue = strtol(str, &ptr, 10);
-  if(*ptr != ' ' && (!ispunct(*ptr) || *ptr == '.') && *ptr != '\0'){
+  if(*ptr != ' ' && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if(*ptr == '.' || *ptr == 'e')
       return  (IntegerToken *)getFloatToken(tokenizer);
     if ((tokenizer->config &8) && ( *ptr == 'b' || *ptr == 'B'))
@@ -179,7 +179,7 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   int size;
   strnum = str;
   convertedValue = strtol(strnum, &ptr, 8);
-  if(*ptr != ' ' && (!ispunct(*ptr) || *ptr == '.') && *ptr != '\0'){
+  if(*ptr != ' ' && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if((tokenizer->config & 4) && (*ptr == 'o' || *ptr == 'O') && (*(ptr+1) == ' ' || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_')))
       ptr++;
     else
@@ -201,7 +201,7 @@ IntegerToken *getBinToken(Tokenizer  *tokenizer){
   if(str[0] == '0' && str[1] == 'b')
     strnum = str + 2;
   else
-      strnum = str;
+    strnum = str;
   convertedValue = strtol(strnum, &ptr, 2);
   if(str[0] == '0' && str[1] == 'b'){
     if(*ptr != '\0' && *ptr != ' ' && !ispunct(*ptr))
@@ -240,7 +240,7 @@ IntegerToken  *getHexToken(Tokenizer  *tokenizer){
   else
     strnum = str;
   convertedValue = strtol(strnum, &ptr, 16);
-  if(*ptr != ' '&& (!ispunct(*ptr) || *ptr == '.') && *ptr != '\0'){
+  if(*ptr != ' '&& (!ispunct(*ptr) || *ptr == '.' || *ptr == '_' ) && *ptr != '\0'){
     if((str[0] == '0' && str[1] == 'x') || (str[0] == '$'))
       callThrowException("Invalid hexadecimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
     else{
