@@ -129,10 +129,10 @@ Token *popToken(Tokenizer *tokenizer){
 // Specify the type of token number here
 Token  *getNumberToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
+  char  *ptr;
+  int convertedValue;
   if(str[0] == '0'){
-    if(isdigit(str[1]))
-      return  (Token  *)getOctalToken(tokenizer);
-    else if(str[1] == 'x')
+    if(str[1] == 'x')
       return  (Token  *)getHexToken(tokenizer);
     else if(str[1] == 'b')
       return  (Token  *)getBinToken(tokenizer);
@@ -140,20 +140,7 @@ Token  *getNumberToken(Tokenizer *tokenizer){
       return  (Token  *)getOctalToken(tokenizer);
   }
   else
-    return  getIntegerOrFloatToken(tokenizer);
-}
-
-//Determine whether the token is integer or floating point
-Token  *getIntegerOrFloatToken(Tokenizer *tokenizer){
-  char  *str = tokenizerSkipSpaces(tokenizer);
-  int i = 0;
-  while(str[i]!='\0' && str[i]!=' ' && (!ispunct(str[i]) || str[i] == '.')){
-    if(str[i] == '.' || str[i] == 'e')
-      return  (Token  *)getFloatToken(tokenizer);
-    else
-      i++;
-  }
-  return  (Token  *)getDecimalToken(tokenizer);
+    return  (Token  *)getDecimalToken(tokenizer);
 }
 
 
@@ -164,14 +151,16 @@ IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   int i = 0, convertedValue; 
   int size;
   convertedValue = strtol(str, &ptr, 10);
-  if(*ptr != ' ' && !ispunct(*ptr) && *ptr != '\0'){
+  if(*ptr != ' ' && (!ispunct(*ptr) || *ptr == '.') && *ptr != '\0'){
+    if(*ptr == '.' || *ptr == 'e')
+      return  (IntegerToken *)getFloatToken(tokenizer);
     if ((tokenizer->config &8) && ( *ptr == 'b' || *ptr == 'B'))
-      return  getBinToken(tokenizer);
-    if((tokenizer->config & 2) && ( *ptr == 'h' || (*ptr >= 'A' && *ptr <= 'F') || (*ptr >= 'a' && *ptr <= 'f')))
-      return  getHexToken(tokenizer);
+     return  getBinToken(tokenizer);
+    else  if((tokenizer->config & 2) && ( *ptr == 'h'|| *ptr == 'H' || (*ptr >= 'A' && *ptr <= 'F') || (*ptr >= 'a' && *ptr <= 'f')))
+     return  getHexToken(tokenizer);
     else if ((tokenizer->config &4) && (*ptr == 'o' || *ptr == 'O'))
       return  getOctalToken(tokenizer);
-    else
+   else
     callThrowException("Invalid decimal value", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   }
   tokenizer->index += (ptr-str);

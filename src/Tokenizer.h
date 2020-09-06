@@ -29,7 +29,6 @@ Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
 Token *createToken(Tokenizer *tokenizer);
-Token *getIntegerOrFloatToken(Tokenizer *tokenizer);
 char *tokenizerSkipSpaces(Tokenizer *tokenizer);
 IntegerToken *getOctalToken(Tokenizer  *tokenizer);
 IntegerToken *getHexToken(Tokenizer *tokenizer);
