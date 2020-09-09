@@ -74,12 +74,12 @@ void  test_createNULLToken(){
 }
 
 void  test_createNewlineToken(){
-  Token *token = createNULLToken("  \n", 2, TOKEN_NEWLINE_TYPE);
+  Token *token = createNewlineToken("\n", 2, "  \n", TOKEN_NEWLINE_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_NEWLINE_TYPE, token->type);
   TEST_ASSERT_EQUAL(2, token->startColumn);
   TEST_ASSERT_EQUAL_STRING("  \n", token->originalstr);
-  TEST_ASSERT_NULL(token->str);
-  TEST_ASSERT_EQUAL(0, token->length);
+  TEST_ASSERT_EQUAL_STRING("\n", token->str);
+  TEST_ASSERT_EQUAL(1, token->length);
   free(token);
 }
 

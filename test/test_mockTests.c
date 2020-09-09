@@ -120,6 +120,19 @@ void  test_createNULLToken(){
   TEST_ASSERT_EQUAL(TOKEN_NULL_TYPE, tokenptr->type);
 }
 
+/*
+void  test_createNewlineToken(){
+  Token  token = {"  \n", "\n", 2, 0, TOKEN_NEWLINE_TYPE};
+  memAlloc_ExpectAndReturn(sizeof(Token), &token);
+  Token  *tokenptr = createNewlineToken( "   ", 3, TOKEN_NULL_TYPE);
+  TEST_ASSERT_EQUAL_PTR(&token, tokenptr);
+  TEST_ASSERT_EQUAL(3, tokenptr->startColumn);
+  TEST_ASSERT_EQUAL_STRING("   ", tokenptr->originalstr);
+  TEST_ASSERT_NULL(tokenptr->str);
+  TEST_ASSERT_EQUAL(TOKEN_NULL_TYPE, tokenptr->type);
+}
+*/
+
 void  test_freeToken_without_string(){
   Token token = {NULL, NULL, 0, 0, TOKEN_INTEGER_TYPE};
   memFree_Expect(&token);
