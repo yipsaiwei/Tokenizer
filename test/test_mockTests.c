@@ -5,6 +5,7 @@
 #include "CException.h"
 #include "Token.h"
 #include "mock_MemAlloc.h"
+#include "TokenizerExceptionThrowing.h"
 
 
 void setUp(void)

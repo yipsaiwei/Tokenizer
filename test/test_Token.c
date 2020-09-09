@@ -5,6 +5,7 @@
 #include  "DoubleLinkedList.h"
 #include "Exception.h"
 #include "CException.h"
+#include  "TokenizerExceptionThrowing.h"
 
 void setUp(void)
 {

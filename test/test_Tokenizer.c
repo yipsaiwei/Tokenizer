@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include  "DoubleLinkedList.h"
 #include  "MemAlloc.h"
+#include  "TokenizerExceptionThrowing.h"
 
 void setUp(void)
 {
@@ -159,82 +160,15 @@ void  test_duplicateSubString_2_given_a_number_and_length(){
   free(resultstr);
 }
 
-
-void  test_callThrowException_string(){
-  char  *str = "  Hello \" Hello World ";
-  char  *substr = "\" Hello World ";
-  int   startColumn = 8;
-  Try{
-    callThrowException("Test Exception#1", str, startColumn, ERROR_TESTING);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_TESTING_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpTokenErrorMessage(ex, 1);
-    TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
-    freeException(ex);   
-  }    
-}
-
-void  test_callThrowException_decimal(){
-  char  *str = "   4852   1864ab  sdjnvwoefg  ";
-  char  *substr = "1864ab";
-  int   startColumn = 10;
-  Try{
-    callThrowException("Test Exception#2", str, startColumn, ERROR_TESTING);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpTokenErrorMessage(ex, 1);
-    TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
-    freeException(ex);   
-  }    
-}
-
-void  test_callThrowException_operator(){
-  char  *str = "  \"String here,,,,,\"  %  ";
-  char  *substr = "%";
-  int   startColumn = 22;
-  Try{
-    callThrowException("Test Exception#3", str, startColumn, ERROR_TESTING);
-    TEST_FAIL_MESSAGE("EXPECT ERROR_TESTING_to_be_thrown, BUT UNRECEIVED");
-  }Catch(ex){
-    dumpTokenErrorMessage(ex, 1);
-    TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
-    freeException(ex);   
-  }    
-}
-
 void  test_errorIndicator_given_identifier(){
-  char  *linestr = errorIndicator(4, "HELLO I AM ...");
-  TEST_ASSERT_EQUAL_STRING("    ^~~~~", linestr);
+  char  *linestr = errorIndicator(4, 7);
+  TEST_ASSERT_EQUAL_STRING("    ^~~~~~~", linestr);
   free(linestr);
 }
 
 void  test_errorIndicator1_given_identifier(){
-  char  *linestr = errorIndicator(10, "HELLO I AM ...");
-  TEST_ASSERT_EQUAL_STRING("          ^~~~~", linestr);
-  free(linestr);
-}
-
-void  test_errorIndicator_given_string(){
-  char  *linestr = errorIndicator(1, "\"THIS IS A STRING   ");
-  TEST_ASSERT_EQUAL_STRING(" ^~~~~~~~~~~~~~~~~~~~", linestr);
-  free(linestr);
-}
-
-void  test_errorIndicator1_given_identifier_and_string(){
-  char  *linestr = errorIndicator(13, "HiHiHi1937  \"THIS IS A STRING   ");
-  TEST_ASSERT_EQUAL_STRING("             ^~~~~~~~~~", linestr);
-  free(linestr);
-}
-
-void  test_errorIndicator_given_numbers(){
-  char  *linestr = errorIndicator(1, "135h31");
-  TEST_ASSERT_EQUAL_STRING(" ^~~~~~", linestr);
-  free(linestr);
-}
-
-void  test_errorIndicator_given_operator(){
-  char  *linestr = errorIndicator(3, "+");
-  TEST_ASSERT_EQUAL_STRING("   ^", linestr);
+  char  *linestr = errorIndicator(6, 3);
+  TEST_ASSERT_EQUAL_STRING("      ^~~", linestr);
   free(linestr);
 }
 
@@ -945,6 +879,21 @@ void  test_getFloatToken_given_1apoint456_expect_exception_ERROR_INVALID_FLOAT_t
 void  test_getFloatToken_given_3pointpoint847_expect_exception_ERROR_INVALID_FLOAT_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("3..847"); 
+  FloatToken *token = NULL;
+  Try{
+  token = getFloatToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getFloatToken_given_4point1111__expect_exception_ERROR_INVALID_FLOAT_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  4.1111_"); 
   FloatToken *token = NULL;
   Try{
   token = getFloatToken(tokenizer);
@@ -3550,7 +3499,7 @@ void  test_getToken_given_different_operators_expect_getOperatorToken_called_7op
     TEST_ASSERT_EQUAL(TOKEN_OPERATOR_TYPE, token4->type);
     TEST_ASSERT_EQUAL(6, tokenizer->index);
     TEST_ASSERT_EQUAL_STRING("$", token4->str);
-    TEST_ASSERT_EQUAL(5, token2->startColumn);
+    TEST_ASSERT_EQUAL(5, token4->startColumn);
     freeToken(token4);        
     
     OperatorToken *token5 = NULL;

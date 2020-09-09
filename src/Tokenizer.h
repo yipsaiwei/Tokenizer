@@ -9,6 +9,7 @@
 #include  "Errors.h"
 #include  "DoubleLinkedList.h"
 #include  "MemAlloc.h"
+#include  "TokenizerExceptionThrowing.h"
 
 #define TOKENIZER_DOLLAR_SIGN_HEX         (1 << 0)
 #define TOKENIZER_HEX_H                   (1 << 1)
@@ -42,8 +43,7 @@ OperatorToken *getOperatorToken(Tokenizer *tokenizer);
 StringToken  *getStringToken(Tokenizer  *tokenizer);
 Token *getNewlineToken(Tokenizer  *tokenizer);
 char  *duplicateSubstring(char *str, int length);
-char  *errorIndicator(int startColumn, char *str);
-void  callThrowException(char *message, char *str, int startColumn, int errorType);
+char  *errorIndicator(int startColumn, int  length);
 void  pushBackToken(Tokenizer *tokenizer, Token *token);
 Token *popToken(Tokenizer *tokenizer);
 void configureTokenizer(Tokenizer *tokenizer, uint32_t configuration);
