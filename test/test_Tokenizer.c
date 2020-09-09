@@ -49,11 +49,26 @@ void  test_configureTokenizer_given_octal_bin_hex_dollar_sign_expect_config_15()
   freeTokenizer(tokenizer);
 }
 
+void  test_skipWhiteSpaces_given_3_spaces_expect_without_space(){
+  char  *str = "   qwertyu";
+  char  *strWithoutSpace;
+  strWithoutSpace = skipWhiteSpaces(str);
+  TEST_ASSERT_EQUAL_STRING("qwertyu", strWithoutSpace);
+}
+
+void  test_skipWhiteSpaces_given_backslah_t_expect_without_space(){
+  char  *str = "\t4f43u";
+  char  *strWithoutSpace;
+  strWithoutSpace = skipWhiteSpaces(str);
+  TEST_ASSERT_EQUAL_STRING("4f43u", strWithoutSpace);
+}
+
 void  test_tokenizerSkipSpaces_given_identifier_efnkfsl646_expect_the_same(){
   Tokenizer *tokenizer = createTokenizer("efnkfsl646"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("efnkfsl646", str);
   TEST_ASSERT_EQUAL(0, tokenizer->index);
+  freeTokenizer(tokenizer);
 }
 
 void  test_createTokenizer_given_numbers_identifiers_and_operator_expect_same(){
@@ -68,6 +83,7 @@ void  test_tokenizerSkipSpaces_given____abc123(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("abc123", str);
   TEST_ASSERT_EQUAL(2, tokenizer->index);
+  freeTokenizer(tokenizer);
 }
 
 void  test_tokenizerSkipSpaces_given_backslash_t(){
@@ -75,6 +91,7 @@ void  test_tokenizerSkipSpaces_given_backslash_t(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("hellllllo", str);
   TEST_ASSERT_EQUAL(1, tokenizer->index);
+  freeTokenizer(tokenizer);
 }
 
 void  test_tokenizerSkipSpaces_given_backslash_n(){
@@ -82,6 +99,7 @@ void  test_tokenizerSkipSpaces_given_backslash_n(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("ITEM", str);
   TEST_ASSERT_EQUAL(1, tokenizer->index);
+  freeTokenizer(tokenizer);
 }
 
 void  test_tokenizerSkipSpaces_given_backslash_v(){
@@ -89,6 +107,7 @@ void  test_tokenizerSkipSpaces_given_backslash_v(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("BLOCK", str);
   TEST_ASSERT_EQUAL(2, tokenizer->index);
+  freeTokenizer(tokenizer);
 }
 
 void  test_tokenizerSkipSpaces_given_backslash_f(){
@@ -96,6 +115,7 @@ void  test_tokenizerSkipSpaces_given_backslash_f(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("GROUP", str);
   TEST_ASSERT_EQUAL(3, tokenizer->index);
+  freeTokenizer(tokenizer);
 }
 
 void  test_tokenizerSkipSpaces_given____asterisk(){
@@ -103,6 +123,7 @@ void  test_tokenizerSkipSpaces_given____asterisk(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL(5, tokenizer->index);
   TEST_ASSERT_EQUAL_STRING("*", str);
+  freeTokenizer(tokenizer);
 }
 
 void  test_tokenizerSkipSpaces_given______0x4573_expect_same(){
@@ -110,6 +131,7 @@ void  test_tokenizerSkipSpaces_given______0x4573_expect_same(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL(5, tokenizer->index);
   TEST_ASSERT_EQUAL_STRING("0x4573", str);
+  freeTokenizer(tokenizer);
 }
 
 void  test_duplicateSubString_given_a_string_and_length(){

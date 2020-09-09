@@ -96,12 +96,17 @@ void  callThrowException(char *message, char *str, int startColumn, int errorTyp
 // Skip whitespaces of a string
 char *tokenizerSkipSpaces(Tokenizer *tokenizer){
   char  *str = tokenizer->str;
+  char  *strWithoutSpace;
   for(int i = 0; i<tokenizer->index; i++)
     str++;
-  while(isspace((tokenizer->str)[tokenizer->index] )){  
-    (tokenizer->index) ++;
+  strWithoutSpace = skipWhiteSpaces(str);
+  tokenizer->index += (strWithoutSpace - str);
+  return  strWithoutSpace;
+}
+
+char *skipWhiteSpaces(char  *str){
+  while(isspace(*str))
     str++;
-  }
   return  str;
 }
 

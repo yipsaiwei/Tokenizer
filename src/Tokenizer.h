@@ -28,6 +28,7 @@ struct Tokenizer {
 Tokenizer *createTokenizer(char *str);
 void  freeTokenizer(Tokenizer *tokenizer);
 Token *getToken(Tokenizer *tokenizer);
+char *skipWhiteSpaces(char  *str);
 char *tokenizerSkipSpaces(Tokenizer *tokenizer);
 IntegerToken *getOctalToken(Tokenizer  *tokenizer);
 IntegerToken *getHexToken(Tokenizer *tokenizer);
