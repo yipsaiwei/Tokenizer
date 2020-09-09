@@ -13,6 +13,7 @@ Tokenizer  *createTokenizer(char *str){
   tokenizer->str = str;
   tokenizer->config = 0;
   tokenizer->list = NULL;
+  tokenizer->lineNum = 0;
   return  tokenizer;
 }
 
@@ -42,8 +43,10 @@ Token  *getToken(Tokenizer *tokenizer){
     return  (Token  *)getIdentifierToken(tokenizer);
   else  if(str[0] == '\"')
     return  (Token  *)getStringToken(tokenizer);
+  else  if(str[0] == '\n')
+    return  getNewlineToken(tokenizer);
   else  if(str[0] == 0)
-    return  createNULLToken(tokenizer->str, tokenizer->index, NULL_TYPE);
+    return  createNULLToken(tokenizer->str, tokenizer->index, TOKEN_NULL_TYPE);
   else
     return  (Token  *)getOperatorToken(tokenizer);
 }
@@ -105,7 +108,7 @@ char *tokenizerSkipSpaces(Tokenizer *tokenizer){
 }
 
 char *skipWhiteSpaces(char  *str){
-  while(isspace(*str))
+  while(isspace(*str) && *str != '\n')
     str++;
   return  str;
 }
@@ -150,6 +153,17 @@ Token  *getNumberToken(Tokenizer *tokenizer){
     return  (Token  *)getDecimalToken(tokenizer);
 }
 
+Token *getNewlineToken(Tokenizer  *tokenizer){
+  char  *str = tokenizerSkipSpaces(tokenizer); 
+  char  *resultstr;
+  int startColumn = tokenizer->index;
+  tokenizer->lineNum++;
+  tokenizer->index++;
+  resultstr = duplicateSubstring(str, 1);
+  resultstr[1] = 0;
+  return  createNewlineToken(resultstr, startColumn, tokenizer->str, TOKEN_NEWLINE_TYPE);
+}
+
 
 IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -172,7 +186,7 @@ IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   }
   tokenizer->index += (ptr-str);
   resultstr = duplicateSubstring(str, ptr-str);
-return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
+return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
 
 
@@ -194,7 +208,7 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
     callThrowException("Invalid octal value(Number >7 detected)", tokenizer->str, startColumn, ERROR_INVALID_INTEGER);
   resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
-return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
+return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
 
 
@@ -224,7 +238,7 @@ IntegerToken *getBinToken(Tokenizer  *tokenizer){
   }
   char  *resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr - str);
-return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);
+return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);
 }
 
 
@@ -261,7 +275,7 @@ IntegerToken  *getHexToken(Tokenizer  *tokenizer){
   }
   resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
-return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, INTEGER_TYPE);  
+return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
 
 
@@ -297,7 +311,7 @@ FloatToken  *getFloatToken(Tokenizer  *tokenizer){
     callThrowException("Invalid floating point value", tokenizer->str, startColumn, ERROR_INVALID_FLOAT);
   resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
-return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, FLOAT_TYPE);  
+return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_FLOAT_TYPE);  
 }
 
 
@@ -316,7 +330,7 @@ IdentifierToken *getIdentifierToken(Tokenizer *tokenizer){
     tokenizer->index++;
   }
   char  *resultstr = duplicateSubstring(str, i);
-return  createIdentifierToken(resultstr, startColumn, tokenizer->str, IDENTIFIER_TYPE);  
+return  createIdentifierToken(resultstr, startColumn, tokenizer->str, TOKEN_IDENTIFIER_TYPE);  
 }
 
 
@@ -330,7 +344,7 @@ OperatorToken *getOperatorToken(Tokenizer *tokenizer){
   tokenizer->index++;
   char  *resultstr = duplicateSubstring(str, 1);
   resultstr[1] = '\0';
-return  createOperatorToken(resultstr, startColumn, tokenizer->str, OPERATOR_TYPE);  
+return  createOperatorToken(resultstr, startColumn, tokenizer->str, TOKEN_OPERATOR_TYPE);  
 }
 
 
@@ -351,6 +365,6 @@ StringToken  *getStringToken(Tokenizer  *tokenizer){
   i ++;
   tokenizer->index ++;
   char  *resultstr = duplicateSubstring(str, i);
-  return  createStringToken(resultstr, startColumn, str, STRING_TYPE);
+  return  createStringToken(resultstr, startColumn, str, TOKEN_STRING_TYPE);
 }
 

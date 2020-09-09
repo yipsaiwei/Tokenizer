@@ -7,14 +7,15 @@
 
 typedef enum
 {
-	INTEGER_TYPE,
-	FLOAT_TYPE,
-	OPERATOR_TYPE,
-	IDENTIFIER_TYPE,
-	NULL_TYPE,
-	STRING_TYPE,
-	UNKNOWN_TYPE,
-	INVALID_TYPE
+	TOKEN_INTEGER_TYPE,
+	TOKEN_FLOAT_TYPE,
+	TOKEN_OPERATOR_TYPE,
+	TOKEN_IDENTIFIER_TYPE,
+	TOKEN_NULL_TYPE,
+	TOKEN_STRING_TYPE,
+  TOKEN_NEWLINE_TYPE,
+	TOKEN_UNKNOWN_TYPE,
+	TOKEN_INVALID_TYPE
 }TOKENTYPE;
 
 typedef struct
@@ -71,6 +72,7 @@ IdentifierToken *createIdentifierToken(char *str, int  index, char  *originalstr
 StringToken *createStringToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 OperatorToken *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 Token *createNULLToken(char *originalstr, int index, TOKENTYPE type);
+Token *createNewlineToken(char  *str, int index, char  *originalstr, TOKENTYPE type);
 void  freeToken(void *token);
 void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo);
 

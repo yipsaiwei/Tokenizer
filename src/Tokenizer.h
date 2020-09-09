@@ -21,6 +21,7 @@ struct Tokenizer {
   int index;
   uint32_t  config;
   uint32_t length;
+  int lineNum;
   DoubleLinkedList *list;
 };
 
@@ -39,6 +40,7 @@ Token  *getNumberToken(Tokenizer *tokenizer);
 IdentifierToken *getIdentifierToken(Tokenizer *tokenizer);
 OperatorToken *getOperatorToken(Tokenizer *tokenizer);
 StringToken  *getStringToken(Tokenizer  *tokenizer);
+Token *getNewlineToken(Tokenizer  *tokenizer);
 char  *duplicateSubstring(char *str, int length);
 char  *errorIndicator(int startColumn, char *str);
 void  callThrowException(char *message, char *str, int startColumn, int errorType);

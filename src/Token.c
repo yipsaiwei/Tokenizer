@@ -67,6 +67,16 @@ Token *createNULLToken(char *originalstr, int index, TOKENTYPE type){
   return  newToken;
 }
 
+Token *createNewlineToken(char  *str, int index, char  *originalstr, TOKENTYPE type){
+  Token *newToken = memAlloc(sizeof(Token));
+  newToken->originalstr = originalstr;
+  newToken->str = str;
+  newToken->startColumn = index;
+  newToken->length = strlen(str);
+  newToken->type = type;
+  return  newToken;
+}
+
 void  freeToken(void *token){
   Token *tokenFree;
   tokenFree = (Token  *)token;
