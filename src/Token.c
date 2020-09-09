@@ -75,3 +75,13 @@ void  freeToken(void *token){
   if(tokenFree)
     memFree(tokenFree);
 }
+
+void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
+  int column = 0;
+  char  *str = ex->data;
+  while(str[column] != '^')
+    column++;
+  column++;
+  printf("Error on line %d:%d: %s", lineNo, column, ex->msg);
+}
+

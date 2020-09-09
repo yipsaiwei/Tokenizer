@@ -18,6 +18,7 @@ void tearDown(void)
 
 CEXCEPTION_T ex;
 
+
 void  test_createTokenizer_given_number_expect_same(){
   Tokenizer *tokenizer = createTokenizer("19373");
   TEST_ASSERT_EQUAL_STRING("19373", tokenizer->str);
@@ -144,7 +145,7 @@ void  test_callThrowException_string(){
     callThrowException("Test Exception#1", str, startColumn, ERROR_TESTING);
     TEST_FAIL_MESSAGE("EXPECT ERROR_TESTING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
     freeException(ex);   
   }    
@@ -158,7 +159,7 @@ void  test_callThrowException_decimal(){
     callThrowException("Test Exception#2", str, startColumn, ERROR_TESTING);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
     freeException(ex);   
   }    
@@ -172,7 +173,7 @@ void  test_callThrowException_operator(){
     callThrowException("Test Exception#3", str, startColumn, ERROR_TESTING);
     TEST_FAIL_MESSAGE("EXPECT ERROR_TESTING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
     freeException(ex);   
   }    
@@ -226,7 +227,7 @@ void  test_getOctalToken_given_063divide_expect_octal_63(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -241,7 +242,7 @@ void  test_getOctalToken_given_01239_expect_exception_ERROR_INVALID_INTEGER_to_b
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -256,7 +257,7 @@ void  test_getOctalToken_given_0123_11_expect_exception_ERROR_INVALID_INTEGER_to
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -271,7 +272,7 @@ void  test_getOctalToken_given_0o35_expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -286,7 +287,7 @@ void  test_getOctalToken_given_0oa5_expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -301,7 +302,7 @@ void  test_getOctalToken_given_0a5_expect_exception_ERROR_INVALID_INTEGER_to_be_
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -316,7 +317,7 @@ void  test_getOctalToken_given_085_expect_exception_ERROR_INVALID_INTEGER_to_be_
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -331,7 +332,7 @@ void  test_getOctalToken_given_451o_without_oct_config_expect_exception_ERROR_IN
     token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -351,7 +352,7 @@ void  test_getOctalToken_given_451o_with_oct_config_expect_octal_63(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -371,7 +372,7 @@ void  test_getOctalToken_given_12O_with_oct_config_expect_octal_13(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -391,7 +392,7 @@ void  test_getOctalToken_given_777o__with_oct_config_expect_octal_777(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -407,7 +408,7 @@ void  test_getOctalToken_given_85of_with_oct_config_expect_exception_ERROR_INVAL
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -423,7 +424,7 @@ void  test_getOctalToken_given_085o_with_oct_config_expect_exception_ERROR_INVAL
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -438,7 +439,7 @@ void  test_getOctalToken_given_043point52_expect_exception_ERROR_INVALID_INTEGER
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -453,7 +454,7 @@ void  test_getOctalToken_given_034__expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getOctalToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -472,7 +473,7 @@ void  test_getHexToken_given_0x55_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -491,7 +492,7 @@ void  test_getHexToken_given_0x999_and_Symbol_expect_0x999(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -506,7 +507,7 @@ void  test_getHexToken_given_0xx5_expect_exception_ERROR_INVALID_INTEGER_to_be_t
   token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -521,7 +522,7 @@ void  test_getHexToken_given_0x456__expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -537,7 +538,7 @@ void  test_getHexToken_given_00x76_expect_exception_ERROR_INVALID_INTEGER_to_be_
   token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -557,7 +558,7 @@ void  test_getHexToken_given_0xface_expect_hex_0xface(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -572,7 +573,7 @@ void  test_getHexToken_given_0xAG23_expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -587,7 +588,7 @@ void  test_getHexToken_39Ah_without_hex_config_expect_ERROR_INVALID_INTEGER_exce
   token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -607,7 +608,7 @@ void  test_getHexToken_given_39Ah_with_hex_config_expect_0x39A(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -627,7 +628,7 @@ void  test_getHexToken_given_1928H_with_hex_config_expect_0x1928(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -647,7 +648,7 @@ void  test_getHexToken_given_31DEh_t_with_hex_config_expect_0x31DE(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -665,7 +666,7 @@ void  test_getHexToken_given_82ACH12_with_hex_config_expect_exception_ERROR_INVA
   freeTokenizer(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -681,7 +682,7 @@ void  test_getHexToken_given_0xC34Ah_with_hex_config_expect_exception_ERROR_INVA
   token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -702,7 +703,7 @@ void  test_getHexToken_given_dollarSign_FADA_with_dollarSign_config_expect_hexad
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -723,7 +724,7 @@ void  test_getHexToken_given_dollarSign_FADA_with_dollarSign_config_expect_hexad
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -739,7 +740,7 @@ void  test_getHexToken_given_dollarSign_FADAh_with_dollarSign_config_expect_exce
     token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -755,7 +756,7 @@ void  test_getHexToken_given_dollarSign_39W1_with_dollarSign_config_expect_excep
     token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -771,7 +772,7 @@ void  test_getHexToken_given_dollarSign_0x3451_with_dollarSign_config_expect_exc
     token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -786,7 +787,7 @@ void  test_getHexToken_given_0x3391point88_expect_exception_ERROR_INVALID_INTEGE
     token = getHexToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -805,7 +806,7 @@ void  test_getFloatToken_given_1point456_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -824,7 +825,7 @@ void  test_getFloatToken_given_256point_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -843,7 +844,7 @@ void  test_getFloatToken_given_66point191_or_symbol_expect_66point191(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -858,7 +859,7 @@ void  test_getFloatToken_given_74point_e_expect_exception_ERROR_INVALID_FLOAT_to
     token = getFloatToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -873,7 +874,7 @@ void  test_getFloatToken_given_101point191halo_expect_exception_ERROR_INVALID_FL
     token = getFloatToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -888,7 +889,7 @@ void  test_getFloatToken_given_1apoint456_expect_exception_ERROR_INVALID_FLOAT_t
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -904,7 +905,7 @@ void  test_getFloatToken_given_3pointpoint847_expect_exception_ERROR_INVALID_FLO
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -923,7 +924,7 @@ void  test_getFloatToken_given_3point836e2_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -942,7 +943,7 @@ void  test_getFloatToken_given_7pointe2_expect_7point_e2(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -961,7 +962,7 @@ void  test_getFloatToken_given_e2_expect_0point_e2(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -980,7 +981,7 @@ void  test_getFloatToken_given_53point12eplus2_expect_53point12eplus2(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -999,7 +1000,7 @@ void  test_getFloatToken_given_18356point123eminus4_expect_18356point123eminus4(
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1018,7 +1019,7 @@ void  test_getFloatToken_given_186point13minus4_expect_186point13minus4(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1037,7 +1038,7 @@ void  test_getFloatToken_given_1point034eplus3plus12_expect_1point034eplus3(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1052,7 +1053,7 @@ void  test_getFloatToken_given_154xpoint395_expect_exception_ERROR_INVALID_FLOAT
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1067,7 +1068,7 @@ void  test_getFloatToken_given_654e_minus2_abc_expect_exception_ERROR_INVALID_FL
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1082,7 +1083,7 @@ void  test_getFloatToken_given_19epoint5_expect_exception_ERROR_INVALID_FLOAT_to
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1097,7 +1098,7 @@ void  test_getFloatToken_given_12point4point4point2point_e_minus_minus_4_expect_
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1112,7 +1113,7 @@ void  test_getFloatToken_given_397point2y0_expect_exception_ERROR_INVALID_FLOAT_
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1127,7 +1128,7 @@ void  test_getFloatToken_given_1point456eplus_plus3_expect_exception_ERROR_INVAL
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1142,7 +1143,7 @@ void  test_getFloatToken_given_1point456eminus_minus3_expect_ERROR_INVALID_FLOAT
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1157,7 +1158,7 @@ void  test_getFloatToken_given_1point456emultiply8_expect_exception_ERROR_INVALI
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1172,7 +1173,7 @@ void  test_getFloatToken_given_12point1eslash5_expect_exception_ERROR_INVALID_FL
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1188,7 +1189,7 @@ void  test_getFloatToken_given_81point3eplusq_expect_exception_ERROR_INVALID_FLO
   token = getFloatToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -1207,7 +1208,7 @@ void  test_getBinToken_given_0b110_expect_decimal_6(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1226,7 +1227,7 @@ void  test_getBinToken_given_0b1111_expect_decimal_15(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1245,7 +1246,7 @@ void  test_getBinToken_given_0b1011010remainder_expect_decimal_90(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1260,7 +1261,7 @@ void  test_getBinToken_given_0b1131_expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1275,7 +1276,7 @@ void  test_getBinToken_given_0b11P0_expect_exception_ERROR_INVALID_INTEGER_to_be
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1290,7 +1291,7 @@ void  test_getBinToken_given_0b10010plusplus_expect_exception_ERROR_INVALID_INTE
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1305,7 +1306,7 @@ void  test_getBinToken_given_10101b_without_bin_config_expect_exception_ERROR_IN
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1325,7 +1326,7 @@ void  test_getBinToken_given_10101b_with_bin_config_expect_decimal_21(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1345,7 +1346,7 @@ void  test_getBinToken_given_10110b__hi_with_bin_config_expect_decimal_22(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -1361,7 +1362,7 @@ void  test_getBinToken_given_1101bP_with_bin_config_expect_exception_ERROR_INVAL
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1377,7 +1378,7 @@ void  test_getBinToken_given_1021b_with_bin_config_expect_exception_ERROR_INVALI
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1393,7 +1394,7 @@ void  test_getBinToken_given_0b0011b_with_bin_config_expect_exception_ERROR_INVA
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1409,7 +1410,7 @@ void  test_getBinToken_given_10101bpoint234_with_bin_config_expect_exception_ERR
   token = getBinToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1429,7 +1430,7 @@ void  test_getDecimalToken_given_351_expect_351(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1449,7 +1450,7 @@ void  test_getDecimalToken_given_87bracket_expect_decimal_87(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1464,7 +1465,7 @@ void  test_getDecimalToken_given_1a35_expect_exception_ERROR_INVALID_INTEGER_to_
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1479,7 +1480,7 @@ void  test_getDecimalToken_given_78wxy_expect_exception_ERROR_INVALID_INTEGER_to
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1494,7 +1495,7 @@ void  test_getDecimalToken_given_873Ah_without_hex_config_expect_exception_ERROR
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1515,7 +1516,7 @@ void  test_getDecimalToken_given_873Ah_with_hex_config_expect_hexadecimal_0x873A
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1536,7 +1537,7 @@ void  test_getDecimalToken_given_D43Ah_plus_with_hex_config_expect_hexadecimal_0
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1557,7 +1558,7 @@ void  test_getDecimalToken_given_ABCDH_with_hex_config_expect_hexadecimal_34723(
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1578,7 +1579,7 @@ void  test_getDecimalToken_given_34A2h_Q_with_hex_config_expect_hexadecimal_0x34
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1594,7 +1595,7 @@ void  test_getDecimalToken_given_52__with_hex_config_expect_exception_ERROR_INVA
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1610,7 +1611,7 @@ void  test_getDecimalToken_given_10E3h653__with_hex_config_expect_exception_ERRO
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1626,7 +1627,7 @@ void  test_getDecimalToken_given_5R34h_with_hex_config_expect_exception_ERROR_IN
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1642,7 +1643,7 @@ void  test_getDecimalToken_given_FDECHell__with_hex_config_expect_exception_ERRO
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1658,7 +1659,7 @@ void  test_getDecimalToken_given_10001b_without_bin_config_expect_exception_ERRO
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1679,7 +1680,7 @@ void  test_getDecimalToken_given_10110b_with_bin_config_expect_bin_10110(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1700,7 +1701,7 @@ void  test_getDecimalToken_given_101B_with_bin_config_expect_bin_101(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1721,7 +1722,7 @@ void  test_getDecimalToken_given_10101b_minus_with_bin_config_expect_bin_10101()
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1742,7 +1743,7 @@ void  test_getDecimalToken_given_10101b__with_bin_config_expect_bin_1100(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1758,7 +1759,7 @@ void  test_getDecimalToken_given_10111b_hello__with_bin_config_expect_exception_
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1774,7 +1775,7 @@ void  test_getDecimalToken_given_11111b43_hello__with_bin_config_expect_exceptio
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1789,7 +1790,7 @@ void  test_getDecimalToken_given_134o_without_oct_config_expect_exception_ERROR_
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1810,7 +1811,7 @@ void  test_getDecimalToken_given_134o_with_oct_config_expect_oct_134(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1831,7 +1832,7 @@ void  test_getDecimalToken_given_0111o_with_oct_config_expect_oct_111(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1852,7 +1853,7 @@ void  test_getDecimalToken_given_413O_with_oct_config_expect_oct_413(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1873,7 +1874,7 @@ void  test_getDecimalToken_given_173O_ab_with_oct_config_expect_oct_0173(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1889,7 +1890,7 @@ void  test_getDecimalToken_given_3945o_with_oct_config_expect_exception_ERROR_IN
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1905,7 +1906,7 @@ void  test_getDecimalToken_given_12o_hello_with_oct_config_expect_exception_ERRO
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1914,13 +1915,13 @@ void  test_getDecimalToken_given_12o_hello_with_oct_config_expect_exception_ERRO
 
 void  test_getDecimalToken_given_148o_expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("    148o   "); 
+  tokenizer = createTokenizer("    148o  (no oct config) "); 
   IntegerToken *token = NULL;
   Try{
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1940,7 +1941,7 @@ void  test_getDecimalToken_given_354point331_expect_getFloatToken_called(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1960,7 +1961,7 @@ void  test_getDecimalToken_given_20203e_minus_3_expect_getFloatToken_called(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -1976,7 +1977,7 @@ void  test_getDecimalToken_given_876hpoint1020_with_hex_config_expect_exception_
     token = (FloatToken *)getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -1992,7 +1993,7 @@ void  test_getDecimalToken_given_1001b_point88_with_bin_config_expect_exception_
     token = (FloatToken *)getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2007,7 +2008,7 @@ void  test_getDecimalToken_given_674point7y49_expect_exception_to_be_thrown_inva
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -2022,7 +2023,7 @@ void  test_getDecimalToken_given_9e_minus_e2_expect_exception_to_be_thrown_inval
     token = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -2041,7 +2042,7 @@ void  test_getOctalToken_given_035_expect_octal_35(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -2172,7 +2173,7 @@ void  test_getIdentifierToken_given_DE2AH_with_hex_config_expect_identifier_retu
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -2193,7 +2194,7 @@ void  test_getIdentifierToken_given_A12Eh_123_with_hex_config_expect_identifier_
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -2213,7 +2214,7 @@ void  test_getNumberToken_given_375_expect_getDecimalToken_called_decimal_375(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2234,7 +2235,7 @@ void  test_getNumberToken_given_87point9234_expect_getFloatToken_called_87point9
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2253,7 +2254,7 @@ void  test_getNumberToken_given_93point_e_minus2_expect_getFloatToken_called_93p
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2272,7 +2273,7 @@ void  test_getNumberToken_given_0x9521_expect_getHexToken_called_hex_0x9521(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2291,7 +2292,7 @@ void  test_getNumberToken_given_0b1010_expect_getBinToken_called_bin_0b1010(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2310,7 +2311,7 @@ void  test_getNumberToken_given_0345_expect_getOctToken_called_oct_0345(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2325,7 +2326,7 @@ void  test_getNumberToken_given_0139_expect_getOctalToken_called_exception_ERROR
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2340,7 +2341,7 @@ void  test_getNumberToken_given_0553point532_expect_getOctalToken_called_excepti
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2355,7 +2356,7 @@ void  test_getNumberToken_given_32point12point3_expect_getFloatToken_called_exce
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -2370,7 +2371,7 @@ void  test_getNumberToken_given_34point_e_excalmation_1_expect_getFloatToken_cal
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -2385,7 +2386,7 @@ void  test_getNumberToken_given_54b_expect_getIntegerToken_called_exception_ERRO
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2400,7 +2401,7 @@ void  test_getNumberToken_given_0b1211_expect_getBinToken_called_exception_ERROR
   token = (IntegerToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2415,7 +2416,7 @@ void  test_getNumberToken_given_0x3Y12_expect_getHexToken_called_exception_ERROR
   token = (IntegerToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2430,7 +2431,7 @@ void  test_getNumberToken_given_0o318_expect_getOctToken_called_exception_ERROR_
   token = (IntegerToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -2470,7 +2471,7 @@ void  test_getNumberToken_given_0345_12point3e2_12_0x123_expect_same(){
     freeToken(token3);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
@@ -2499,7 +2500,7 @@ void  test_getNumberToken_given_0x123_456_32point_e_plus_minus_2_expect_getOctTo
   token2 = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -2533,7 +2534,7 @@ void  test_getNumberToken_given_19A9H_177o_101111b_3_configs_expect_same(){
     freeToken(token2);    
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -2669,7 +2670,7 @@ void  test_getOperatorToken_given_dollar_sign_hex_value_no_config_expect_hex_tok
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -2689,7 +2690,7 @@ void  test_getOperatorToken_given_dollar_sign_space_hex_value_with_config_expect
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -2709,7 +2710,7 @@ void  test_getOperatorToken_given_dollar_sign__FADE12h_with_config_expect_operat
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
@@ -2729,7 +2730,7 @@ void  test_getOperatorToken_given_dollar_sign_hex_value_expect_hex_token_returne
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -2745,7 +2746,7 @@ void  test_getOperatorToken_given_dollar_sign_91AAabcdefg_expect_exception_ERROR
     token = (IntegerToken *)getOperatorToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-      dumpException(ex);
+      dumpTokenErrorMessage(ex, 1);
       TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
       freeException(ex);    
   }
@@ -2761,7 +2762,7 @@ void  test_getOperatorToken_given_dollar_sign_76T5_expect_exception_ERROR_INVALI
     token = (IntegerToken *)getOperatorToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-      dumpException(ex);
+      dumpTokenErrorMessage(ex, 1);
       TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
       freeException(ex);    
   }
@@ -2777,7 +2778,7 @@ void  test_getOperatorToken_given_dollar_sign_0x88A8_expect_exception_ERROR_INVA
     token = (IntegerToken *)getOperatorToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-      dumpException(ex);
+      dumpTokenErrorMessage(ex, 1);
       TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
       freeException(ex);    
   }
@@ -2796,7 +2797,7 @@ void  test_getStringToken_Hello_how_are_you_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");       
@@ -2815,7 +2816,7 @@ void  test_getStringToken_string_identifier_expect_STRING_STRING_xxx__plus(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");       
@@ -2834,7 +2835,7 @@ void  test_getStringToken_string_identifier_expect_STRING_STRING_xxx_plus(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");       
@@ -2853,7 +2854,7 @@ void  test_getStringToken_hi_12345_expect_hi(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");       
@@ -2872,7 +2873,7 @@ void  test_getStringToken_This_is_a_string_to_test_this_function_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -2892,7 +2893,7 @@ void  test_getStringToken_Hello_comma_abcdeQf_expect_same(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");         
@@ -2908,7 +2909,7 @@ void  test_getStringToken_given_Hello_how_are_you_without_symbol_expect_exceptio
   token = (StringToken  *)getStringToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-      dumpException(ex);
+      dumpTokenErrorMessage(ex, 1);
       TEST_ASSERT_EQUAL(ERROR_INVALID_STRING, ex->errorCode);
       freeException(ex);
     }
@@ -2927,7 +2928,7 @@ void  test_getStringToken_given_Hello_how_are_you_without_symbol_expect_exceptio
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");       
@@ -2947,7 +2948,7 @@ void  test_getToken_given_hello123_expect_getIdentifierToken_called_identifier_r
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");   
@@ -2975,7 +2976,7 @@ void  test_getToken_given__asdfghjkl_hash_expect_getIdentifierToken_called_ident
     freeToken(token1);
     freeTokenizer(tokenizer);    
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");   
@@ -2996,7 +2997,7 @@ void  test_getToken_given_197e2_expect_getFloatToken_called_float_returned(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");   
@@ -3017,7 +3018,7 @@ void  test_getToken_given_34point564_expect_getFloatToken_called_float_returned(
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");   
@@ -3036,7 +3037,7 @@ void  test_getToken_given_6135_expect_getDecimalToken_called_decimal_returned(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -3056,7 +3057,7 @@ void  test_getToken_given_0456_expect_getOctalToken_called_octal_returned(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -3071,7 +3072,7 @@ void  test_getToken_given_01295_expect_getOctalToken_exception_ERROR_INVALID_INT
   token = (IntegerToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3086,7 +3087,7 @@ void  test_getToken_given_12x483_expect_getDecimalToken_exception_ERROR_INVALID_
   token = (IntegerToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3101,7 +3102,7 @@ void  test_getToken_given_143eminusx2_expect_getFloatToken_exception_ERROR_INVAL
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -3116,7 +3117,7 @@ void  test_getToken_given_384point99eplus3u_expect_getFloatToken_exception_ERROR
   token = (FloatToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -3136,7 +3137,7 @@ void  test_getToken_given_0b10111_expect_getBinToken_called_bin_returned(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -3151,7 +3152,7 @@ void  test_getToken_given_0b1020_expect_getBinToken_exception_ERROR_INVALID_INTE
   token = (IntegerToken *)getNumberToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3170,7 +3171,7 @@ void  test_getToken_given_string_expect_getStringToken_called_string_returned(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -3185,7 +3186,7 @@ void  test_getToken_given_string_without_closing_quot_mark_expect_exception_ERRO
     token = (StringToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_STRING, ex->errorCode);
     freeException(ex);   
   }
@@ -3205,7 +3206,7 @@ void  test_getToken_given_plus_expect_getOperatorToken_called_operator_returned(
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -3224,7 +3225,7 @@ void  test_getToken_given_minus_expect_getOperatorToken_called_operator_returned
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");  
@@ -3243,7 +3244,7 @@ void  test_getToken_given_multiply_expect_getOperatorToken_called_operator_retur
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
@@ -3262,7 +3263,7 @@ void  test_getToken_given_divide_expect_getOperatorToken_called_operator_(){
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3298,7 +3299,7 @@ void  test_getToken_given_different_brackets_expect_getOperatorToken_called_3_op
     freeToken(token2);    
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3366,7 +3367,7 @@ void  test_getToken_given_different_operators_expect_getOperatorToken_called_7op
     freeToken(token6);    
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3411,7 +3412,7 @@ configureTokenizer(tokenizer, TOKENIZER_DOLLAR_SIGN_HEX | TOKENIZER_BIN_B | TOKE
     freeToken(token3);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");       
@@ -3450,7 +3451,7 @@ void  test_getToken_given__vifhj_plus34_expect__identifier_operator_integer_retu
     freeToken(token2);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3477,7 +3478,7 @@ void  test_getToken_given_wxyplus_expect_identifier_operator_returned(){
     freeToken(token1);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3533,7 +3534,7 @@ void  test_getToken_given_0x349f_hello_plus_312minus4_expect_integer_identifier_
     freeToken(token6);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3598,7 +3599,7 @@ void  test_getToken_given_1947_divide_34point32e_minus2_times_034_minus_0x12_exp
     freeToken(token4);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3639,7 +3640,7 @@ void  test_getToken_given_bracket_Identi183__minus0x13_expect_operator_identifie
     freeToken(token3);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3680,7 +3681,7 @@ void  test_getToken_given_String_033_plus_hello_expect_string_integer_operator_i
     TEST_ASSERT_EQUAL(18, token3->startColumn);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3730,7 +3731,7 @@ void  test_getToken_given_Peace_123plus67_expect_identifier_integer_operator_int
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3760,7 +3761,7 @@ void  test_getToken_given_a_string_float_and_invalid_identifier_expect_string_fl
     token2 = (IntegerToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3782,7 +3783,7 @@ void  test_getToken_given_a_identifier_integer_integer_expect_integer_returned_e
     token1 = (IntegerToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3823,7 +3824,7 @@ void  test_getToken_given_float_and_operator_and_invalid_hex_expect_float_operat
     token3 = getDecimalToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3845,7 +3846,7 @@ void  test_getToken_given_a_identifier_and_number_and_operator_expect_identifier
   token1 = (IntegerToken  *)getToken(tokenizer);
   TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);    
   }
@@ -3892,7 +3893,7 @@ void  test_getToken_given_identifier_and_hex_and_operator_and_float_expect_ident
   
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -3929,7 +3930,7 @@ void  test_getToken_given__accelerator_148point1323346423eminus2_slash_expect_id
     freeToken(token3);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown."); 
@@ -3962,7 +3963,7 @@ void  test_getToken_given_plus_12_String_expect_operator_and_number_returned_exc
     token2 = (StringToken  *) getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_STRING_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_STRING, ex->errorCode);
     freeException(ex);    
   }
@@ -3985,7 +3986,7 @@ void  test_getToken_given_operator_and_invalid_float_and_octal_expect_operator_r
     token1 = (FloatToken  *) getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);    
   }
@@ -4023,7 +4024,7 @@ void  test_getToken_given_dot_point_String_expect_operator_indentifier_string_re
     freeToken(token2);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4079,7 +4080,7 @@ void  test_getToken_given_0x345A_plus_DACBH_divide_166o_with_hex_oct_config_expe
     freeToken(token4);   
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4095,7 +4096,7 @@ void  test_getToken_given_10110b_point_0765e_minus_2_with_bin_config_expect_exce
     token0 = (IntegerToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);  
   }
@@ -4126,7 +4127,7 @@ void  test_getToken_given_is123_plus_4point34e_minus_oplm_expect_identifier_oper
     token2 = (FloatToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_FLOAT_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_FLOAT, ex->errorCode);
     freeException(ex);  
   }
@@ -4141,7 +4142,7 @@ void  test_getToken_given_0x2345h_equal_12_expect_integer_exception_ERROR_INVALI
     token0 = (IntegerToken  *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);  
   }
@@ -4225,7 +4226,7 @@ void  test_getToken_given_instructions_expect_identifier_operator_identifier_ide
     freeToken(token6);  
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");  
@@ -4274,7 +4275,7 @@ void  test_getToken_given_compare123point456O_plus_123DH_with_oct_config_expect_
     token4 = (IntegerToken *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);
   }
@@ -4343,7 +4344,7 @@ void  test_getToken_given_dollarSign_CDCA_parentheses_hash_234_minus_66o_with_oc
     freeToken(token6);    
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
   }
@@ -4398,14 +4399,14 @@ void  test_getToken_given_88AAh_String_10101b_parentheses_dollarSignAAA__with_he
     freeToken(token2);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
   }
 }
 
-void  test_getToken_given_bcf_0x12comma12b_comma_ACCESS_with_bon_config_expect_identifier_integer_returned_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
+void  test_getToken_given_bcf_0x12comma12b_comma_ACCESS_with_bin_config_expect_identifier_integer_returned_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  bcf  0x12, 12b, ACCESS");  
   configureTokenizer(tokenizer, TOKENIZER_BIN_B);
@@ -4439,7 +4440,7 @@ void  test_getToken_given_bcf_0x12comma12b_comma_ACCESS_with_bon_config_expect_i
     token3 = (IntegerToken *)getToken(tokenizer);
     TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
     freeException(ex);
   }
@@ -4471,7 +4472,7 @@ void  test_pushBackToken_given_decimal_expect_token_is_pushed(){
     free(token);
     freeTokenizer(tokenizer);   //token will be freed in list also
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4558,7 +4559,7 @@ void  test_pushBackToken_given_decimal_float_identifier_token(){
     freeToken(token2);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4599,7 +4600,7 @@ void  test_pushBackToken_given_2_continuous_pushbacks(){
     TEST_ASSERT_EQUAL_PTR(token1, tokenizer->list->tail->data);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4727,7 +4728,7 @@ void  test_pushBackToken_given_5_continuous_pushbacks(){
     freeToken(token4);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4800,7 +4801,7 @@ void  test_pushBackToken_given_octal_string_operator(){
     freeToken(token2);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
@@ -4913,7 +4914,7 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
     freeToken(token4);
     freeTokenizer(tokenizer);
   }Catch(ex){
-    dumpException(ex);
+    dumpTokenErrorMessage(ex, 1);
     freeException(ex);
     freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     

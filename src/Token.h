@@ -2,6 +2,8 @@
 #define TOKEN_H
 #include <stdlib.h>
 #include  "MemAlloc.h"
+#include "Exception.h"
+#include "CException.h"
 
 typedef enum
 {
@@ -70,5 +72,6 @@ StringToken *createStringToken(char *str, int  index, char  *originalstr, TOKENT
 OperatorToken *createOperatorToken(char *str, int  index, char  *originalstr, TOKENTYPE type);
 Token *createNULLToken(char *originalstr, int index, TOKENTYPE type);
 void  freeToken(void *token);
+void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo);
 
 #endif // TOKEN_H

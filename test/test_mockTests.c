@@ -1,10 +1,9 @@
 #include "unity.h"
 #include "DoubleLinkedList.h"
 #include  "Tokenizer.h"
-#include "Exception.h"
+#include "mock_Exception.h"
 #include "CException.h"
 #include "Token.h"
-//#include  "Data.h"
 #include "mock_MemAlloc.h"
 
 
@@ -164,7 +163,6 @@ void  test_popToken_given_2_tokens_in_linked_list(){
   Tokenizer tokenizer;
   DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   IdentifierToken token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, IDENTIFIER_TYPE};
   IntegerToken token2 = {"  rlcf  0x33 ", "0x33", 8, 4, INTEGER_TYPE, 0x33};
@@ -189,3 +187,4 @@ void  test_popToken_given_2_tokens_in_linked_list(){
   TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list->head);
   TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list->tail);
 }
+
