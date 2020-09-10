@@ -122,7 +122,7 @@ DoubleLinkedList  *linkedListCreateList(){
 }
 
 ListItem  *linkedListCreateListItem(void  *data){
-  ListItem  *item = memAlloc(sizeof(DoubleLinkedList));   
+  ListItem  *item = memAlloc(sizeof(ListItem));   
   item->next = NULL;
   item->prev = NULL;
   item->data = data;
@@ -130,8 +130,10 @@ ListItem  *linkedListCreateListItem(void  *data){
 }
 
 void  linkedListFreeListItem(ListItem *itemToFree){
-  if(itemToFree)
+  if(itemToFree){
+    itemToFree->data = NULL;
     memFree(itemToFree);
+  }
 }
 
 void  linkedListFreeList(DoubleLinkedList *list, void (*freeFunction)(void *) ){
@@ -141,7 +143,7 @@ void  linkedListFreeList(DoubleLinkedList *list, void (*freeFunction)(void *) ){
     list->head = list->head->next;
     freeFunction(listptr->data);
     linkedListFreeListItem(listptr);
-    }
+  }
    if(list)
      memFree(list);
 }

@@ -2604,6 +2604,7 @@ void  test_getNumberToken_given_19A9H_177o_101111b_3_configs_expect_same(){
   }
 }
 
+
 void  test_getOperatorToken_given_minus_expect_minus(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  - "); 
@@ -2963,7 +2964,6 @@ void  test_getStringToken_This_is_a_string_to_test_this_function_expect_same(){
   }
 }
 
-
 void  test_getStringToken_Hello_comma_abcdeQf_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  \"Hello, abcde?f\" "); 
@@ -2983,7 +2983,6 @@ void  test_getStringToken_Hello_comma_abcdeQf_expect_same(){
   }
 }
 
-
 void  test_getStringToken_given_Hello_how_are_you_without_symbol_expect_exception_ERROR_INVALID_STRING_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("\"Hello how are you   "); 
@@ -2998,6 +2997,7 @@ void  test_getStringToken_given_Hello_how_are_you_without_symbol_expect_exceptio
     }
   freeTokenizer(tokenizer);
 }
+
 
 void  test_getToken_given_NULL_expect_NULL_token_returned(){
   Tokenizer *tokenizer = NULL;
@@ -3079,6 +3079,7 @@ void  test_getToken_given_hello123_expect_getIdentifierToken_called_identifier_r
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");   
   }
 }
+
 void  test_getToken_given_3030o_backslash_n_with_oct_config_expect_integer_newline_returned(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  3030o\n"); 
@@ -4674,7 +4675,7 @@ void  test_pushBackToken_given_decimal_expect_token_is_pushed(){
     TEST_ASSERT_EQUAL_STRING("0263", token->str);
     TEST_ASSERT_EQUAL(3, token->startColumn);
     TEST_ASSERT_EQUAL(4, token->length);
-    free(token);
+    freeToken(token);
     freeTokenizer(tokenizer);   //token will be freed in list also
   }Catch(ex){
     dumpTokenErrorMessage(ex, 1);
@@ -4684,7 +4685,6 @@ void  test_pushBackToken_given_decimal_expect_token_is_pushed(){
   }
 }
 
-
 /*
 list            item3     item2     item1     
 head ---------->next----->next----->next-----------
@@ -4693,7 +4693,6 @@ count  |   |     token2    token1   token0        NULL
        |  NULL                         ^
        |_______________________________|
 */
-
 
 void  test_pushBackToken_given_decimal_float_identifier_token(){
   Tokenizer *tokenizer = NULL;
@@ -5125,4 +5124,3 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
   }
 }
-

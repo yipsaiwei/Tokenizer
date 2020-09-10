@@ -93,20 +93,17 @@ void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
   Token *token = NULL;
   token = ex->data;
   if(ex->data == NULL){
-    column = 0;
-    str = NULL;
-    originalstr = NULL;
+    printf("Error on line %d:%d: %s ", lineNo, column, ex->msg);
   }
   else{
-    column = token->startColumn;
-    str = token->str;
-    originalstr = token->originalstr;
     errorLine = errorIndicator(token->startColumn, token->length);
+    printf("Error on line %d:%d: %s : %s\n%s\n%s\n", lineNo, token->startColumn, ex->msg, token->str, token->originalstr, errorLine);
   }
-  printf("Error on line %d:%d: %s : %s\n%s\n%s\n", lineNo, column, ex->msg, str, originalstr, errorLine);
-  if(token)
+  if(token){
     freeToken(token);
+    token = NULL;
+  }
   if(errorLine)
-    free(errorLine);
+    memFree(errorLine);
 }
 

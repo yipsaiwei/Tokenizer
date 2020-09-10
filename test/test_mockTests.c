@@ -21,6 +21,7 @@ void  test_createTokenizer(){
   DoubleLinkedList  list = {NULL, NULL, 0};
   Tokenizer tokenizer = {NULL, 0, 0, 0, 0, NULL};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer); 
+  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer(str);
   TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list);
   TEST_ASSERT_EQUAL_PTR(&tokenizer, tokenizerptr);
@@ -151,6 +152,7 @@ void  test_popToken_given_a_token_in_linked_list(){
   Tokenizer tokenizer;
   DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
+  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   IdentifierToken token = {"  rlcf  0x33 ", "rlcf", 2, 4, TOKEN_IDENTIFIER_TYPE};
   ListItem  item = {NULL, NULL, &token};
@@ -177,6 +179,7 @@ void  test_popToken_given_2_tokens_in_linked_list(){
   Tokenizer tokenizer;
   DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
+  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   IdentifierToken token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, TOKEN_IDENTIFIER_TYPE};
   IntegerToken token2 = {"  rlcf  0x33 ", "0x33", 8, 4, TOKEN_INTEGER_TYPE, 0x33};

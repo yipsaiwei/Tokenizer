@@ -63,7 +63,7 @@ typedef struct
 	int		startColumn;
 	int		length;
   TOKENTYPE	type;
-	Token	*token[2];
+	//Token	*token[2];
 }OperatorToken;
 	
 IntegerToken *createIntToken(int  value, int  index, char  *originalstr, char *str, TOKENTYPE  type);

@@ -22,9 +22,11 @@ void configureTokenizer(Tokenizer *tokenizer, uint32_t configuration){
 }
 
 void  freeTokenizer(Tokenizer *tokenizer){
-  ListItem  *listptr;
+  DoubleLinkedList  *listptr;
   if(tokenizer->list){
-    linkedListFreeList(tokenizer->list,  freeToken);
+    listptr = tokenizer->list;
+    tokenizer->list = NULL;
+    linkedListFreeList(listptr,  freeToken);
   }
   if(tokenizer != NULL)
     memFree(tokenizer);
@@ -35,7 +37,7 @@ Token  *getToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
     if(tokenizer->list != NULL){
       if(tokenizer->list->head != NULL)
-        return  popToken(tokenizer);  //pop token from doubleLinkedList stored in tokenizer
+      return  popToken(tokenizer);  //pop token from doubleLinkedList stored in tokenizer
     }
   if  (isdigit(str[0]))
     return  getNumberToken(tokenizer);
@@ -93,9 +95,9 @@ char *skipWhiteSpaces(char  *str){
 //Therefore, the token cannot be freed.
 void  pushBackToken(Tokenizer *tokenizer, Token *token){
   ListItem  *item = linkedListCreateListItem((void  *)token);
-  tokenizer->index = token->startColumn;
   if(tokenizer->list == NULL)
     tokenizer->list = linkedListCreateList();
+  tokenizer->index = token->startColumn;
   linkedListAddItemToHead(item, tokenizer->list);
 }
 
