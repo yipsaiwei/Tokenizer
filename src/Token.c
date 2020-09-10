@@ -80,8 +80,10 @@ Token *createNewlineToken(char  *str, int index, char  *originalstr, TOKENTYPE t
 void  freeToken(void *token){
   Token *tokenFree;
   tokenFree = (Token  *)token;
-  if(tokenFree->str)
+  if(tokenFree->str){
     memFree(tokenFree->str);
+    tokenFree->str = NULL;
+  }
   if(tokenFree)
     memFree(tokenFree);
 }
@@ -101,6 +103,7 @@ void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
   }
   if(token){
     freeToken(token);
+    //token->str = NULL;
     token = NULL;
   }
   if(errorLine)
