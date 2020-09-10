@@ -80,12 +80,12 @@ Token *createNewlineToken(char  *str, int index, char  *originalstr, TOKENTYPE t
 void  freeToken(void *token){
   Token *tokenFree;
   tokenFree = (Token  *)token;
-  if(tokenFree->str){
+  if(tokenFree){
+  if(tokenFree->str)
     memFree(tokenFree->str);
-    tokenFree->str = NULL;
+  memFree(tokenFree);
+  tokenFree = NULL;
   }
-  if(tokenFree)
-    memFree(tokenFree);
 }
 
 void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
@@ -101,11 +101,8 @@ void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
     errorLine = errorIndicator(token->startColumn, token->length);
     printf("Error on line %d:%d: %s : %s\n%s\n%s\n", lineNo, token->startColumn, ex->msg, token->str, token->originalstr, errorLine);
   }
-  if(token){
+  if(token)
     freeToken(token);
-    //token->str = NULL;
-    token = NULL;
-  }
   if(errorLine)
     memFree(errorLine);
 }
