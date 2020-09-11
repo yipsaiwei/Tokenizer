@@ -101,10 +101,12 @@ void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
   }
   else{
     errorLine = errorIndicator(token->startColumn, token->length);
-    printf("Error on line %d:%d: %s : %s\n%s\n%s\n", lineNo, token->startColumn, ex->msg, token->str, token->originalstr, errorLine);
+    printf("Error on line %d:%d: %s\n%s\n%s\n", lineNo, token->startColumn, ex->msg, token->originalstr, errorLine);
   }
-  if(token)
+  if(token){
     freeToken(token);
+    ex->data = NULL;
+  }
   if(errorLine)
     memFree(errorLine);
 }
