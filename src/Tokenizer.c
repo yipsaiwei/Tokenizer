@@ -165,7 +165,6 @@ IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   resultstr = duplicateSubstring(str, ptr-str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
-// tolower 
 
 IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -178,6 +177,8 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if((tokenizer->config & 4) && (tolower(*ptr) == 'o') && (isspace(*(ptr+1)) || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')))
       ptr++;
+    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b' && !isalnum(*(ptr+1)) && *(ptr+1) != '_')
+      return  getBinToken(tokenizer);
     else
       integerExceptionThrowing(tokenizer->str, startColumn, "Invalid octal value");
   }
@@ -205,7 +206,7 @@ IntegerToken *getBinToken(Tokenizer  *tokenizer){
   }
   else{
     if(tokenizer->config & 8){
-      if((tolower(*ptr) == 'b') && (isspace(*(ptr+1))|| *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')) && str[0] != '0' && tolower(str[1]) != 'b')
+      if((tolower(*ptr) == 'b') && (isspace(*(ptr+1))|| *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')))
         ptr++;
       else
         integerExceptionThrowing(tokenizer->str, startColumn, "Invalid binary value");

@@ -185,8 +185,6 @@ void  test_getOctalToken_given_063divide_expect_octal_63(){
     freeTokenizer(tokenizer);
   }Catch(ex){
     dumpTokenErrorMessage(ex, 1);
-    freeException(ex);
-    freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
   }
 }
@@ -412,6 +410,40 @@ void  test_getOctalToken_given_034__expect_exception_ERROR_INVALID_INTEGER_to_be
   freeTokenizer(tokenizer);
 }
 
+void  test_getOctalToken_given_01110b_with_bin_config_expect_bin_1110(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  01110b"); 
+  configureTokenizer(tokenizer, TOKENIZER_BIN_B);
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(8, tokenizer->index);
+    TEST_ASSERT_EQUAL(0b1110, token->value);
+    TEST_ASSERT_EQUAL(2, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getOctalToken_given_01000b__with_bin_config_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  01000b_"); 
+  configureTokenizer(tokenizer, TOKENIZER_BIN_B);
+  IntegerToken *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
 void  test_getHexToken_given_0x55_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("0x55"); 
@@ -460,8 +492,6 @@ void  test_getHexToken_given_0x999_and_Symbol_expect_0x999(){
     freeTokenizer(tokenizer);
   }Catch(ex){
     dumpTokenErrorMessage(ex, 1);
-    freeException(ex);
-    freeTokenizer(tokenizer);
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
   }
 }
