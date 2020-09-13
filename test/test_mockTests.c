@@ -16,12 +16,13 @@ void tearDown(void)
 {
 }
 
+CEXCEPTION_T ex;
+
 void  test_createTokenizer(){
   char  *str = "Hello World!";
   DoubleLinkedList  list = {NULL, NULL, 0};
   Tokenizer tokenizer = {NULL, 0, 0, 0, 0, NULL};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer); 
-  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer(str);
   TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list);
   TEST_ASSERT_EQUAL_PTR(&tokenizer, tokenizerptr);
@@ -150,7 +151,6 @@ void  test_popToken_given_a_token_in_linked_list(){
   Tokenizer tokenizer;
   DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   IdentifierToken token = {"  rlcf  0x33 ", "rlcf", 2, 4, TOKEN_IDENTIFIER_TYPE};
   ListItem  item = {NULL, NULL, &token};
@@ -177,7 +177,6 @@ void  test_popToken_given_2_tokens_in_linked_list(){
   Tokenizer tokenizer;
   DoubleLinkedList  list = {NULL, NULL, 0};
   memAlloc_ExpectAndReturn(sizeof(Tokenizer), &tokenizer);
-  //memAlloc_ExpectAndReturn(sizeof(DoubleLinkedList), &list);
   Tokenizer *tokenizerptr = createTokenizer("  rlcf  0x33 ");
   IdentifierToken token1 = {"  rlcf  0x33 ", "rlcf", 2, 4, TOKEN_IDENTIFIER_TYPE};
   IntegerToken token2 = {"  rlcf  0x33 ", "0x33", 8, 4, TOKEN_INTEGER_TYPE, 0x33};
@@ -201,5 +200,37 @@ void  test_popToken_given_2_tokens_in_linked_list(){
   tokenptr = popToken(tokenizerptr);
   TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list->head);
   TEST_ASSERT_EQUAL_PTR(NULL, tokenizerptr->list->tail);
+}
+
+void  test_dumpTokenErrorMessage_without_token(){
+  Try{
+  Exception e;
+  char  buffer[58];
+  memAlloc_ExpectAndReturn(sizeof(char)*58, &buffer);
+  memAlloc_ExpectAndReturn(sizeof(Exception), &e);
+  throwException(ERROR_TESTING, NULL, 0, "Just to test dumpTokenErrorMessage function without token");
+  TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 0);
+    TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
+  }
+}
+
+void  test_dumpTokenErrorMessage_with_token(){
+  Try{
+  Token token = {"Hey hey 123w",  "123w", 8, 4, TOKEN_INTEGER_TYPE};
+  Token *tokenptr = &token;
+  char  buffer[55];
+  Exception e;
+  memAlloc_ExpectAndReturn(sizeof(char)*55, &buffer);
+  memAlloc_ExpectAndReturn(sizeof(Exception), &e);
+  throwException(ERROR_TESTING, tokenptr, 0, "Just to test dumpTokenErrorMessage function with token");
+  TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
+  }Catch(ex){
+    char  str[13];
+    memAlloc_ExpectAndReturn(sizeof(char)*13, &str);
+    dumpTokenErrorMessage(ex, 0);
+    TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
+  }
 }
 

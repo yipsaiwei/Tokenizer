@@ -1,15 +1,16 @@
 #include "Exception.h"
 #include "CException.h"
 #include <stdio.h>       //library contains NULL
-#include <malloc.h>      //memory allocation
+//#include <malloc.h>      //memory allocation
 #include <stdarg.h>
+#include  "MemAlloc.h"
 
 Exception ex2;		     //static memory allocation
 
 Exception *createException(char *msg, int errorCode){
 	Exception *ex;
 
-	ex=malloc(sizeof(Exception));   // dynamic memory allocation
+	ex=memAlloc(sizeof(Exception));   // dynamic memory allocation
 	ex->msg=msg;
 	ex->errorCode=errorCode;
 	ex->data=NULL;
@@ -39,7 +40,7 @@ void throwException(int errorCode, void *data, int freeDataOnFreeingException, c
 	va_start(va, message);
 	len=vsnprintf(NULL, 0, message, va);
 	//printf("Len: %d\n", len);
-	buffer=malloc(len+1);
+	buffer=memAlloc(len+1);
 	vsprintf(buffer, message, va);
 	va_end(va);
 	e=createException(message, errorCode);

@@ -265,28 +265,8 @@ FloatToken  *getFloatToken(Tokenizer  *tokenizer){
   double  convertedValue; 
   int size;
   convertedValue = strtod(str, &ptr);
-  if(isalpha(ptr[i])){     // when e is detected, check next character
-    if(ptr[i] == 'e'){
-      if(isspace(ptr[i+1]))
-        floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(expect valid operator or number after e)");
-      if(!isdigit(ptr[i+1]) && ptr[i+1] != '+' && ptr[i+1] != '-')
-        floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(expect valid operator detected after e)");
-      if(!isdigit(ptr[i+2]))
-        floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(expect valid digit after the operator)");
-      for(int j = i+3; !isspace(ptr[j]) && !ispunct(ptr[j]) && ptr[j] != '_' && ptr[j] != 0; j++){
-        if(isalpha(ptr[j]))
-          floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(invalid alphabet detected)");
-        if(ptr[j] == '.' || ptr[j] == '_')
-          floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(illegar operator detected after e)");
-      }
-    }
-    else
-      floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(invalid alphabet detected)");
-  }
-  if(*ptr == '.')
-    floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value(Multiple dots detected)");
-  if(!isspace(*ptr) && *ptr != '\0' && *ptr != 'e' && !ispunct(*ptr) || *ptr == '_')
-    floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value");
+  if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '_' || *ptr == '.') && *ptr != 0)
+    floatExceptionThrowing(tokenizer->str, startColumn,"Invalid floating point value");    
   resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
 return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_FLOAT_TYPE);  
