@@ -32,7 +32,6 @@ void  freeTokenizer(Tokenizer *tokenizer){
     memFree(tokenizer);
 }
 
-
 Token  *getToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
     if(tokenizer->list != NULL){
@@ -90,7 +89,6 @@ char *skipWhiteSpaces(char  *str){
   return  str;
 }
 
-
 //Once the token is pushed back, the token then belongs to tokenizer. 
 //Therefore, the token cannot be freed.
 void  pushBackToken(Tokenizer *tokenizer, Token *token){
@@ -130,18 +128,6 @@ Token  *getNumberToken(Tokenizer *tokenizer){
     return  (Token  *)getDecimalToken(tokenizer);
 }
 
-Token *getNewlineToken(Tokenizer  *tokenizer){
-  char  *str = tokenizerSkipSpaces(tokenizer); 
-  char  *resultstr;
-  int startColumn = tokenizer->index;
-  tokenizer->lineNum++;
-  tokenizer->index++;
-  resultstr = duplicateSubstring(str, 1);
-  resultstr[1] = 0;
-  return  createNewlineToken(resultstr, startColumn, tokenizer->str, TOKEN_NEWLINE_TYPE);
-}
-
-
 IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   char  *ptr, *resultstr;
@@ -152,7 +138,7 @@ IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if(*ptr == '.' || *ptr == 'e')
       return  (IntegerToken *)getFloatToken(tokenizer);
-    if ((tokenizer->config &8) && tolower(*ptr) == 'b')
+    if ((tokenizer->config &8) && tolower(*ptr) == 'b' && tolower(*(ptr+1)) != 'h' && tolower(*(ptr+1)) != 'o')
      return  getBinToken(tokenizer);
     else  if((tokenizer->config & 2) && ( tolower(*ptr) == 'h'|| (tolower(*ptr) >= 'a' && tolower(*ptr) <= 'f')))
      return  getHexToken(tokenizer);
@@ -177,18 +163,17 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if((tokenizer->config & 4) && (tolower(*ptr) == 'o') && (isspace(*(ptr+1)) || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')))
       ptr++;
-    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b' && !isalnum(*(ptr+1)) && *(ptr+1) != '_')
+    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b' && tolower(*(ptr+1)) != 'h' && tolower(*(ptr+1)) != 'o')
       return  getBinToken(tokenizer);
+    else if ((tokenizer->config & 2) && (tolower(*ptr) == 'h' || (tolower(*ptr) >= 'a' && tolower(*ptr) <= 'f')))
+      return  getHexToken(tokenizer);
     else
       integerExceptionThrowing(tokenizer->str, startColumn, "Invalid octal value");
   }
-  if(*ptr > '7')
-    integerExceptionThrowing(tokenizer->str, startColumn, "Invalid octal value(value>7 detected");
   resultstr = duplicateSubstring(str, ptr-str);
   tokenizer->index += (ptr-str);
-return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
+  return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
-
 
 IntegerToken *getBinToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -218,7 +203,6 @@ IntegerToken *getBinToken(Tokenizer  *tokenizer){
   tokenizer->index += (ptr - str);
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);
 }
-
 
 IntegerToken  *getHexToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -256,7 +240,6 @@ IntegerToken  *getHexToken(Tokenizer  *tokenizer){
 return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
 
-
 FloatToken  *getFloatToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   char  *ptr, *resultstr;
@@ -271,7 +254,6 @@ FloatToken  *getFloatToken(Tokenizer  *tokenizer){
   tokenizer->index += (ptr-str);
 return  createFloatToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_FLOAT_TYPE);  
 }
-
 
 IdentifierToken *getIdentifierToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -291,7 +273,6 @@ IdentifierToken *getIdentifierToken(Tokenizer *tokenizer){
 return  createIdentifierToken(resultstr, startColumn, tokenizer->str, TOKEN_IDENTIFIER_TYPE);  
 }
 
-
 OperatorToken *getOperatorToken(Tokenizer *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   int startColumn = tokenizer->index;
@@ -304,7 +285,6 @@ OperatorToken *getOperatorToken(Tokenizer *tokenizer){
   resultstr[1] = '\0';
 return  createOperatorToken(resultstr, startColumn, tokenizer->str, TOKEN_OPERATOR_TYPE);  
 }
-
 
 StringToken  *getStringToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -326,3 +306,13 @@ StringToken  *getStringToken(Tokenizer  *tokenizer){
   return  createStringToken(resultstr, startColumn, str, TOKEN_STRING_TYPE);
 }
 
+Token *getNewlineToken(Tokenizer  *tokenizer){
+  char  *str = tokenizerSkipSpaces(tokenizer); 
+  char  *resultstr;
+  int startColumn = tokenizer->index;
+  tokenizer->lineNum++;
+  tokenizer->index++;
+  resultstr = duplicateSubstring(str, 1);
+  resultstr[1] = 0;
+  return  createNewlineToken(resultstr, startColumn, tokenizer->str, TOKEN_NEWLINE_TYPE);
+}

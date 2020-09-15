@@ -24,6 +24,9 @@ void  test_createTokenizer_given_number_expect_same(){
   Tokenizer *tokenizer = createTokenizer("19373");
   TEST_ASSERT_EQUAL_STRING("19373", tokenizer->str);
   TEST_ASSERT_EQUAL(5, tokenizer->length);
+  TEST_ASSERT_EQUAL(0, tokenizer->index);
+  TEST_ASSERT_EQUAL(0, tokenizer->config);
+  TEST_ASSERT_NULL(tokenizer->list);
   freeTokenizer(tokenizer);
 }
 
@@ -31,6 +34,51 @@ void  test_createTokenizer_given_identifier_expect_same(){
   Tokenizer *tokenizer = createTokenizer(" Hihihi1038w");
   TEST_ASSERT_EQUAL_STRING(" Hihihi1038w", tokenizer->str);
   TEST_ASSERT_EQUAL(12, tokenizer->length);
+  TEST_ASSERT_EQUAL(0, tokenizer->index);
+  TEST_ASSERT_EQUAL(0, tokenizer->config);
+  TEST_ASSERT_NULL(tokenizer->list);
+  freeTokenizer(tokenizer);
+}
+
+void  test_createTokenizer_given_numbers_identifiers_and_operator_expect_same(){
+  Tokenizer *tokenizer = createTokenizer("39472 +1972 ajbdd qq");
+  TEST_ASSERT_EQUAL_STRING("39472 +1972 ajbdd qq", tokenizer->str);
+  TEST_ASSERT_EQUAL(20, tokenizer->length);
+  TEST_ASSERT_EQUAL(0, tokenizer->index);
+  TEST_ASSERT_EQUAL(0, tokenizer->config);
+  TEST_ASSERT_NULL(tokenizer->list);
+  freeTokenizer(tokenizer);
+}
+
+void  test_configureTokenizer_given_dollar_sign_config_expect_config_1(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" $CCCC");
+  configureTokenizer(tokenizer, TOKENIZER_DOLLAR_SIGN_HEX);
+  TEST_ASSERT_EQUAL(1, tokenizer->config);
+  freeTokenizer(tokenizer);
+}
+
+void  test_configureTokenizer_given_hex_dollar_sign_expect_config_3(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  12ADh $1111");
+  configureTokenizer(tokenizer, TOKENIZER_HEX_H | TOKENIZER_DOLLAR_SIGN_HEX);
+  TEST_ASSERT_EQUAL(3, tokenizer->config);
+  freeTokenizer(tokenizer);
+}
+
+void  test_configureTokenizer_given_bin_dollar_sign_expect_config_9(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 1234####");
+  configureTokenizer(tokenizer, TOKENIZER_BIN_B | TOKENIZER_DOLLAR_SIGN_HEX);
+  TEST_ASSERT_EQUAL(9, tokenizer->config);
+  freeTokenizer(tokenizer);
+}
+
+void  test_configureTokenizer_given_hex_octal_expect_config_6(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("qwerty2345");
+  configureTokenizer(tokenizer, TOKENIZER_OCT_O | TOKENIZER_HEX_H);
+  TEST_ASSERT_EQUAL(6, tokenizer->config);
   freeTokenizer(tokenizer);
 }
 
@@ -57,11 +105,19 @@ void  test_skipWhiteSpaces_given_3_spaces_expect_without_space(){
   TEST_ASSERT_EQUAL_STRING("qwertyu", strWithoutSpace);
 }
 
-void  test_skipWhiteSpaces_given_backslah_t_expect_without_space(){
-  char  *str = "\t4f43u";
+void  test_skipWhiteSpaces_given_2_spaces_backslah_t_expect_without_space(){
+  char  *str = "  \t4f43u";
   char  *strWithoutSpace;
   strWithoutSpace = skipWhiteSpaces(str);
   TEST_ASSERT_EQUAL_STRING("4f43u", strWithoutSpace);
+}
+
+//When encounter \n, it will create newline token so it will no skip \n
+void  test_skipWhiteSpaces_given_5spaces_backslash_n_expect_backslash_n_without_space(){
+  char  *str = "     \n";
+  char  *strWithoutSpace;
+  strWithoutSpace = skipWhiteSpaces(str);
+  TEST_ASSERT_EQUAL_STRING("\n", strWithoutSpace);
 }
 
 void  test_tokenizerSkipSpaces_given_identifier_efnkfsl646_expect_the_same(){
@@ -69,13 +125,6 @@ void  test_tokenizerSkipSpaces_given_identifier_efnkfsl646_expect_the_same(){
   char  *str = tokenizerSkipSpaces(tokenizer);
   TEST_ASSERT_EQUAL_STRING("efnkfsl646", str);
   TEST_ASSERT_EQUAL(0, tokenizer->index);
-  freeTokenizer(tokenizer);
-}
-
-void  test_createTokenizer_given_numbers_identifiers_and_operator_expect_same(){
-  Tokenizer *tokenizer = createTokenizer("39472 +1972 ajbdd qq");
-  TEST_ASSERT_EQUAL_STRING("39472 +1972 ajbdd qq", tokenizer->str);
-  TEST_ASSERT_EQUAL(20, tokenizer->length);
   freeTokenizer(tokenizer);
 }
 
@@ -95,7 +144,7 @@ void  test_tokenizerSkipSpaces_given_backslash_t(){
   freeTokenizer(tokenizer);
 }
 
-//When encounter \n, need to create newline token so it does not skip
+//When encounter \n, it creates newline token so it does not skip
 void  test_tokenizerSkipSpaces_given_backslash_n(){
   Tokenizer *tokenizer = createTokenizer("\nITEM"); 
   char  *str = tokenizerSkipSpaces(tokenizer);
@@ -172,15 +221,84 @@ void  test_errorIndicator1_given_identifier(){
   free(linestr);
 }
 
-void  test_getOctalToken_given_063divide_expect_octal_63(){
+
+void  test_getOctalToken_given_035_expect_octal_35(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  063/"); 
+  tokenizer = createTokenizer("035"); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(3, tokenizer->index);
+    TEST_ASSERT_EQUAL(035, token->value);
+    TEST_ASSERT_EQUAL(0, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getOctalToken_given_063_expect_octal_63(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  063"); 
   IntegerToken *token = NULL;
   Try{
     token = getOctalToken(tokenizer);
     TEST_ASSERT_EQUAL(5, tokenizer->index);
     TEST_ASSERT_EQUAL(063, token->value);
     TEST_ASSERT_EQUAL(2, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getOctalToken_given_0101_string_expect_octal_101(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("   0101\"  \""); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(7, tokenizer->index);
+    TEST_ASSERT_EQUAL(0101, token->value);
+    TEST_ASSERT_EQUAL(3, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getOctalToken_given_0765_backslash_t_expect_octal_765(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 0765\t"); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(5, tokenizer->index);
+    TEST_ASSERT_EQUAL(0765, token->value);
+    TEST_ASSERT_EQUAL(1, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getOctalToken_given_0264_backslash_n_expect_octal_264(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 0264\n#"); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(5, tokenizer->index);
+    TEST_ASSERT_EQUAL(0264, token->value);
+    TEST_ASSERT_EQUAL(1, token->startColumn);
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
@@ -312,9 +430,9 @@ void  test_getOctalToken_given_451o_with_oct_config_expect_octal_63(){
   }
 }
 
-void  test_getOctalToken_given_12O_with_oct_config_expect_octal_13(){
+void  test_getOctalToken_given_13O_backslash_t_with_oct_config_expect_octal_13(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   13O"); 
+  tokenizer = createTokenizer("   13O\t"); 
   configureTokenizer(tokenizer, TOKENIZER_OCT_O);
   IntegerToken *token = NULL;
   Try{
@@ -410,6 +528,23 @@ void  test_getOctalToken_given_034__expect_exception_ERROR_INVALID_INTEGER_to_be
   freeTokenizer(tokenizer);
 }
 
+void  test_getOctalToken_given_01110b_no_config_expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 01110b (no bin config)"); 
+  IntegerToken *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+
+// There are possibilities where binary value start with 0
 void  test_getOctalToken_given_01110b_with_bin_config_expect_bin_1110(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  01110b"); 
@@ -442,6 +577,91 @@ void  test_getOctalToken_given_01000b__with_bin_config_expect_exception_to_be_th
     freeException(ex);    
   }
   freeTokenizer(tokenizer);
+}
+
+void  test_getOctalToken_given_01110b_point123_with_bin_config_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  01110b.123"); 
+  configureTokenizer(tokenizer, TOKENIZER_BIN_B);
+  IntegerToken *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+//There are possibilities where hexadecimal number start with 0
+void  test_getOctalToken_given_0A35h_with_hex_config_expect_hex_0x0A35(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  0A35h  "); 
+  configureTokenizer(tokenizer, TOKENIZER_HEX_H);
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(7, tokenizer->index);
+    TEST_ASSERT_EQUAL(0x0A35, token->value);
+    TEST_ASSERT_EQUAL(2, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
+}
+
+void  test_getOctalToken_given_0AA3EH__with_hex_config_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 0AA3EH_   "); 
+  configureTokenizer(tokenizer, TOKENIZER_HEX_H);
+  IntegerToken *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getOctalToken_given_00F3CCH4533_with_hex_config_expect_exception_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 0F3CCH4533   "); 
+  configureTokenizer(tokenizer, TOKENIZER_HEX_H);
+  IntegerToken *token = NULL;
+  Try{
+  token = getOctalToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode);
+    freeException(ex);    
+  }
+  freeTokenizer(tokenizer);
+}
+//01101bh
+void  test_getOctalToken_given_01101bh_with_hex_and_bin_config_expect_hex_0x01101b(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  01101bh  "); 
+  configureTokenizer(tokenizer, TOKENIZER_HEX_H);
+  IntegerToken *token = NULL;
+  Try{
+    token = getOctalToken(tokenizer);
+    TEST_ASSERT_EQUAL(9, tokenizer->index);
+    TEST_ASSERT_EQUAL(0x01101b, token->value);
+    TEST_ASSERT_EQUAL(2, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
+  }
 }
 
 void  test_getHexToken_given_0x55_expect_same(){
@@ -488,6 +708,23 @@ void  test_getHexToken_given_0x999_and_Symbol_expect_0x999(){
     TEST_ASSERT_EQUAL(10, tokenizer->index);
     TEST_ASSERT_EQUAL(0x999, token->value);
     TEST_ASSERT_EQUAL(5, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");    
+  }
+}
+
+void  test_getHexToken_given_0x7ADC_backslash_n_expect_0x7ADC(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("  0x7ADC\n"); 
+  IntegerToken *token = NULL;
+  Try{
+    token = getHexToken(tokenizer);
+    TEST_ASSERT_EQUAL(8, tokenizer->index);
+    TEST_ASSERT_EQUAL(0x7ADC, token->value);
+    TEST_ASSERT_EQUAL(2, token->startColumn);
     freeToken(token);
     freeTokenizer(tokenizer);
   }Catch(ex){
@@ -603,11 +840,9 @@ void  test_getHexToken_given_39Ah_with_hex_config_expect_0x39A(){
   }
 }
 
-
-
-void  test_getHexToken_given_1928H_with_hex_config_expect_0x1928(){
+void  test_getHexToken_given_1928H_backslash_t_with_hex_config_expect_0x1928(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  1928H  "); 
+  tokenizer = createTokenizer("  1928H\t  "); 
   configureTokenizer(tokenizer, TOKENIZER_HEX_H);
   IntegerToken *token = NULL;
   Try{
@@ -727,6 +962,21 @@ void  test_getHexToken_given_dollarSign_FADAh_with_dollarSign_config_expect_exce
 void  test_getHexToken_given_dollarSign_39W1_with_dollarSign_config_expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("   $39W1 "); 
+  configureTokenizer(tokenizer, TOKENIZER_DOLLAR_SIGN_HEX);
+  IntegerToken *token = NULL;
+  Try{
+    token = getHexToken(tokenizer);
+  TEST_FAIL_MESSAGE("EXPECT ERROR_INVALID_INTEGER_to_be_thrown, BUT UNRECEIVED");
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_ASSERT_EQUAL(ERROR_INVALID_INTEGER, ex->errorCode); 
+  }
+  freeTokenizer(tokenizer);
+}
+
+void  test_getHexToken_given_dollarSign_12A3Y__with_dollarSign_config_expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("   $12A3Y "); 
   configureTokenizer(tokenizer, TOKENIZER_DOLLAR_SIGN_HEX);
   IntegerToken *token = NULL;
   Try{
@@ -1347,6 +1597,24 @@ void  test_getBinToken_given_10110b__hi_with_bin_config_expect_decimal_22(){
   }
 }
 
+void  test_getBinToken_given_10111b_backslash_n_with_bin_config_expect_decimal_22(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer(" 10111b\n  "); 
+  configureTokenizer(tokenizer, TOKENIZER_BIN_B);
+  IntegerToken *token = NULL;
+  Try{
+    token = getBinToken(tokenizer);
+    TEST_ASSERT_EQUAL(7, tokenizer->index);
+    TEST_ASSERT_EQUAL_FLOAT(0b10111, token->value);
+    TEST_ASSERT_EQUAL(1, token->startColumn);
+    freeToken(token);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");
+  }
+}
+
 void  test_getBinToken_given_1101bP_with_bin_config_expect_exception_ERROR_INVALID_INTEGER_to_be_thrown(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("    1101bP  "); 
@@ -1809,9 +2077,9 @@ void  test_getDecimalToken_given_0111o_with_oct_config_expect_oct_111(){
   }
 }
 
-void  test_getDecimalToken_given_413O_with_oct_config_expect_oct_413(){
+void  test_getDecimalToken_given_413O_backslash_t_with_oct_config_expect_oct_413(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("   413O "); 
+  tokenizer = createTokenizer("   413O\t "); 
   configureTokenizer(tokenizer, TOKENIZER_OCT_O);
   IntegerToken *token = NULL;
   Try{
@@ -1992,23 +2260,6 @@ void  test_getDecimalToken_given_9e_minus_e2_expect_exception_to_be_thrown_inval
   freeTokenizer(tokenizer);
 }
 
-void  test_getOctalToken_given_035_expect_octal_35(){
-  Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("035"); 
-  IntegerToken *token = NULL;
-  Try{
-    token = getOctalToken(tokenizer);
-    TEST_ASSERT_EQUAL(3, tokenizer->index);
-    TEST_ASSERT_EQUAL(035, token->value);
-    TEST_ASSERT_EQUAL(0, token->startColumn);
-    freeToken(token);
-    freeTokenizer(tokenizer);
-  }Catch(ex){
-    dumpTokenErrorMessage(ex, 1);
-    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");      
-  }
-}
-
 void  test_getIdentifierToken_given____hihihi123_expect_same(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("___hihihi123"); 
@@ -2150,6 +2401,7 @@ void  test_getIdentifierToken_given_DE2AH_with_hex_config_expect_identifier_retu
   }
 }
 
+//This is taken as identifier, not hexadecimal since illegal symbol after h
 void  test_getIdentifierToken_given_A12Eh_123_with_hex_config_expect_identifier_returned(){
   Tokenizer *tokenizer = NULL;
   tokenizer = createTokenizer("  A12Eh_123 "); 
