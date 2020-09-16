@@ -122,13 +122,13 @@ Token  *getNumberToken(Tokenizer *tokenizer){
     else if(isdigit(str[1]))
       return  (Token  *)getOctalToken(tokenizer);
     else
-      return  (Token  *)getDecimalToken(tokenizer);
+      return  (Token  *)getDecimalOrFloatToken(tokenizer);
   }
   else
-    return  (Token  *)getDecimalToken(tokenizer);
+    return  (Token  *)getDecimalOrFloatToken(tokenizer);
 }
 
-IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
+Token  *getDecimalOrFloatToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer);
   char  *ptr, *resultstr;
   int startColumn = tokenizer->index;
@@ -137,19 +137,19 @@ IntegerToken  *getDecimalToken(Tokenizer  *tokenizer){
   convertedValue = strtol(str, &ptr, 10);
   if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if(*ptr == '.' || *ptr == 'e')
-      return  (IntegerToken *)getFloatToken(tokenizer);
+      return  (Token *)getFloatToken(tokenizer);
     if ((tokenizer->config &8) && tolower(*ptr) == 'b' && tolower(*(ptr+1)) != 'h' && tolower(*(ptr+1)) != 'o')
-     return  getBinToken(tokenizer);
+     return  (Token *)getBinToken(tokenizer);
     else  if((tokenizer->config & 2) && ( tolower(*ptr) == 'h'|| (tolower(*ptr) >= 'a' && tolower(*ptr) <= 'f')))
-     return  getHexToken(tokenizer);
+     return  (Token *)getHexToken(tokenizer);
     else if ((tokenizer->config &4) && (tolower(*ptr) == 'o'))
-      return  getOctalToken(tokenizer);
+      return  (Token  *)getOctalToken(tokenizer);
    else
      integerExceptionThrowing(tokenizer->str, startColumn, "Invalid decimal value");
   }
   tokenizer->index += (ptr-str);
   resultstr = duplicateSubstring(str, ptr-str);
-return  createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
+return  (Token  *)createIntToken(convertedValue, startColumn, tokenizer->str, resultstr, TOKEN_INTEGER_TYPE);  
 }
 
 IntegerToken  *getOctalToken(Tokenizer  *tokenizer){

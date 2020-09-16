@@ -36,7 +36,7 @@ IntegerToken *getOctalToken(Tokenizer  *tokenizer);
 IntegerToken *getHexToken(Tokenizer *tokenizer);
 FloatToken *getFloatToken(Tokenizer  *tokenizer);
 IntegerToken *getBinToken(Tokenizer  *tokenizer);
-IntegerToken *getDecimalToken(Tokenizer  *tokenizer);
+Token *getDecimalOrFloatToken(Tokenizer  *tokenizer);
 Token  *getNumberToken(Tokenizer *tokenizer);
 IdentifierToken *getIdentifierToken(Tokenizer *tokenizer);
 OperatorToken *getOperatorToken(Tokenizer *tokenizer);
