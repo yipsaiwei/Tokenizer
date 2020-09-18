@@ -163,10 +163,15 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
     if((tokenizer->config & 4) && (tolower(*ptr) == 'o') && (isspace(*(ptr+1)) || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')))
       ptr++;
-    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b' && tolower(*(ptr+1)) != 'h' && tolower(*(ptr+1)) != 'o')
+    else if ((tokenizer->config & 2) && isalnum(*ptr)){
+      strtol(strnum, &ptr, 16);
+      if(tolower(*ptr) == 'h')
+        return  getHexToken(tokenizer);
+      else
+        integerExceptionThrowing(tokenizer->str, startColumn, "Invalid octal value");
+    }
+    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b')
       return  getBinToken(tokenizer);
-    else if ((tokenizer->config & 2) && (tolower(*ptr) == 'h' || (tolower(*ptr) >= 'a' && tolower(*ptr) <= 'f')))
-      return  getHexToken(tokenizer);
     else
       integerExceptionThrowing(tokenizer->str, startColumn, "Invalid octal value");
   }
@@ -210,10 +215,8 @@ IntegerToken  *getHexToken(Tokenizer  *tokenizer){
   int startColumn = tokenizer->index;
   int i = 0, convertedValue; 
   int size;
-  if(str[0] == '0' && tolower(str[1]) == 'x')
-    strnum = str + 2; //convert hexadecimal value to without 0x
-  else if (str[0] == '$'){
-    if(tokenizer->config & 1 && str[1] != '0' && tolower(str[2]) != 'x')
+  if (str[0] == '$'){
+    if(tokenizer->config & 1 && (str[1] != '0' || tolower(str[2]) != 'x'))
       strnum = str + 1;
     else
       integerExceptionThrowing(tokenizer->str, startColumn, "Invalid hexadecimal value");
