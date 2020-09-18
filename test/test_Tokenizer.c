@@ -547,7 +547,7 @@ void  test_getOctalToken_given_01110b_no_config_expect_exception_ERROR_INVALID_I
 // There are possibilities where binary value start with 0
 void  test_getOctalToken_given_01110b_with_bin_config_expect_bin_1110(){
   Tokenizer *tokenizer = NULL;
-  tokenizer = createTokenizer("  01110b"); 
+  tokenizer = createTokenizer("  01110b  "); 
   configureTokenizer(tokenizer, TOKENIZER_BIN_B);
   IntegerToken *token = NULL;
   Try{
