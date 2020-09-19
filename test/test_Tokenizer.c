@@ -5516,12 +5516,12 @@ void  test_pushBackToken_given_2_continuous_pushbacks(){
 }
 
 /*
-list        item5   item4     item3     item2     item1     
-head------->next---->next---->next----->next----->next---------
-tail----    prev<----prev<----prev<-----prev<-----prev        |
-count  |    token4   token3   token2    token1    token0    NULL
-       |                                            ^
-       |____________________________________________|
+list           item5   item4     item3     item2     item1     
+head---------->next---->next---->next----->next----->next---------
+tail----     --prev<----prev<----prev<-----prev<-----prev        |
+count  |    |  token4   token3   token2    token1    token0    NULL
+       |   NULL                                        ^
+       |_______________________________________________|
 */
 
 void  test_pushBackToken_given_5_continuous_pushbacks(){
