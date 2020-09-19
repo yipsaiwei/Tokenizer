@@ -17,7 +17,7 @@ void tearDown(void)
 {
 }
 
-void test_integerExceptionThrowing()
+void test_integerExceptionThrowing_with_integer_expect_exception_thrown()
 {
   Try{
     integerExceptionThrowing("  10293dfg ", 2, "Just to test integerExceptionThrowing function"); 
@@ -28,7 +28,7 @@ void test_integerExceptionThrowing()
   }
 }
 
-void test_integerExceptionThrowing_end_with_backslash_t()
+void test_integerExceptionThrowing_end_with_backslash_t_expect_exception_thrown()
 {
   Try{
     integerExceptionThrowing("  19191tt\t@@@@@@@@@@@@ ", 2, "Just to test integerExceptionThrowing function with backslash t"); 
@@ -39,7 +39,7 @@ void test_integerExceptionThrowing_end_with_backslash_t()
   }
 }
 
-void test_floatExceptionThrowing()
+void test_floatExceptionThrowing_with_float_expect_exception_thrown()
 {
   Try{
     floatExceptionThrowing("    34.555.4 ", 4, "Just to test floatExceptionThrowing function"); 
@@ -50,7 +50,7 @@ void test_floatExceptionThrowing()
   }
 }
 
-void test_floatExceptionThrowing_end_with_backslash_t()
+void test_floatExceptionThrowing_end_with_backslash_t_expect_exception_thrown()
 {
   Try{
     floatExceptionThrowing("   12e--3\t#### ", 3, "Just to test floatExceptionThrowing function with backslash t"); 
@@ -61,7 +61,7 @@ void test_floatExceptionThrowing_end_with_backslash_t()
   }
 }
 
-void test_stringExceptionThrowing()
+void test_stringExceptionThrowing_with_string_expect_exception_thrown()
 {
   Try{
     stringExceptionThrowing("   \"A string..... ", 3, "Just to test stringExceptionThrowing function"); 

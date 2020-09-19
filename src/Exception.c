@@ -39,7 +39,6 @@ void throwException(int errorCode, void *data, int freeDataOnFreeingException, c
 	va_list va;
 	va_start(va, message);
 	len=vsnprintf(NULL, 0, message, va);
-	//printf("Len: %d\n", len);
 	buffer=memAlloc(len+1);
 	vsprintf(buffer, message, va);
 	va_end(va);

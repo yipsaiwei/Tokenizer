@@ -2,9 +2,8 @@
 #include "Exception.h"
 #include "CException.h"
 #include  "string.h"
-//#include  "DoubleLinkedList.h"
 
-
+//Create and initialize tokenizer
 Tokenizer  *createTokenizer(char *str){
   Tokenizer *tokenizer;
   tokenizer = memAlloc(sizeof(Tokenizer));
@@ -17,6 +16,7 @@ Tokenizer  *createTokenizer(char *str){
   return  tokenizer;
 }
 
+//Configure tokenizer for it to recognize $, xxxb, xxx0, xxxh
 void configureTokenizer(Tokenizer *tokenizer, uint32_t configuration){
   tokenizer->config = configuration;
 }
@@ -52,6 +52,7 @@ Token  *getToken(Tokenizer *tokenizer){
     return  (Token  *)getOperatorToken(tokenizer);
 }
 
+//Create ^~~~ error line
 char  *errorIndicator(int startColumn, int length){
   char  *linestr = memAlloc((startColumn+length+1)*sizeof(char));
   int j;
@@ -161,9 +162,10 @@ IntegerToken  *getOctalToken(Tokenizer  *tokenizer){
   strnum = str;
   convertedValue = strtol(strnum, &ptr, 8);
   if(!isspace(*ptr) && (!ispunct(*ptr) || *ptr == '.' || *ptr == '_') && *ptr != '\0'){
-    if((tokenizer->config & 4) && (tolower(*ptr) == 'o') && (isspace(*(ptr+1)) || *(ptr+1) == 0 || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')))
+    if((tokenizer->config & 4) && (tolower(*ptr) == 'o') && (isspace(*(ptr+1)) || *(ptr+1) == 0 
+    || (ispunct(*(ptr+1)) && *(ptr+1) != '_' && *(ptr+1) != '.')))
       ptr++;
-    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b')
+    else  if ((tokenizer->config & 8) && tolower(*ptr) == 'b' && !isalpha(*(ptr+1)))
       return  getBinToken(tokenizer);
     else if ((tokenizer->config & 2) && (tolower(*ptr) == 'h' || (tolower(*ptr) >= 'a' && tolower(*ptr) <= 'f') || isdigit(*ptr))){
       strtol(strnum, &ptr, 16);
@@ -309,6 +311,7 @@ StringToken  *getStringToken(Tokenizer  *tokenizer){
   return  createStringToken(resultstr, startColumn, str, TOKEN_STRING_TYPE);
 }
 
+// \n for newline token
 Token *getNewlineToken(Tokenizer  *tokenizer){
   char  *str = tokenizerSkipSpaces(tokenizer); 
   char  *resultstr;

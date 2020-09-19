@@ -79,7 +79,6 @@ Token *createNewlineToken(char  *str, int index, char  *originalstr, TOKENTYPE t
 
 void  freeToken(void *token){
   Token *tokenFree, *tokenptr;
-  
   tokenFree = (Token  *)token;
   if(tokenFree){
     tokenptr = tokenFree;

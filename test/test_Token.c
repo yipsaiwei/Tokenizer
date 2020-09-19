@@ -17,7 +17,7 @@ void tearDown(void)
 
 CEXCEPTION_T ex;
 
-void  test_createIntToken(){
+void  test_createIntToken_given_integer_expect_integer_token_returned(){
   IntegerToken  *token = createIntToken(5335, 2, "  5335 helloWorld", "5335", TOKEN_INTEGER_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_INTEGER_TYPE, token->type);
   TEST_ASSERT_EQUAL(5335, token->value);
@@ -27,7 +27,7 @@ void  test_createIntToken(){
   free(token);
 }
 
-void  test_createFloatToken(){
+void  test_createFloatToken_given_float_expect_float_token_returned(){
   FloatToken  *token = createFloatToken(484.294, 0, "484.294", "484.294Hello", TOKEN_FLOAT_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_FLOAT_TYPE, token->type);
   TEST_ASSERT_EQUAL_FLOAT(484.294, token->value);
@@ -37,7 +37,7 @@ void  test_createFloatToken(){
   free(token);
 }
 
-void  test_createIdentifierToken(){
+void  test_createIdentifierToken_given_identifier_expect_identifier_token_returned(){
   IdentifierToken  *token = createIdentifierToken(" rlcf 0x34", 1, "rlcf", TOKEN_IDENTIFIER_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_IDENTIFIER_TYPE, token->type);
   TEST_ASSERT_EQUAL(1, token->startColumn);
@@ -46,7 +46,7 @@ void  test_createIdentifierToken(){
   free(token);
 }
 
-void  test_createStringToken(){
+void  test_createStringToken_given_string_expect_string_token_returned(){
   StringToken  *token = createStringToken("  \"Here is the string\" ", 2, "\"Here is the string\"", TOKEN_STRING_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_STRING_TYPE, token->type);
   TEST_ASSERT_EQUAL(2, token->startColumn);
@@ -55,7 +55,7 @@ void  test_createStringToken(){
   free(token);
 }
 
-void  test_createOperatorToken(){
+void  test_createOperatorToken_given_operator_expect_operator_token_returned(){
   OperatorToken  *token = createOperatorToken("  + 49382", 2, "+", TOKEN_OPERATOR_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_OPERATOR_TYPE, token->type);
   TEST_ASSERT_EQUAL(2, token->startColumn);
@@ -64,7 +64,7 @@ void  test_createOperatorToken(){
   free(token);
 }
 
-void  test_createNULLToken(){
+void  test_createNULLToken_given_NULL_expect_NULLToken_returned(){
   Token *token = createNULLToken("   ", 3, TOKEN_NULL_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_NULL_TYPE, token->type);
   TEST_ASSERT_EQUAL(3, token->startColumn);
@@ -74,7 +74,7 @@ void  test_createNULLToken(){
   free(token);
 }
 
-void  test_createNewlineToken(){
+void  test_createNewlineToken_backslash_n_expect_NewLine_token_returned(){
   Token *token = createNewlineToken("\n", 2, "  \n", TOKEN_NEWLINE_TYPE);
   TEST_ASSERT_EQUAL(TOKEN_NEWLINE_TYPE, token->type);
   TEST_ASSERT_EQUAL(2, token->startColumn);
