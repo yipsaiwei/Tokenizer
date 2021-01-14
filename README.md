@@ -103,6 +103,7 @@ For the list of errors that will cause the tokenizer unable to tokenize, click [
 
 ## 5 Results
 If all the tests are passed, it means that the program does meet your expectation to some extend.
+
 ![image](https://user-images.githubusercontent.com/65482031/104610883-75cc5600-56bf-11eb-9120-2953f97a1c95.png)
 
 It also do show the test outputs; the messages thrown by exception in the tests that you expect it to fail.
