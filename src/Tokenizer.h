@@ -2,7 +2,8 @@
 #define TOKENIZER_H
 #include "Token.h"
 #include <stdint.h>
-#include <malloc.h>
+//#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

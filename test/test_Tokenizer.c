@@ -5820,3 +5820,31 @@ void  test_pushBackToken_given_hexa_operator_float_operator_identifier(){
     TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");     
   }
 }
+
+void  test_getToken_given_a_sample_code_failed_in_others_program(){
+  Tokenizer *tokenizer = NULL;
+  tokenizer = createTokenizer("3 +(2 *  4)"); 
+  IntegerToken *token0 = NULL;
+  Try{
+    token0 = (IntegerToken  *)getToken(tokenizer);
+    TEST_ASSERT_EQUAL(1, tokenizer->index);
+    TEST_ASSERT_EQUAL(TOKEN_INTEGER_TYPE, token0->type);
+    TEST_ASSERT_EQUAL(3, token0->value);
+    TEST_ASSERT_EQUAL_STRING("3", token0->str);
+    TEST_ASSERT_EQUAL(0, token0->startColumn);
+    
+    freeToken(token0);
+    
+    OperatorToken *token2 = NULL;
+    token2 = (OperatorToken *)getToken(tokenizer);
+    TEST_ASSERT_EQUAL(TOKEN_OPERATOR_TYPE, token2->type);
+    TEST_ASSERT_EQUAL(3, tokenizer->index);
+    TEST_ASSERT_EQUAL_STRING("+", token2->str);
+    TEST_ASSERT_EQUAL(2, token2->startColumn);
+    freeToken(token2);
+    freeTokenizer(tokenizer);
+  }Catch(ex){
+    dumpTokenErrorMessage(ex, 1);
+    TEST_FAIL_MESSAGE("Do not expect any exception to be thrown.");   
+  }
+}

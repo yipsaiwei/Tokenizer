@@ -18,8 +18,8 @@ int	linkedListAddItemToHead(ListItem* Item, DoubleLinkedList* accList){
 	}
 	else
 	{
-		Item->next=accList->head;
-		accList->head->prev=Item;
+    Item->next=accList->head;
+    accList->head->prev=Item;
 		accList->head=Item;
 		Item->prev=NULL;
 		accList->count++;
