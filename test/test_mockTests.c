@@ -217,9 +217,9 @@ void  test_dumpTokenErrorMessage_without_token(){
 }
 
 void  test_dumpTokenErrorMessage_with_token(){
-  Try{
   Token token = {"Hey hey 123w",  "123w", 8, 4, TOKEN_INTEGER_TYPE};
   Token *tokenptr = &token;
+  Try{
   char  buffer[55];
   Exception e;
   memAlloc_ExpectAndReturn(sizeof(char)*55, &buffer);
@@ -230,6 +230,8 @@ void  test_dumpTokenErrorMessage_with_token(){
     char  str[13];
     memAlloc_ExpectAndReturn(sizeof(char)*13, &str);
     memFree_Expect(str);
+    memFree_Expect(tokenptr->str);
+    memFree_Expect(tokenptr);
     dumpTokenErrorMessage(ex, 0);
     TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
   }
