@@ -91,7 +91,7 @@ void  freeToken(void *token){
 
 void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
   int column;
-  char  *str, *originalstr;
+  //char  *str, *originalstr;
   char  *errorLine = NULL;
   Token *token = NULL;
   token = ex->data;
