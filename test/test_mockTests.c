@@ -229,6 +229,7 @@ void  test_dumpTokenErrorMessage_with_token(){
   }Catch(ex){
     char  str[13];
     memAlloc_ExpectAndReturn(sizeof(char)*13, &str);
+    memFree_Expect(str);
     dumpTokenErrorMessage(ex, 0);
     TEST_ASSERT_EQUAL(ERROR_TESTING, ex->errorCode);
   }
