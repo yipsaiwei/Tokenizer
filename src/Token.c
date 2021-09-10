@@ -94,6 +94,19 @@ void tokenExpandString(Token  *token, int lengthToExpand){
   token->str = duplicateSubstring((token->originalstr + token->startColumn), lengthToExpand + 1);
 }
 
+Token *cloneToken(Token *token){
+  char  *originalStr = token->originalstr;
+  char  *str = strdup(token->str);
+  if(token->type == TOKEN_OPERATOR_TYPE)
+    return  (Token  *)createOperatorToken(str, token->startColumn, originalStr, token->type);
+  else if(token->type == TOKEN_INTEGER_TYPE)
+    return  (Token  *)createIntToken( ((IntegerToken  *)token)->value, token->startColumn, originalStr, str, token->type);
+  else if(token->type == TOKEN_FLOAT_TYPE)
+    return  (Token  *)createFloatToken( ((FloatToken  *)token)->value, token->startColumn, originalStr, str, token->type);
+  else 
+    return  (Token  *)createStringToken(str, token->startColumn, originalStr, token->type);
+}
+
 void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
   int column = 0;
   Token *token = ex->data;

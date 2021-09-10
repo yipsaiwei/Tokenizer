@@ -112,3 +112,39 @@ void  test_tokenExpandString_given_a_string_expect_2_char_to_expand(){
   free(token);
 }
 
+void  test_cloneToken_given_a_token_expect_same_information_token_returned(){
+  char  *originalstr = memAlloc(sizeof(char) * 10);
+  char  *str = memAlloc(sizeof(char) * 4);
+  strcpy(originalstr, "1 >>= 232");
+  strcpy(str, ">");
+  Token  *token = (Token  *)createOperatorToken(str, 2, originalstr, TOKEN_OPERATOR_TYPE);
+  Token *newToken = cloneToken(token);
+  
+  TEST_ASSERT_EQUAL_STRING(">", newToken->str);
+  TEST_ASSERT_EQUAL_STRING("1 >>= 232", newToken->originalstr);
+  TEST_ASSERT_EQUAL(2, newToken->startColumn);
+  TEST_ASSERT_EQUAL(TOKEN_OPERATOR_TYPE, newToken->type);
+  
+  freeToken(newToken);
+  free(token);
+  free(originalstr);
+}
+
+void  test_cloneToken_given_an_intToken_expect_same_information_token_returned(){
+  char  *originalstr = memAlloc(sizeof(char) * 10);
+  char  *str = memAlloc(sizeof(char) * 4);
+  strcpy(originalstr, "  563-777");
+  strcpy(str, "563");
+  Token  *token = (Token  *)createIntToken(563, 2, originalstr, str, TOKEN_INTEGER_TYPE);
+  Token *newToken = cloneToken(token);
+  
+  TEST_ASSERT_EQUAL(563, ((IntegerToken *)token)->value);
+  TEST_ASSERT_EQUAL_STRING("563", newToken->str);
+  TEST_ASSERT_EQUAL_STRING("  563-777", newToken->originalstr);
+  TEST_ASSERT_EQUAL(2, newToken->startColumn);
+  TEST_ASSERT_EQUAL(TOKEN_INTEGER_TYPE, newToken->type);
+  
+  freeToken(newToken);
+  free(token);
+  free(originalstr);
+}

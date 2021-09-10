@@ -76,5 +76,6 @@ Token *createNewlineToken(char  *str, int index, char  *originalstr, TOKENTYPE t
 void  freeToken(void *token);
 void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo);
 void tokenExpandString(Token  *token, int lengthToExpand);
+Token *cloneToken(Token *token);
 
 #endif // TOKEN_H
