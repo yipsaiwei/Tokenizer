@@ -84,3 +84,31 @@ void  test_createNewlineToken_backslash_n_expect_NewLine_token_returned(){
   free(token);
 }
 
+//1 +=234
+void  test_tokenExpandString_given_a_string_expect_1_char_to_expand(){
+  char  *originalstr = memAlloc(sizeof(char) * 8);
+  char  *str = memAlloc(sizeof(char) * 3);
+  strcpy(originalstr, "1 +=234");
+  strcpy(str, "+");
+  Token  *token = (Token  *)createOperatorToken(str, 2, originalstr, TOKEN_OPERATOR_TYPE);
+  tokenExpandString(token, 1);
+  
+  TEST_ASSERT_EQUAL_STRING("+=", token->str);
+  
+  free(token);
+}
+
+//1 >>= 232
+void  test_tokenExpandString_given_a_string_expect_2_char_to_expand(){
+  char  *originalstr = memAlloc(sizeof(char) * 10);
+  char  *str = memAlloc(sizeof(char) * 4);
+  strcpy(originalstr, "1 >>= 232");
+  strcpy(str, ">");
+  Token  *token = (Token  *)createOperatorToken(str, 2, originalstr, TOKEN_OPERATOR_TYPE);
+  tokenExpandString(token, 2);
+  
+  TEST_ASSERT_EQUAL_STRING(">>=", token->str);
+  
+  free(token);
+}
+

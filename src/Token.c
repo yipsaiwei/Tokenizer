@@ -89,6 +89,11 @@ void  freeToken(void *token){
   }
 }
 
+void tokenExpandString(Token  *token, int lengthToExpand){
+  memFree(token->str);
+  token->str = duplicateSubstring((token->originalstr + token->startColumn), lengthToExpand + 1);
+}
+
 void dumpTokenErrorMessage(CEXCEPTION_T ex, int lineNo){
   int column = 0;
   Token *token = ex->data;
